@@ -44,6 +44,12 @@ class class_model {
     }
 
 
+    public function checkEmailExists($email) {
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM users WHERE email = :email");
+        $stmt->execute(["email" => $email]);
+        return $stmt->fetchColumn() > 0;
+    }
+    
     public function loginUsers($email, $password) {
         $stmt = $this->pdo->prepare("SELECT * FROM users WHERE email = :email");
         $stmt->execute(['email' => $email]);

@@ -1,5 +1,5 @@
 <?php
-require_once 'db.php'; // Include your class
+require_once 'config/db.php'; // Include your class
 
 $cm = new class_model();
 

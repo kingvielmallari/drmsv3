@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['user'])) {
+if (!isset($_SESSION['person'])) {
     header('Location: ../index.php');
     exit;
 }
@@ -8,7 +8,7 @@ if (!isset($_SESSION['user'])) {
 
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,38 +17,44 @@ if (!isset($_SESSION['user'])) {
     <link rel="stylesheet" href="../app.css">
 </head>
 <body>
-    
-                <h2 class="text-center">User List</h2>
-
-               
-
-                <div class="container-sm">
-                <table class="table table-striped " id="userTable">
-                    <thead>
-                        <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Email</th>
-                        </tr>
-                    </thead> 
-
-                    <tbody>
-                        
-                    </tbody>
 
 
-                </table>
-                </div>
-                
-                <p class="fw-bold text-uppercase">dsadsadsadsa</p>
-           
-              <a href="registrar">Link</a>
-            </body>
+
+<div class="form-check form-switch">
+    <input class="form-check-input" type="checkbox" id="themeToggle" <?php if(isset($_COOKIE['theme']) && $_COOKIE['theme'] == 'dark') echo 'checked'; ?>>
+    <label class="form-check-label">Dark Mode</label>
+</div>
+
+
+
+<h2 class="text-center bg-#6610f2">User List</h2>
+
+<?php echo $_SESSION['person']['email']; ?>
+<br>
+<a href="logout.php">Logout</a>
+
+<div class="container-sm">
+    <table class="table table-striped" id="userTable">
+        <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+            </tr>
+        </thead> 
+        <tbody>
+            <!-- User data will be populated here -->
+        </tbody>
+    </table>
+</div>
+
+<a href="logout.php">Logout</a>
 
 
 
 
 <script src="../bootstrapv5/js/bootstrap.bundle.min.js"></script>
 <script src="fetch.js"></script>
+<script src="index.js"></script>
 </body>
 </html>
