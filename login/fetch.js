@@ -19,3 +19,4 @@ document.addEventListener("DOMContentLoaded", () => {
     // Optionally, set an interval to refresh the data (e.g., every 5 seconds)
     setInterval(fetchUsers, 1000); // Refresh every 5 seconds
 });
+

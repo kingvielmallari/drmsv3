@@ -39,26 +39,11 @@
     </div>
 </div>
 
-<div class="container text-center">
-    <div class="row">
-        <div class="col">
-            First name
-        </div>
-        <div class="col">
-            Middle Name
-        </div>
-        <div class="col">
-            Last Name
-        </div>
-    </div>
-</div>
-
-.
 
 
+<script src="bootstrapv5/js/bootstrap.bundle.min.js"></script>
+<script src="login/index.js" defer></script>
 
-<script src="../bootstrapv5/js/bootstrap.bundle.min.js"></script>
-<script src="login/index.js"></script>
 
 
 
