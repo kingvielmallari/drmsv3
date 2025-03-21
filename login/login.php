@@ -10,8 +10,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $person = $cm->loginUsers($email, $password);
 
+
     if ($person) {
-        $_SESSION['person'] = $person; // Store user data in session
+        $_SESSION['email'] = $person; // Store user data in session
         echo json_encode(["success" => true, "message" => "Login successful"]);
         exit(); 
     } else {

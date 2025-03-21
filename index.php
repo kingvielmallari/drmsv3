@@ -26,18 +26,24 @@
                 </div>
                 
                 
-                <div class="d-grid">
+                <div class="d-grid mb-3">
                     <button type="submit" class="btn btn-primary btn-block">Submit</button>
                 </div>
-         
-             
 
+                <div class="d-grid">
+                    <a href="add.php" class="btn btn-secondary btn-block">Register</a>
+                </div>
+
+             
+             
                 
             </form>
 
             <p id="response" class="text-center mt-3 text-danger"></p>    </div>
     </div>
 </div>
+
+
 
 
 

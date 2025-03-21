@@ -1,14 +1,16 @@
 <?php
 session_start();
-if (!isset($_SESSION['person'])) {
+if (!isset($_SESSION['email']) || $_SESSION['email'] !== 'bey@ptc.edu.ph') {
     header('Location: ../index.php');
     exit;
 }
 ?>
 
 
+
+
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,7 +31,7 @@ if (!isset($_SESSION['person'])) {
 
 <h2 class="text-center bg-#6610f2">User List</h2>
 
-<?php echo $_SESSION['person']['email']; ?>
+<?php echo $_SESSION['email']['email']; ?>
 <br>
 <a href="logout.php">Logout</a>
 
