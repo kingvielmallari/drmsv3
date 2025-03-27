@@ -45,19 +45,30 @@ class class_model {
         return $count > 0;
     }
 
-    public function loginUsers($email, $password) {
-        $sql = "SELECT * FROM users WHERE email = ?";
+    // public function loginUsers($student_id, $password) {
+    //     $sql = "SELECT * FROM users WHERE student_id = ? AND password = ?";
+    //     $stmt = $this->mysqli->prepare($sql);
+    //     $stmt->bind_param("ss", $student_id, $password);
+    //     $stmt->execute();
+    //     $result = $stmt->get_result();
+    //     $user = $result->fetch_assoc();
+
+    //     return $user ?: false;
+    // }
+
+    public function loginUsers($student_id, $password) {
+        $sql = "SELECT * FROM users WHERE student_id = ?";
         $stmt = $this->mysqli->prepare($sql);
-        $stmt->bind_param("s", $email);
+        $stmt->bind_param("s", $student_id);
         $stmt->execute();
         $result = $stmt->get_result();
         $user = $result->fetch_assoc();
 
         if ($user && password_verify($password, $user['password'])) {
             return $user;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     // READ: Get user by ID

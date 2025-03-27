@@ -6,12 +6,19 @@
         const formData = new FormData(e.target);
 
         try {
-            const response = await fetch("login/login.php", {
+            const response = await fetch("./student-login.php", {
                 method: "POST",
                 body: formData,
             });
 
-            const result = await response.json(); // Expect JSON response
+            let result;
+            try {
+                result = await response.json(); // Attempt to parse JSON response
+            } catch (error) {
+                console.error("Invalid JSON response:", error);
+                document.querySelector("#response").textContent = "An error occurred. Please try again.";
+                return;
+            }
 
             if (result.success) {
                 window.location.href = "login/dashboard.php"; // 🔥 Redirect on success
