@@ -72,12 +72,9 @@ $authUrl = $client->createAuthUrl();
   </div>
 </div>
 
-<div class="text-black text-center mt-5">
-  <h1>Welcome to the School Document Request System</h1>
-  <p class="lead">Easily request, track, and manage school documents online.</p>
-</div>
 
-<div id="carouselExampleIndicators" class="carousel slide mx-sm-2 mx-md-auto mx-lg-auto" style="max-width: 800px;">
+
+<div id="carouselExampleIndicators" class="carousel slide mx-sm-2 mx-md-auto mx-lg-auto mt-5" style="max-width: 800px;">
   <div class="carousel-indicators">
   <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
   <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
@@ -88,7 +85,7 @@ $authUrl = $client->createAuthUrl();
     <img src="images/step1.png" class="d-block w-100" alt="..." style="height: 400px; object-fit: cover;">
   </div>
   <div class="carousel-item">
-    <img src="images/step2.png" class="d-block w-100" alt="..." style="height: 400px; object-fit: cover;">
+    <img src="images/step2.jpg" class="d-block w-100" alt="..." style="height: 400px; object-fit: cover;">
   </div>
   <div class="carousel-item">
     <img src="images/step3.png" class="d-block w-100" alt="..." style="height: 400px; object-fit: cover;">
@@ -116,20 +113,21 @@ $authUrl = $client->createAuthUrl();
       <input type="text" class="form-control" name="student_id" id="student_id" placeholder="Student ID" required>
       <label for="student_id">Student ID</label>
       </div>
-      <div class="form-floating mb-3">
+      <div class="form-floating mb-3 position-relative">
       <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
       <label for="password">Password</label>
+      <i class="bi bi-eye-slash position-absolute top-50 end-0 translate-middle-y me-3" id="togglePassword" style="cursor: pointer;"></i>
       </div>
+    
       <div class="form-check mb-3">
-      <input type="checkbox" class="form-check-input" id="rememberMe" name="remember">
-      <label class="form-check-label" for="rememberMe">Remember me</label>
+   
       <a href="forgot-password.php" class="float-end">Forgot password</a>
       </div>
       <div class="d-grid">
       <button type="submit" class="btn btn-primary btn-block">Sign in</button>
       </div>
       <div>
-        <p id="response">Wrong Credentials!</p>
+        <p id="response" style="display: none;">Wrong Credentials!</p>
       </div>
     </form>
 
@@ -137,7 +135,7 @@ $authUrl = $client->createAuthUrl();
       <p>or</p>
       <a href="<?= htmlspecialchars($authUrl); ?>" class="btn btn-outline-secondary btn-lg d-flex align-items-center justify-content-center">
       <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style="width: 20px; height: 20px; margin-right: 10px;">
-      <span>Sign in with Google</span>
+      <span>Sign in using Institutional Email</span>
       </a>
     </div>
 
@@ -169,12 +167,7 @@ $authUrl = $client->createAuthUrl();
 
 <script src="bootstrapv5/js/bootstrap.bundle.min.js"></script>
 <script src="login/index.js" defer></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-  var privacyModal = new bootstrap.Modal(document.getElementById('privacyModal'));
-  privacyModal.show();
-  });
-</script>
+
 
 </body>
 </html>

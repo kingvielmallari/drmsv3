@@ -8,8 +8,10 @@ if (!isset($_SESSION['user_name'])) {
 ?>
 
 
+
+
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -32,26 +34,7 @@ if (!isset($_SESSION['user_name'])) {
 
 
 
-<h2 class="text-center bg-#6610f2">User List</h2>
 
-<?php echo $_SESSION['person']['email']; ?>
-<br>
-<a href="logout.php">Logout</a>
-
-<div class="container-sm">
-    <table class="table table-striped" id="userTable">
-        <thead>
-            <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Name</th>
-                <th scope="col">Email</th>
-            </tr>
-        </thead> 
-        <tbody>
-            <!-- User data will be populated here -->
-        </tbody>
-    </table>
-</div>
 
 <a href="logout.php">Logout</a>
 

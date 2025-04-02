@@ -10,7 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = trim($_POST['password']);
 
 
-    }
+    }   
     // Validate email
     if (strpos($email, '@ptc.edu.ph') === false) {
         echo "Invalid email address. Email must include '@ptc.edu.ph'.";

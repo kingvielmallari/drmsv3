@@ -34,16 +34,7 @@ class class_model {
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function checkEmailExists($email) {
-        $sql = "SELECT COUNT(*) FROM users WHERE email = ?";
-        $stmt = $this->mysqli->prepare($sql);
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $stmt->bind_result($count);
-        $stmt->fetch();
 
-        return $count > 0;
-    }
 
     // public function loginUsers($student_id, $password) {
     //     $sql = "SELECT * FROM users WHERE student_id = ? AND password = ?";

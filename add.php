@@ -1,29 +1,44 @@
+<?php include('components/header.php')
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add User</title>
+    <link rel="stylesheet" href="bootstrapv5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="app.css">
   
 </head>
 <body>
-
-    <h2>Add New User</h2>
-    <form id="userForm">
-        <label for="name-label">Name:</label>
-        <input type="text" id="name-label" name="name" required><br><br>
-
-        <label>Email:</label>
-        <input type="email" id="email" name="email" required><br><br>
-
-        <label>Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
-
-        <button type="submit">Submit</button>
-    </form>
-
-    <p id="response"></p>
-
+<div class="container d-flex vh-100">
+<div class="row justify-content-center align-self-center w-100">
+<div class="col-md-6">
+<h2 class="text-center">Add New User</h2>
+<form id="userForm">
+    <div class="form-floating mb-3">
+        <input type="text" class="form-control" name="name" id="floatingName" placeholder="Name" required>
+        <label for="floatingName">Name</label>
+    </div>
+    <div class="form-floating mb-3">
+        <input type="email" class="form-control" name="email" id="floatingEmail" placeholder="name@example.com" required>
+        <label for="floatingEmail">Email address</label>
+    </div>
+    <div class="form-floating mb-3">
+        <input type="password" class="form-control" name="password" id="floatingPassword" placeholder="Password" required>
+        <label for="floatingPassword">Password</label>
+    </div>
+    <div class="d-grid mb-3">
+        <button type="submit" class="btn btn-primary btn-block">Register</button>
+    </div>
+</form>
+<p id="response" class="text-center mt-3 text-danger"></p>
+</div>
+</div>
+</div>
+</div>
 
 
 
