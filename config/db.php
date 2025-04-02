@@ -16,12 +16,12 @@ class class_model {
     }
 
     // CREATE: Insert new record
-    public function createUser(string $name, string $email, string $password) {
+    public function createUser($student_id, $name,  $email, $password) {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-        $sql = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO users (student_Id, name, email, password) VALUES (?, ?, ?, ?)";
         $stmt = $this->mysqli->prepare($sql);
-        $stmt->bind_param("sss", $name, $email, $hashedPassword);
+        $stmt->bind_param("ssss", $student_id, $name, $email, $hashedPassword);
 
         return $stmt->execute();
     }
@@ -34,18 +34,19 @@ class class_model {
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
+    // READ: Get user by student ID
+    public function getUserByStudentId(string $student_id) {
+        $sql = "SELECT * FROM users WHERE student_Id = ?";
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("s", $student_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
+        return $result->fetch_assoc();
+    }
 
-    // public function loginUsers($student_id, $password) {
-    //     $sql = "SELECT * FROM users WHERE student_id = ? AND password = ?";
-    //     $stmt = $this->mysqli->prepare($sql);
-    //     $stmt->bind_param("ss", $student_id, $password);
-    //     $stmt->execute();
-    //     $result = $stmt->get_result();
-    //     $user = $result->fetch_assoc();
+    
 
-    //     return $user ?: false;
-    // }
 
     public function loginUsers($student_id, $password) {
         $sql = "SELECT * FROM users WHERE student_id = ?";
@@ -57,12 +58,13 @@ class class_model {
 
         if ($user && password_verify($password, $user['password'])) {
             return $user;
+        } else {
+            return false;
         }
-
-        return false;
     }
 
-    // READ: Get user by ID
+
+    // READ: Get user by IDks
     public function getUserById($id) {
         $sql = "SELECT * FROM users WHERE id = ?";
         $stmt = $this->mysqli->prepare($sql);

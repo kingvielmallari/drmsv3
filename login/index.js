@@ -1,24 +1,17 @@
 
-    document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#userForm").addEventListener("submit", async (e) => {
         e.preventDefault();
 
         const formData = new FormData(e.target);
 
         try {
-            const response = await fetch("./student-login.php", {
+            const response = await fetch("login/student-login.php", {
                 method: "POST",
                 body: formData,
             });
 
-            let result;
-            try {
-                result = await response.json(); // Attempt to parse JSON response
-            } catch (error) {
-                console.error("Invalid JSON response:", error);
-                document.querySelector("#response").textContent = "An error occurred. Please try again.";
-                return;
-            }
+            const result = await response.json(); // Expect JSON response
 
             if (result.success) {
                 window.location.href = "login/dashboard.php"; // 🔥 Redirect on success
@@ -33,9 +26,30 @@
 });
 
 
+// Toggle Password Visibility
+document.getElementById('togglePassword').addEventListener('mousedown', function () {
+    const passwordInput = document.getElementById('password');
+    passwordInput.setAttribute('type', 'text');
+    this.classList.add('bi-eye-slash');
+    this.classList.remove('bi-eye');
+});
+
+document.getElementById('togglePassword').addEventListener('mouseup', function () {
+    const passwordInput = document.getElementById('password');
+    passwordInput.setAttribute('type', 'password');
+    this.classList.add('bi-eye');
+    this.classList.remove('bi-eye-slash');
+});
+
+document.getElementById('togglePassword').addEventListener('mouseleave', function () {
+    const passwordInput = document.getElementById('password');
+    passwordInput.setAttribute('type', 'password');
+    this.classList.add('bi-eye');
+    this.classList.remove('bi-eye-slash');
+});
 
 
-
+// Change Theme
 document.getElementById('themeToggle').addEventListener('change', function() {
     if (this.checked) {
         document.documentElement.setAttribute('data-bs-theme', 'dark');
@@ -46,6 +60,8 @@ document.getElementById('themeToggle').addEventListener('change', function() {
     }
 });
 
+
+// Load Theme from Cookie
 window.addEventListener('load', function() {
     const theme = document.cookie.split(';').find((item) => item.trim().startsWith('theme='));
     if (theme) {
@@ -60,4 +76,8 @@ window.addEventListener('load', function() {
     }
 });
 
-
+// Privacy Policy Modal
+document.addEventListener('DOMContentLoaded', function () {
+  var privacyModal = new bootstrap.Modal(document.getElementById('privacyModal'));
+  privacyModal.show();
+  });

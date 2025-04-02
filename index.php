@@ -14,9 +14,12 @@ $authUrl = $client->createAuthUrl();
   <link rel="stylesheet" href="app.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 </head>
+
 <body>
+
 <header class="text-white text-center">
-  <nav class="navbar navbar-expand-lg navbar-light bg-success sticky-top">
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-success fixed-top">
   <div class="container-fluid">
     <a class="navbar-brand text-white" href="index.php">
     <img src="images/logo.png" alt="PTC Logo" style="width: 30px; height: 30px;" class="d-inline-block align-text-top">
@@ -36,9 +39,9 @@ $authUrl = $client->createAuthUrl();
       <li class="nav-item">
       <a class="nav-link text-white" href="#" style="font-size: 1.1rem;">Contact</a>
       </li>
-      <li class="nav-item d-flex align-items-center">
-      <div class="form-check form-switch">
-        <input class="form-check-input" type="checkbox" id="themeToggle">
+      <li class="nav-item">
+      <div class="form-check form-switch d-flex align-items-center">
+        <input class="form-check-input me-2" type="checkbox" id="themeToggle">
         <label class="form-check-label text-white" for="themeToggle" style="font-size: 1.1rem;">
         <i class="bi bi-moon-fill"></i>
         </label>
@@ -48,6 +51,7 @@ $authUrl = $client->createAuthUrl();
     </div>
   </div>
   </nav>
+
 </header>
 
 <!-- Data Privacy Notice Modal -->
@@ -74,7 +78,7 @@ $authUrl = $client->createAuthUrl();
 
 
 
-<div id="carouselExampleIndicators" class="carousel slide mx-sm-2 mx-md-auto mx-lg-auto mt-5" style="max-width: 800px;">
+<div id="carouselExampleIndicators" class="carousel slide mx-sm-2 mx-md-auto mx-lg-auto" style="max-width: 800px; ">
   <div class="carousel-indicators">
   <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
   <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
@@ -127,7 +131,7 @@ $authUrl = $client->createAuthUrl();
       <button type="submit" class="btn btn-primary btn-block">Sign in</button>
       </div>
       <div>
-        <p id="response" style="display: none;">Wrong Credentials!</p>
+        <p id="response" >Wrong Credentials!</p>
       </div>
     </form>
 
@@ -140,7 +144,7 @@ $authUrl = $client->createAuthUrl();
     </div>
 
     <p class="text-center mt-3">
-      Don’t have an account? <a href="sign-up.php">Sign up</a>
+      Don’t have an account? <a href="add.php">Sign up</a>
     </p>
     </div>
   </div>
@@ -157,7 +161,7 @@ $authUrl = $client->createAuthUrl();
 <!-- Contact Section -->
 <section class="container py-5 border-top">
   <h3>Need Assistance?</h3>
-  <p>If you experience any issues, feel free to contact us at <a href="mailto:support@school.edu">support@school.edu</a>.</p>
+  <p>If you experience any issues, feel free to contact us at <a href="mailto:support@school.edu">mis_support@paterostechnologicalcollege.edu.ph </a>.</p>
 </section>
 
 <!-- Footer -->

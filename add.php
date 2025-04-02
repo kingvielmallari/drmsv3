@@ -19,6 +19,10 @@
 <h2 class="text-center">Add New User</h2>
 <form id="userForm">
     <div class="form-floating mb-3">
+        <input type="text" class="form-control" name="student_id" id="floatingStudentID" placeholder="Student ID" required>
+        <label for="floatingStudentID">Student ID</label>
+    </div>
+    <div class="form-floating mb-3">
         <input type="text" class="form-control" name="name" id="floatingName" placeholder="Name" required>
         <label for="floatingName">Name</label>
     </div>

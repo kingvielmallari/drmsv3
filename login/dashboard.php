@@ -1,12 +1,10 @@
 <?php
 session_start();
-
-if (!isset($_SESSION['user_name'])) {
+if (!isset($_SESSION['sessionuser']) && !isset($_SESSION['user_email']) ) {
     header('Location: ../index.php');
     exit;
 }
 ?>
-
 
 
 
@@ -22,21 +20,39 @@ if (!isset($_SESSION['user_name'])) {
 </head>
 <body>
 
-<h1>Welcome, <?php echo htmlspecialchars($_SESSION['user_name']); ?>!</h1>
-    <p>Email: <?php echo htmlspecialchars($_SESSION['user_email']); ?></p>
-    <p><img src="<?php echo $_SESSION['user_picture']; ?>" alt="Profile Picture" width="100"></p>
-    <a href="logout.php">Logout</a>
-
-<div class="form-check form-switch">
-    <input class="form-check-input" type="checkbox" id="themeToggle" <?php if(isset($_COOKIE['theme']) && $_COOKIE['theme'] == 'dark') echo 'checked'; ?>>
-    <label class="form-check-label">Dark Mode</label>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-action active">Dashboard</a>
+                <a href="#" class="list-group-item list-group-item-action">Profile</a>
+                <a href="#" class="list-group-item list-group-item-action">Settings</a>
+                <a href="#" class="list-group-item list-group-item-action">Messages</a>
+                <a href="#" class="list-group-item list-group-item-action">Logout</a>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header">
+                    Welcome, <strong><?php echo htmlspecialchars($_SESSION['sessionuser']['name']); ?>!</strong>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Dashboard Overview</h5>
+                    <p class="card-text">Here you can manage your account, view your profile, and access other features.</p>
+                    <a href="#" class="btn btn-primary">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
 
 
 
-<a href="logout.php">Logout</a>
+<div class="position-absolute top-0 end-0 m-3">
+    <a href="logout.php" class="btn btn-danger">Logout</a>
+</div>
 
 
 
