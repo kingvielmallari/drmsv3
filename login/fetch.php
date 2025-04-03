@@ -15,7 +15,7 @@ foreach ($students as $student) {
     // Correct the PHP code inside the data-id attribute
     echo '<td>
             <button class="btn btn-danger btn-sm deleteBtn" data-id="' . htmlspecialchars($student['id']) . '">
-                <i class="fas fa-trash"></i> Delete
+                <i class="fas fa-trash">' . htmlspecialchars($student['id']) . '</i>
             </button>
           </td>';
     echo '</tr>';

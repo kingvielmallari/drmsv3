@@ -124,8 +124,8 @@ require_once '../config/db.php';
     </div>
 
 <script src="../bootstrapv5/js/bootstrap.bundle.min.js"></script>
-<script src="index.js"></script>
-<script src="fetch.js"></script>
+<script src="index.js" ></script>
+<script src="fetch.js" ></script>
 
 </body>
 </html>
