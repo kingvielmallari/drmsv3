@@ -6,7 +6,6 @@ class class_model {
     private string $dbname = "practice";
     private mysqli $mysqli;
 
-    // Constructor - Establish MySQLi connection
     public function __construct() {
         $this->mysqli = new mysqli($this->host, $this->user, $this->pass, $this->dbname);
 
@@ -15,7 +14,6 @@ class class_model {
         }
     }
 
-    // CREATE: Insert new record
     public function createUser($student_id, $name,  $email, $password) {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
@@ -26,15 +24,24 @@ class class_model {
         return $stmt->execute();
     }
 
-    // READ: Get all users
-    public function getUsers() {
-        $sql = "SELECT * FROM users";
+    public function getStudents() {
+        $sql = "SELECT * FROM students";
         $result = $this->mysqli->query($sql);
 
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    // READ: Get user by student ID
+
+
+    public function deleteStudent($studentId) {
+        $stmt = $this->mysqli->prepare("DELETE FROM students WHERE id = ?");
+        return $stmt->execute([$studentId]);
+    }
+    
+
+
+
+
     public function getUserByStudentId(string $student_id) {
         $sql = "SELECT * FROM users WHERE student_Id = ?";
         $stmt = $this->mysqli->prepare($sql);
@@ -44,9 +51,6 @@ class class_model {
 
         return $result->fetch_assoc();
     }
-
-    
-
 
     public function loginUsers($student_id, $password) {
         $sql = "SELECT * FROM users WHERE student_id = ?";
@@ -61,6 +65,15 @@ class class_model {
         } else {
             return false;
         }
+    }
+
+    public function addStudent($student_id, $last_name, $first_name, $middle_name, $email, $contact) {
+        $sql = "INSERT INTO students (student_id, last_name, first_name, middle_name, email, contact) VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("ssssss", $student_id, $last_name, $first_name, $middle_name, $email, $contact);
+
+        return $stmt->execute();
+
     }
 
 

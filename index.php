@@ -130,8 +130,9 @@ $authUrl = $client->createAuthUrl();
       <div class="d-grid">
       <button type="submit" class="btn btn-primary btn-block">Sign in</button>
       </div>
-      <div>
-        <p id="response" >Wrong Credentials!</p>
+      <div class="cf-turnstile mt-3" data-sitekey="0x4AAAAAABDnSRP2ZuBn8_eN"></div>
+      <div class="mt-3">
+        <p id="response" class="text-danger text-center"></p>
       </div>
     </form>
 
@@ -144,10 +145,14 @@ $authUrl = $client->createAuthUrl();
     </div>
 
     <p class="text-center mt-3">
-      Don’t have an account? <a href="add.php">Sign up</a>
+      Don’t have an account? <a href="add.php">Sigsn up</a>
     </p>
     </div>
   </div>
+
+
+
+
 </main>
 
 <!-- About Section -->
@@ -169,6 +174,7 @@ $authUrl = $client->createAuthUrl();
   &copy; <?php echo date('Y'); ?> PTC. All rights reserved.
 </footer>
 
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script src="bootstrapv5/js/bootstrap.bundle.min.js"></script>
 <script src="login/index.js" defer></script>
 
