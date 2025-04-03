@@ -25,7 +25,7 @@ class class_model {
     }
 
     public function getStudents() {
-        $sql = "SELECT * FROM students";
+        $sql = "SELECT * FROM students ORDER BY id ASC";
         $result = $this->mysqli->query($sql);
 
         return $result->fetch_all(MYSQLI_ASSOC);
@@ -33,24 +33,15 @@ class class_model {
 
 
 
-    public function deleteStudent($studentId) {
-        $stmt = $this->mysqli->prepare("DELETE FROM students WHERE id = ?");
-        return $stmt->execute([$studentId]);
-    }
-    
-
-
-
-
-    public function getUserByStudentId(string $student_id) {
-        $sql = "SELECT * FROM users WHERE student_Id = ?";
+    public function deleteStudent($student_id) {
+        $sql = "DELETE FROM students WHERE student_id = ?";
         $stmt = $this->mysqli->prepare($sql);
         $stmt->bind_param("s", $student_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
 
-        return $result->fetch_assoc();
+       return $stmt->execute();
     }
+
+
 
     public function loginUsers($student_id, $password) {
         $sql = "SELECT * FROM users WHERE student_id = ?";
@@ -67,6 +58,8 @@ class class_model {
         }
     }
 
+    
+
     public function addStudent($student_id, $last_name, $first_name, $middle_name, $email, $contact) {
         $sql = "INSERT INTO students (student_id, last_name, first_name, middle_name, email, contact) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $this->mysqli->prepare($sql);
@@ -76,34 +69,4 @@ class class_model {
 
     }
 
-
-    // READ: Get user by IDks
-    public function getUserById($id) {
-        $sql = "SELECT * FROM users WHERE id = ?";
-        $stmt = $this->mysqli->prepare($sql);
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        return $result->fetch_assoc();
-    }
-
-    // UPDATE: Update user details
-    public function updateUser($id, $name, $email) {
-        $sql = "UPDATE users SET name = ?, email = ? WHERE id = ?";
-        $stmt = $this->mysqli->prepare($sql);
-        $stmt->bind_param("ssi", $name, $email, $id);
-
-        return $stmt->execute();
-    }
-
-    // DELETE: Remove user
-    public function deleteUser($id) {
-        $sql = "DELETE FROM users WHERE id = ?";
-        $stmt = $this->mysqli->prepare($sql);
-        $stmt->bind_param("i", $id);
-
-        return $stmt->execute();
-    }
 }
-?>

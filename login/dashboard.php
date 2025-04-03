@@ -5,13 +5,13 @@ if (!isset($_SESSION['sessionuser']) && !isset($_SESSION['user_email']) ) {
     exit;
 }
 
-require_once '../config/db.php';
+
 ?>
 
 
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,35 +23,70 @@ require_once '../config/db.php';
 </head>
 <body>
 
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-md-3">
-            <div class="list-group">
-                <a href="#" class="list-group-item list-group-item-action active">Dashboard</a>
-                <a href="#" class="list-group-item list-group-item-action">Profile</a>
-                <a href="#" class="list-group-item list-group-item-action">Settings</a>
-                <a href="#" class="list-group-item list-group-item-action">Messages</a>
-                <a href="#" class="list-group-item list-group-item-action">Logout</a>
+<header class="text-white text-center mb-5"> <!-- Added mb-5 for margin-bottom -->
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-success fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand text-white" href="index.php">
+        <img src="../images/logo.png" alt="PTC Logo" style="width: 30px; height: 30px;" class="d-inline-block align-text-top">
+        <span style="font-size: 1.25rem;">Pateros Technological College</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-center">
+            <li class="nav-item">
+            <a class="nav-link active text-white" aria-current="page" href="#" style="font-size: 1.1rem;">Home</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link text-white" href="#" style="font-size: 1.1rem;">About</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link text-white" href="#" style="font-size: 1.1rem;">Contact</a>
+            </li>
+            <li class="nav-item">
+            <div class="form-check form-switch d-flex align-items-center">
+                <input class="form-check-input me-2" type="checkbox" id="themeToggle">
+                <label class="form-check-label text-white" for="themeToggle" style="font-size: 1.1rem;">
+                <i class="bi bi-moon-fill"></i>
+                </label>
             </div>
-        </div>
-        <div class="col-md-9">
-            <div class="card">
-                <div class="card-header">
-                    Welcome, <strong><?php echo htmlspecialchars($_SESSION['sessionuser']['name']); ?>!</strong>
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title">Dashboard Overview</h5>
-                    <p class="card-text">Here you can manage your account, view your profile, and access other features.</p>
-                    <a href="#" class="btn btn-primary">Learn More</a>
-                </div>
-            </div>
+            </li>
+        </ul>
         </div>
     </div>
+    </nav>
+
+</header>
+
+<div class="container mt-5 pt-5"> <!-- Added pt-5 for padding-top -->
+        <div class="row">
+                <div class="col-md-3">
+                        <div class="list-group">
+                                <a href="#" class="list-group-item list-group-item-action active">Dashboard</a>
+                                <a href="#" class="list-group-item list-group-item-action">Profile</a>
+                                <a href="#" class="list-group-item list-group-item-action">Settings</a>
+                                <a href="#" class="list-group-item list-group-item-action">Messages</a>
+                                <a href="logout.php" class="list-group-item list-group-item-action list-group-item-danger">Logout</a>
+                        </div>
+                </div>
+                <div class="col-md-9">
+                        <div class="card">
+                                <div class="card-header">
+                                        Welcome, <strong><?php echo htmlspecialchars($_SESSION['sessionuser']['name']); ?>!</strong>
+                                </div>
+                                <div class="card-body">
+                                        <h5 class="card-title">Dashboard Overview</h5>
+                                        <p class="card-text">Here you can manage your account, view your profile, and access other features.</p>
+                                        <a href="#" class="btn btn-primary">Learn More</a>
+                                </div>
+                        </div>
+                </div>
+        </div>
 </div>
 
-<div class="position-absolute top-0 end-0 m-3">
-    <a href="logout.php" class="btn btn-danger">Logout</a>
-</div>
+
 
 
 <div class="container mt-5">
@@ -125,7 +160,7 @@ require_once '../config/db.php';
 
 <script src="../bootstrapv5/js/bootstrap.bundle.min.js"></script>
 <script src="index.js" ></script>
-<script src="fetch.js" ></script>
+
 
 </body>
 </html>
