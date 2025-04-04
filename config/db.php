@@ -14,12 +14,12 @@ class class_model {
         }
     }
 
-    public function createUser($student_id, $name,  $email, $password) {
+    public function createUser($student_id, $password) {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-        $sql = "INSERT INTO users (student_Id, name, email, password) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO users (student_Id, password) VALUES ( ?, ?)";
         $stmt = $this->mysqli->prepare($sql);
-        $stmt->bind_param("ssss", $student_id, $name, $email, $hashedPassword);
+        $stmt->bind_param("ss", $student_id, $hashedPassword);
 
         return $stmt->execute();
     }
@@ -67,6 +67,25 @@ class class_model {
 
         return $stmt->execute();
 
+    }
+
+    public function isStudentIdExists($student_id) {
+        $sql = "SELECT * FROM students WHERE student_id = ?";
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("s", $student_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        return $result->num_rows > 0;
+    }
+    public function isUserExistsByStudentId($student_id) {
+        $sql = "SELECT * FROM users WHERE student_id = ?";
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("s", $student_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        return $result->num_rows > 0;
     }
 
 }

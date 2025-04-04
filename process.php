@@ -6,22 +6,23 @@ $cm = new class_model();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     $student_id = trim($_POST['student_id']);
-    $name = trim($_POST['name']);
-    $email =trim($_POST['email']);
     $password = trim($_POST['password']);
 
-
-
-    }   
-    // Validate email
-    if (strpos($email, '@ptc.edu.ph') === false) {
-        echo "Invalid email address. Email must include '@ptc.edu.ph'.";
+    // Check if student_id exists in tbl_student
+    if (!$cm->isStudentIdExists($student_id)) {
+        echo "Sorry, you are not a student of PTC.";
     } else {
-        // Create user
-        if ($cm->createUser($student_id, $name, $email, $password)) {
-            echo "User added successfully!";
+        // Check if user already exists
+        if ($cm->isUserExistsByStudentId($student_id)) {
+            echo "Account already exists.";
         } else {
-            echo "Error adding user.";
+            // Create user
+            if ($cm->createUser($student_id, $password)) {
+                echo "Account created successfully!, please login to your account.";
+            } else {
+                echo "Error adding user.";
+            }
         }
     }
+}
 ?>

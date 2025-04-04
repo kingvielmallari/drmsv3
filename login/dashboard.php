@@ -11,7 +11,9 @@ if (!isset($_SESSION['sessionuser']) && !isset($_SESSION['user_email']) ) {
 
 
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+
+<!-- data-bs-theme="dark" -->
+<html lang="en" >
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -59,36 +61,18 @@ if (!isset($_SESSION['sessionuser']) && !isset($_SESSION['user_email']) ) {
     </nav>
 
 </header>
+<div class="card mt-5 mx-auto" style="width: 80%; margin-top: 150px; padding: 20px;">
+    <div class="card-header text-start" style="font-size: 1.5rem;">
+        Welcome, <strong><?php echo isset($_SESSION['sessionuser']['name']) ? htmlspecialchars($_SESSION['sessionuser']['name']) : (isset($_SESSION['user_name']) ? htmlspecialchars($_SESSION['user_name']) : 'Guest'); ?>!</strong>
+    </div>
+</div>
 
-<div class="container mt-5 pt-5"> <!-- Added pt-5 for padding-top -->
-        <div class="row">
-                <div class="col-md-3">
-                        <div class="list-group">
-                                <a href="#" class="list-group-item list-group-item-action active">Dashboard</a>
-                                <a href="#" class="list-group-item list-group-item-action">Profile</a>
-                                <a href="#" class="list-group-item list-group-item-action">Settings</a>
-                                <a href="#" class="list-group-item list-group-item-action">Messages</a>
-                                <a href="logout.php" class="list-group-item list-group-item-action list-group-item-danger">Logout</a>
-                        </div>
-                </div>
-                <div class="col-md-9">
-                        <div class="card">
-                                <div class="card-header">
-                                        Welcome, <strong><?php echo htmlspecialchars($_SESSION['sessionuser']['name']); ?>!</strong>
-                                </div>
-                                <div class="card-body">
-                                        <h5 class="card-title">Dashboard Overview</h5>
-                                        <p class="card-text">Here you can manage your account, view your profile, and access other features.</p>
-                                        <a href="#" class="btn btn-primary">Learn More</a>
-                                </div>
-                        </div>
-                </div>
-        </div>
+<div class="text-center mt-4">
+    <a href="logout.php" class="btn btn-danger">Logout</a>
 </div>
 
 
-
-
+<!-- 
 <div class="container mt-5">
     <div class="row align-items-center mb-3">
         <div class="col">
@@ -112,7 +96,26 @@ if (!isset($_SESSION['sessionuser']) && !isset($_SESSION['user_email']) ) {
         <tbody id="userTableBody">
         
         </tbody>
-    </table>
+    </table> -->
+
+    <div class="container vh-100 d-flex flex-column justify-content-center align-items-center">
+        <div class="row w-100 mb-3">
+            <div class="col-6 d-flex justify-content-center">
+                <a href="add_request.php" class="btn btn-lg btn-primary w-75 py-4">Add Request</a>
+            </div>
+            <div class="col-6 d-flex justify-content-center">
+                <a href="track_request.php" class="btn btn-lg btn-secondary w-75 py-4">Track Request</a>
+            </div>
+        </div>
+        <div class="row w-100">
+            <div class="col-6 d-flex justify-content-center">
+                <a href="contact_information.php" class="btn btn-lg btn-success w-75 py-4">Contact Information</a>
+            </div>
+            <div class="col-6 d-flex justify-content-center">
+                <a href="contact_support.php" class="btn btn-lg btn-danger w-75 py-4">Contact Support</a>
+            </div>
+        </div>
+    </div>
 
  <!-- Modal -->
  <div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">

@@ -10,64 +10,42 @@
     <title>Add User</title>
     <link rel="stylesheet" href="bootstrapv5/css/bootstrap.min.css">
     <link rel="stylesheet" href="app.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
   
 </head>
 <body>
 <div class="container d-flex vh-100">
 <div class="row justify-content-center align-self-center w-100">
 <div class="col-md-6">
-<h2 class="text-center">Add New User</h2>
+<h2 class="text-center">Create New DRMS Account</h2>
+<p class="text-center text-muted">Make sure that your Student ID is registered in our school database to be able to create account.</p>
 <form id="userForm">
     <div class="form-floating mb-3">
-        <input type="text" class="form-control" name="student_id" id="floatingStudentID" placeholder="Student ID" required>
+        <input type="text" class="form-control text-uppercase" name="student_id" id="student_id" placeholder="floatingStudentID" required oninput="this.value = this.value.toUpperCase();">
         <label for="floatingStudentID">Student ID</label>
     </div>
+    <div class="form-floating mb-3 position-relative">
+        <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
+        <label for="password">Password</label>
+        <i class="bi bi-eye-slash position-absolute top-50 end-0 translate-middle-y me-3" id="togglePassword" style="cursor: pointer;"></i>
+    </div>    
     <div class="form-floating mb-3">
-        <input type="text" class="form-control" name="name" id="floatingName" placeholder="Name" required>
-        <label for="floatingName">Name</label>
+        <input type="password" class="form-control" name="confirm_password" id="floatingConfirmPassword" placeholder="Confirm Password" required>
+        <label for="floatingConfirmPassword">Confirm Password</label>
     </div>
-    <div class="form-floating mb-3">
-        <input type="email" class="form-control" name="email" id="floatingEmail" placeholder="name@example.com" required>
-        <label for="floatingEmail">Email address</label>
-    </div>
-    <div class="form-floating mb-3">
-        <input type="password" class="form-control" name="password" id="floatingPassword" placeholder="Password" required>
-        <label for="floatingPassword">Password</label>
-    </div>
+    <p id="passwordError" class="text-danger text-center"></p>
     <div class="d-grid mb-3">
         <button type="submit" class="btn btn-primary btn-block">Register</button>
     </div>
 </form>
-<p id="response" class="text-center mt-3 text-danger"></p>
+<p id="response" class="text-center mt-3 "></p>
 </div>
 </div>
 </div>
 </div>
 
 
-
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            document.querySelector("#userForm").addEventListener("submit", async (e) => {
-                e.preventDefault();
-
-                const formData = new FormData(e.target);
-
-                try {
-                    const response = await fetch("process.php", {
-                        method: "POST",
-                        body: formData,
-                    });
-
-                    const result = await response.text();
-                    document.querySelector("#response").textContent = result;
-                    e.target.reset();
-                } catch (error) {
-                    console.error("Error:", error);
-                }
-            });
-        });
-    </script>
-
+<script src="./login/add.js"></script>
 </body>
 </html>

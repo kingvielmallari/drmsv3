@@ -45,3 +45,21 @@ body {
 }
 
 .m-7 { margin: 5rem !important; }
+
+.email-container {
+    position: relative;
+    display: inline-block;
+}
+
+.email-container input {
+    padding-right: 200px; /* Space for domain */
+}
+
+.email-domain {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: gray;
+}
