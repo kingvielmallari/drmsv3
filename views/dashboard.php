@@ -18,8 +18,8 @@ if (!isset($_SESSION['sessionuser']) && !isset($_SESSION['user_email']) ) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Users List</title>
-    <link rel="stylesheet" href="../bootstrapv5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../app.css">
+    <link rel="stylesheet" href="../vendor/bootstrapv5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/app.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 </head>
@@ -63,7 +63,7 @@ if (!isset($_SESSION['sessionuser']) && !isset($_SESSION['user_email']) ) {
 </header>
 <div class="card mt-5 mx-auto" style="width: 80%; margin-top: 150px; padding: 20px;">
     <div class="card-header text-start" style="font-size: 1.5rem;">
-        Welcome, <strong><?php echo isset($_SESSION['sessionuser']['name']) ? htmlspecialchars($_SESSION['sessionuser']['name']) : (isset($_SESSION['user_name']) ? htmlspecialchars($_SESSION['user_name']) : 'Guest'); ?>!</strong>
+        Welcome, <strong><?php echo htmlspecialchars($_SESSION['sessionuser']['name'] ?? $_SESSION['user_name'] ?? 'Guest'); ?>!</strong>
     </div>
 </div>
 
@@ -161,8 +161,8 @@ if (!isset($_SESSION['sessionuser']) && !isset($_SESSION['user_email']) ) {
         </div>
     </div>
 
-<script src="../bootstrapv5/js/bootstrap.bundle.min.js"></script>
-<script src="index.js" ></script>
+<script src="../vendor/bootstrapv5/js/bootstrap.bundle.min.js"></script>
+<script src="../js/index.js" ></script>
 
 
 </body>

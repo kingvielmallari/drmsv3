@@ -1,3 +1,10 @@
+const carouselElement = document.querySelector('#carouselExampleIndicators');
+const carousel = new bootstrap.Carousel(carouselElement, {
+interval: 4500, // 3 seconds
+ride: 'carousel', // Automatically start sliding
+wrap: true // Loop slides infinitely
+});
+
 
 
 
@@ -10,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const formData = new FormData(e.target);
 
         try {
-            const response = await fetch("login/student-login.php", {
+            const response = await fetch("../controllers/LoginStudent.php", {
                 method: "POST",
                 body: formData,
             });
@@ -18,16 +25,25 @@ document.addEventListener("DOMContentLoaded", () => {
             const result = await response.json(); // Expect JSON response
 
             if (result.success) {
-                window.location.href = "login/dashboard.php"; // 🔥 Redirect on success
+                // Show loading spinner
+                document.querySelector("#response").innerHTML = '<span class="spinner-border spinner-border-sm text-success"></span>';        // Fake delay before redirect
+                setTimeout(() => {
+                    window.location.href = "../views/dashboard.php";
+                }, 2000);
             } else {
-                document.querySelector("#response").textContent = result.message;
+                const responseElement = document.querySelector("#response");
+                responseElement.textContent = result.message;
+                setTimeout(() => {
+                    responseElement.textContent = "";
+                }, 2300);
             }
-
         } catch (error) {
             console.error("Error:", error);
         }
     });
 });
+
+
 
 
 
