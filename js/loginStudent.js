@@ -8,16 +8,16 @@ wrap: true // Loop slides infinitely
 
 
 
-
 // login AJAX
-document.addEventListener("DOMContentLoaded", () => {
+
+  document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#userForm").addEventListener("submit", async (e) => {
         e.preventDefault();
 
         const formData = new FormData(e.target);
 
         try {
-            const response = await fetch("../controllers/LoginStudent.php", {
+            const response = await fetch("./controllers/LoginStudent.php", {
                 method: "POST",
                 body: formData,
             });
@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Show loading spinner
                 document.querySelector("#response").innerHTML = '<span class="spinner-border spinner-border-sm text-success"></span>';        // Fake delay before redirect
                 setTimeout(() => {
-                    window.location.href = "../views/dashboard.php";
+                    window.location.href = "./dashboard.php"; // Redirect to dashboard
                 }, 2000);
             } else {
                 const responseElement = document.querySelector("#response");
@@ -42,9 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
-
-
-
 
 
 
@@ -91,10 +88,10 @@ document.getElementById('togglePassword').addEventListener('mouseleave', functio
 document.getElementById('themeToggle').addEventListener('change', function() {
     if (this.checked) {
         document.documentElement.setAttribute('data-bs-theme', 'dark');
-        document.cookie = "theme=dark; path=/";
+        document.cookie = "theme=dark; path=/; SameSite=Strict";
     } else {
         document.documentElement.removeAttribute('data-bs-theme');
-        document.cookie = "theme=light; path=/";
+        document.cookie = "theme=light; path=/; SameSite=Strict";
     }
 });
 

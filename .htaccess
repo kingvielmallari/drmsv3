@@ -1,0 +1,4 @@
+RewriteEngine On
+RewriteBase /
+RewriteCond %{REQUEST_URI} ^/drmsv3/
+RewriteRule ^drmsv3/(.*)$ /$1 [L,R=301]

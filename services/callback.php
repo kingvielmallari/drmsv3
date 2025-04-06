@@ -24,5 +24,5 @@ $_SESSION['user_email'] = $userInfo->email;
 $_SESSION['user_picture'] = $userInfo->picture;
 
 
-header('Location: ./login/dashboard.php');
-exit;
+// header('Location: ./login/dashboard.php');
+// exit;

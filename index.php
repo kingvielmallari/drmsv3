@@ -1,24 +1,9 @@
 <?php
-require_once './services/config.php';
+// require_once 'services/config.php';
 
-$authUrl = $client->createAuthUrl();
+// $authUrl = $client->createAuthUrl();
 
 
-$routes = include './routes/web.php';
-
-// Remove base path (e.g. /drmsv3) and trim slashes
-$basePath = '/drmsv3';
-$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$path = trim(str_replace($basePath, '', $uri), '/');
-
-// Check if the path exists in the routes
-if (array_key_exists($path, $routes)) {
-    // Call the route's closure
-    $routes[$path]();
-} else {
-    http_response_code(404);
-    echo 'Page not found';
-}
 
 ?>
 
@@ -39,7 +24,7 @@ if (array_key_exists($path, $routes)) {
 
   <nav class="navbar navbar-expand-lg navbar-light bg-success fixed-top">
   <div class="container-fluid ">
-    <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="/drmsv3"> 
+    <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="/create.php"> 
       <img src="./assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;" class="me-3">
       <span style="font-size: 1.50rem; line-height: 60px;">Pateros Technological College</span>
     </a>
@@ -48,7 +33,7 @@ if (array_key_exists($path, $routes)) {
     </button>
 
     <div class="d-lg-none d-flex justify-content-center">
-      <a class="navbar-brand text-white d-flex align-items-center" href="/drmsv3">
+      <a class="navbar-brand text-white d-flex align-items-center" href="/create.php">
         <img src="./assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;">
       </a>
     </div>
@@ -62,7 +47,7 @@ if (array_key_exists($path, $routes)) {
           <a class="nav-link text-white" href="#" style="font-size: 1.1rem;">About</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-white" href="#" style="font-size: 1.1rem;">Contact</a>
+          <a class="nav-link text-white" href="#" style="font-size: 1.1rem;">Contasct</a>
         </li>
         <li class="nav-item">
           <div class="form-check form-switch d-flex align-items-center">
@@ -91,7 +76,7 @@ if (array_key_exists($path, $routes)) {
 
     <div class="col-md-6 mt-5">
       <div class="p-4" style="background-color: var(--bg-color); border-radius: 10px; box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.1);">
-      <h2 class="text-center mb-4" style="color: var(--text-color);">Welcome <span class="text-success"><strong>PTC</strong></span>ians!</h2>
+      <h2 class="text-center mb-4" style="color: var(--text-color);">Welcosme <span class="text-success"><strong>PTC</strong></span>ians!</h2>
       <p class="text-center" style="color: var(--text-color);">Please enter your <strong>DRMS</strong> account.</p>
       
       <form id="userForm">
@@ -126,7 +111,7 @@ if (array_key_exists($path, $routes)) {
       </form>
 
       <p class="text-center mt-3" style="color: var(--text-color);">
-      No DRMS account? <a href="create" style="color: var(--link-color);">Create an Account</a>
+      No DRMS account? <a href="/create.php" style="color: var(--link-color);">Create an Account</a>
       </p>
       </div>
     </div>
@@ -141,16 +126,16 @@ if (array_key_exists($path, $routes)) {
       </div>
       <div class="carousel-inner">
       <div class="carousel-item active">
-      <img src="./assets/images/step1.png" class="d-block w-100" alt="..." style="height: 520px; object-fit: cover;">
+      <img src="assets/images/step1.png" class="d-block w-100" alt="..." style="height: 520px; object-fit: cover;">
       </div>
       <div class="carousel-item">
-      <img src="./assets/images/step2.jpg" class="d-block w-100" alt="..." style="height: 520px; object-fit: cover;">
+      <img src="assets/images/step2.jpg" class="d-block w-100" alt="..." style="height: 520px; object-fit: cover;">
       </div>
       <div class="carousel-item">
-      <img src="./assets/images/logo2.jpg" class="d-block w-100" alt="..." style="height: 520px; object-fit: cover;">
+      <img src="assets/images/logo2.jpg" class="d-block w-100" alt="..." style="height: 520px; object-fit: cover;">
       </div>
       <div class="carousel-item">
-      <img src="./assets/images/bey.jpg" class="d-block w-100" alt="..." style="height: 520px; object-fit: cover;">
+      <img src="assets/images/bey.jpg" class="d-block w-100" alt="..." style="height: 520px; object-fit: cover;">
       </div>
       </div>
       <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
@@ -212,10 +197,12 @@ if (array_key_exists($path, $routes)) {
   </div>
 </div>
 
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script><!-- CDN -->
+<!-- <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script> -->
 
 <script src="./vendor/bootstrapv5/js/bootstrap.bundle.min.js"></script> 
-<script src="./js/index.js"></script>
+<script src="./js/loginStudent.js"></script>
+
+
 
 
 </body>
