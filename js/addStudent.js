@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const formData = new FormData(e.target);
 
         try {
-            const response = await fetch("process.php", {
+            const response = await fetch("./controllers/AddUser.php", {
                 method: "POST",
                 body: formData,
             });

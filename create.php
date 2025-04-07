@@ -18,7 +18,7 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-success fixed-top">
   <div class="container-fluid">
     <a class="navbar-brand text-white d-flex align-items-center" href="index.php">
-      <img src="../assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;" class="me-3">
+      <img src="./assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;" class="me-3">
       <span style="font-size: 1.50rem; line-height: 60px;">Pateros Technological College</span>
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

@@ -14,12 +14,12 @@ class class_model {
         }
     }
 
-    public function createUser($student_id, $password) {
+    public function updateUserPassword($student_id, $password) {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-        $sql = "INSERT INTO users (student_Id, password) VALUES ( ?, ?)";
+        $sql = "UPDATE students SET password = ? WHERE student_id = ?";
         $stmt = $this->mysqli->prepare($sql);
-        $stmt->bind_param("ss", $student_id, $hashedPassword);
+        $stmt->bind_param("ss", $hashedPassword, $student_id);
 
         return $stmt->execute();
     }
@@ -44,7 +44,7 @@ class class_model {
 
 
     public function loginUsers($student_id, $password) {
-        $sql = "SELECT * FROM users WHERE student_id = ?";
+        $sql = "SELECT * FROM students WHERE student_id = ?";
         $stmt = $this->mysqli->prepare($sql);
         $stmt->bind_param("s", $student_id);
         $stmt->execute();
@@ -79,7 +79,7 @@ class class_model {
         return $result->num_rows > 0;
     }
     public function isUserExistsByStudentId($student_id) {
-        $sql = "SELECT * FROM users WHERE student_id = ?";
+        $sql = "SELECT password FROM students WHERE student_id = ? AND password IS NOT NULL";
         $stmt = $this->mysqli->prepare($sql);
         $stmt->bind_param("s", $student_id);
         $stmt->execute();
@@ -87,5 +87,14 @@ class class_model {
 
         return $result->num_rows > 0;
     }
+
+    public function getDocuments() {
+        $sql = "SELECT * FROM documents";
+        $result = $this->mysqli->query($sql);
+
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+
 
 }

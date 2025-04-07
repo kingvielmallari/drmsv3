@@ -75,18 +75,32 @@ if (!isset($_SESSION['sessionuser']) && !isset($_SESSION['user_email']) ) {
 
 <div class="card mt-5 mx-auto shadow-lg" style="width: 80%; padding: 20px;">
     <div class="card-header bg-primary text-white text-start py-3 mt-5">
-        <h4 class="mb-0">Welcome, <strong><?php echo htmlspecialchars($_SESSION['sessionuser']['name'] ?? $_SESSION['user_name'] ?? 'Guest'); ?></strong>!</h4>
-    </div>
-</div>
+        <h4 class="mb-0">Welcome, <strong>
+            <?php 
+                $firstName = $_SESSION['sessionuser']['first_name'] ?? '';
+                $middleName = $_SESSION['sessionuser']['middle_name'] ?? '';
+                $lastName = $_SESSION['sessionuser']['last_name'] ?? '';
+                $program = $_SESSION['sessionuser']['program'] ?? '';
+                $year = $_SESSION['sessionuser']['year'] ?? '';
+                $section = $_SESSION['sessionuser']['section'] ?? '';
+                $userName = $_SESSION['user_name'] ?? 'Guest';
 
-<div class="text-center mt-4">
+                echo htmlspecialchars(trim("$firstName $middleName $lastName - $program $year$section!") ?: $userName);
+            ?>
+        </strong></h4>
+    </div>
+    <div class="text-center mt-4">
     <a href="./controllers/LogoutStudent.php" class="btn btn-danger btn-lg px-5">Logout</a>
 </div>
+</div>
+
+
 
 <div class="container vh-100 d-flex flex-column justify-content-center align-items-center">
+
     <div class="row w-100 mb-4">
         <div class="col-md-6 mb-3 mb-md-0 d-flex justify-content-center">
-            <a href="add_request.php" class="btn btn-lg btn-primary w-75 py-4 shadow-sm">
+            <a href="add-request.php" class="btn btn-lg btn-primary w-75 py-4 shadow-sm">
                 <i class="fas fa-plus-circle me-2"></i>Add Request
             </a>
         </div>

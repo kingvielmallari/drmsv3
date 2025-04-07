@@ -1,5 +1,5 @@
 <?php
-require_once 'config/db.php'; // Include your class
+require_once '../config/db.php'; // Include your class
 
 $cm = new class_model();
 
@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "Account already exists.";
         } else {
             // Create user
-            if ($cm->createUser($student_id, $password)) {
+            if ($cm->updateUserPassword($student_id, $password)) {
                 echo "Account created successfully!, please login to your account.";
             } else {
                 echo "Error adding user.";
