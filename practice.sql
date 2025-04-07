@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 07, 2025 at 05:50 PM
+-- Generation Time: Apr 07, 2025 at 05:54 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -90,7 +90,8 @@ CREATE TABLE `students` (
 
 INSERT INTO `students` (`id`, `student_id`, `last_name`, `first_name`, `middle_name`, `email`, `gender`, `program`, `year`, `section`, `status`, `password`) VALUES
 (1, '23BSIT-0121', 'Abagat', 'Jazmine Louise', 'Joseph', 'jjabagat@paterostechnologicalcollege.edu.ph', 'Female', 'BSIT', '2', 'C', 'Regular', '$2y$10$x7Mig0lQQJbHN4WzZHFjC.y2Mr6ea3WaOJfW1QtIPm1xMqrdFMFxi'),
-(2, '24BSIT-2024', 'Mallari', 'King Viel', 'Labro', 'klmallari@paterostechnologicalcollege.edu.ph', 'Male', 'BSIT', '4', 'A', 'Regular', '$2y$10$YOzGIzg3HsEd/kgzfmqa6OAenWlsxF9hRPxexiYRghevsVGencNSe');
+(2, '24BSIT-2024', 'Mallari', 'King Viel', 'Labro', 'klmallari@paterostechnologicalcollege.edu.ph', 'Male', 'BSIT', '4', 'A', 'Regular', '$2y$10$YOzGIzg3HsEd/kgzfmqa6OAenWlsxF9hRPxexiYRghevsVGencNSe'),
+(3, '25BSOA-2025', 'Parman', 'Bernadette', 'Mendoza', 'bm@paterostechnologicalcollege.edu.ph', 'Female', 'BSOA', '4', 'A', 'Regular', '$2y$10$AZeA292sGqXIokaTYXjMI.h0D8X8chNhc/Nd6TFqfh9cl3RrDsAiG');
 
 --
 -- Indexes for dumped tables
@@ -134,7 +135,7 @@ ALTER TABLE `fees`
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
