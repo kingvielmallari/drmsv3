@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', function () {
     const buttons = document.querySelectorAll('.document-toggle');
     buttons.forEach(button => {
@@ -82,7 +83,8 @@ document.addEventListener('DOMContentLoaded', function () {
   });
   
   
-  
+// next step button
+
 let currentStep = 0;
 const steps = document.querySelectorAll(".step");
 const stepCircles = document.querySelectorAll(".circle");

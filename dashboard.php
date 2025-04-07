@@ -83,9 +83,11 @@ if (!isset($_SESSION['sessionuser']) && !isset($_SESSION['user_email']) ) {
                 $program = $_SESSION['sessionuser']['program'] ?? '';
                 $year = $_SESSION['sessionuser']['year'] ?? '';
                 $section = $_SESSION['sessionuser']['section'] ?? '';
+                $status = $_SESSION['sessionuser']['status'] ?? '';
                 $userName = $_SESSION['user_name'] ?? 'Guest';
+                
 
-                echo htmlspecialchars(trim("$firstName $middleName $lastName - $program $year$section!") ?: $userName);
+                echo htmlspecialchars(trim("$firstName $middleName $lastName - $program $year$section $status!") ?: $userName);
             ?>
         </strong></h4>
     </div>

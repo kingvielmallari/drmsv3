@@ -6,13 +6,20 @@ class class_model {
     private string $dbname = "practice";
     private mysqli $mysqli;
 
-    public function __construct() {
+
+
+
+    public function __construct()
+    {
         $this->mysqli = new mysqli($this->host, $this->user, $this->pass, $this->dbname);
 
         if ($this->mysqli->connect_error) {
             die("Connection failed: " . $this->mysqli->connect_error);
         }
+
+
     }
+   
 
     public function updateUserPassword($student_id, $password) {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
@@ -31,6 +38,7 @@ class class_model {
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
+  
 
 
     public function deleteStudent($student_id) {
@@ -90,6 +98,14 @@ class class_model {
 
     public function getDocuments() {
         $sql = "SELECT * FROM documents";
+        $result = $this->mysqli->query($sql);
+
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    
+    public function getFees() {
+        $sql = "SELECT * FROM fees";
         $result = $this->mysqli->query($sql);
 
         return $result->fetch_all(MYSQLI_ASSOC);

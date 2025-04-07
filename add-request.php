@@ -1,5 +1,5 @@
 <?php
-
+require_once __DIR__ . '../vendor/autoload.php';  // Load Google Client
 require_once 'config/db.php';
 
 session_start();
@@ -8,7 +8,7 @@ if (!isset($_SESSION['sessionuser']) && !isset($_SESSION['user_email']) ) {
     exit;
 }
 
-
+$cm = new class_model(); 
 ?>
 
 
@@ -90,7 +90,7 @@ if (!isset($_SESSION['sessionuser']) && !isset($_SESSION['user_email']) ) {
     <div class="line"></div>
     <div class="text-center flex-fill">
       <div class="circle" id="step-circle-1">2</div>
-      <small>Price & ETA</small>
+      <small>Details</small>
     </div>
     <div class="line"></div>
     <div class="text-center flex-fill">
@@ -104,12 +104,15 @@ if (!isset($_SESSION['sessionuser']) && !isset($_SESSION['user_email']) ) {
     </div>
   </div>
   
+<!-- step 1 -->
+
   <div class="step active">
     <h4>Step 1: Select Documents</h4>
+    <!-- <p>Student Information</p> -->
 
+    <!-- <form id="step1form">
 
-    <form id="documentRequestForm">
-
+      <div class="form-floating mb-3"></div>
     <div class="form-floating mb-3">
       <input type="text" class="form-control text-uppercase" name="student_id" id="student_id" placeholder="Student ID" required disabled value="<?php echo htmlspecialchars($_SESSION['sessionuser']['student_id']); ?>">
       <label for="student_id" class="text-muted">Student ID</label>
@@ -132,15 +135,16 @@ if (!isset($_SESSION['sessionuser']) && !isset($_SESSION['user_email']) ) {
         $program = $_SESSION['sessionuser']['program'] ?? '';
         $year = $_SESSION['sessionuser']['year'] ?? '';
         $section = $_SESSION['sessionuser']['section'] ?? '';
+        $status = $_SESSION['sessionuser']['status'] ?? '';
 
-        echo htmlspecialchars(trim("$program - $year$section"));
+        echo htmlspecialchars(trim("$program - $year$section ($status)"));
       ?>">
       <label for="program_section" class="text-muted">Program & Section</label>
-    </div>
+    </div> -->
 
 <?php
 
-$cm = new class_model(); 
+
 
 $result = $cm->getDocuments();
 
@@ -154,7 +158,7 @@ if (!empty($result)) {
     $requiresYearSem = ($docName === 'Certificate of Registration' || $docName === 'Certificate of Grades');
 
     echo '<div class="m-2">';
-    echo '<button type="button" class="btn btn-outline-success document-toggle" data-doc-id="' . $docId . '" data-requires-year-sem="' . ($requiresYearSem ? 'true' : 'false') . '">' . $docName . '</button>';
+    echo '<button type="button" class="btn btn-outline-success document-toggle" data-doc-id="' . $docId . '" data-price="' . htmlspecialchars($row['price'] ?? 0) . '" data-requires-year-sem="' . ($requiresYearSem ? 'true' : 'false') . '">' . $docName . '</button>';
     echo '<input type="hidden" name="documents[]" id="doc_' . $docId . '" value="" />';
 
     if ($requiresYearSem) {
@@ -189,35 +193,60 @@ if (!empty($result)) {
   echo '<p class="text-muted">No documents available for request.</p>';
 }
 ?>
-
-  </div>
-
   </form>
-
-  <script>
-    function saveFormData() {
-  const formData = {
-    student_id: document.getElementById('student_id').value,
-    full_name: document.getElementById('full_name').value,
-    program_section: document.getElementById('program_section').value,
-    purpose: document.getElementById('purpose').value,
-    // Add other fields as needed
-  };
-
-  localStorage.setItem('formData', JSON.stringify(formData));
-}
-  </script>
-
-
-  <div class="step">
-    <h4>Step 2: Price & ETA</h4>
-    <p>Check pricing and delivery estimates.</p>
   </div>
 
+
+
   <div class="step">
-    <h4>Step 1: Selected Documents</h4>
-    <div id="selectedDocuments" class="mb-3">
-      <p class="text-muted">No documents selected yet.</p>
+    <h4>Step 2: Details</h4>
+    <p>Check pricing and delivery estimates.</p>
+
+    <div id="selectedDocumentsDetails" class="mb-3">
+      <?php
+      
+      $fees = $cm->getFees();
+
+      if (!empty($result)) {
+        echo '<table class="table table-bordered">';
+        echo '<thead>';
+        echo '<tr>';
+        echo '<th>Document/s</th>';
+        echo '<th>Receive on</th>';
+        echo '<th>Price</th>';
+        echo '</tr>';
+        echo '</thead>';
+        echo '<tbody id="documentDetailsTable">';
+        foreach ($result as $row) {
+          $docId = htmlspecialchars($row['id']);
+          $docName = htmlspecialchars($row['name']);
+          $docPrice = htmlspecialchars($row['price'] ?? 0);
+          $docEta = htmlspecialchars($row['eta'] ?? 0);
+          $etaDate = date('F j, Y', strtotime("+{$docEta} days"));
+          echo "<tr id='doc_row_{$docId}' style='display: none;'>";
+          echo "<td>{$docName}</td>";
+          echo "<td>{$etaDate} ({$docEta} days)</td>";
+          echo "<td>₱{$docPrice}</td>";
+          echo '</tr>';
+        }
+        echo '</tbody>';
+        echo '<tfoot>';
+        echo '<tr>';
+        echo '<td colspan="2" class="text-end"><strong>System Fee:</strong></td>';
+        foreach ($fees as $fee) {
+          echo '<td>₱' . htmlspecialchars($fee['amount']) . '</td>';
+        }
+        echo '</tr>';
+        echo '<tr>';
+        echo '<td colspan="2" class="text-end"><strong>Total Price:</strong></td>';
+        echo '<td id="total_price_display"></td>';
+        echo '</tr>';
+        echo '</tfoot>';
+        echo '</table>';
+      } else {
+        echo '<p class="text-muted">No documents selected yet.</p>';
+      }
+      ?>
     </div>
 
     <div class="form-floating mb-3">
@@ -226,41 +255,271 @@ if (!empty($result)) {
         <option value="pickup">Pick Up</option>
         <option value="delivery">Delivery</option>
       </select>
-      <label for="delivery_option" style="color: var(--text-color);">Delivery Option</label>
+      <label for="delivery_option" style="color: var(--text-color);">Receive Option</label>
     </div>
   </div>
 
   <script>
-    
+    document.addEventListener('DOMContentLoaded', function () {
+      const selectedDocuments = document.querySelectorAll('.document-toggle');
+      const totalPriceDisplay = document.getElementById('total_price_display');
+      const systemFee = parseFloat(<?php echo json_encode($fee['amount']); ?>);
+      let totalPrice = 0;
+
+      selectedDocuments.forEach(button => {
+        button.addEventListener('click', function () {
+          const docId = this.getAttribute('data-doc-id');
+          const docRow = document.getElementById('doc_row_' + docId);
+          const docPrice = parseFloat(this.getAttribute('data-price')) || 0;
+
+          if (this.classList.contains('active')) {
+            this.classList.remove('active');
+            if (docRow) docRow.style.display = 'none';
+            totalPrice -= docPrice;
+          } else {
+            this.classList.add('active');
+            if (docRow) docRow.style.display = '';
+            totalPrice += docPrice;
+          }
+
+          const finalPrice = totalPrice + systemFee;
+          totalPriceDisplay.textContent = `₱${finalPrice.toFixed(2)}`;
+        });
+      });
+    });
   </script>
 
-  <div class="step">
-    <h4>Step 3: Payment</h4>
-    <p>Enter payment details.</p>
+
+
+
+
+
+
+
+<div class="step">
+  <h4 class="mb-4">Step 3: Payment</h4>
+  <div id="paymentInstructions" class="mb-1"></div>
+  <p class="text-muted">Please scan the QR code below to make your payment via GCash:</p>
+  <div class="text-center">
+    <img src="./assets/images/gcashqr2.png" alt="GCash QR Code" class="img-fluid rounded shadow-sm" style="max-width: 300px; border: 1px solid #ddd;">
+  </div>
+  <div class="text-center mt-3">
+    <a href="./assets/images/gcashqr2.png" download="GCash-QR-Code.jpg" class="btn btn-outline-primary btn-sm mb-4">
+      <i class="fas fa-download me-2"></i>Download QR Code
+    </a>
   </div>
 
+  <!-- GCash Reference Input -->
+  <div id="gcashReferenceContainer" class="form-floating mb-3">
+    <input 
+      type="text" 
+      class="form-control" 
+      name="gcash_reference" 
+      id="gcash_reference" 
+      placeholder="GCash Reference Number" 
+      required 
+      pattern="\d{13}" 
+      maxlength="13" 
+      minlength="13" 
+      title="GCash Reference Number must be exactly 13 digits."
+    >
+    <label for="gcash_reference" class="text-muted">GCash Reference Number</label>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const steps = document.querySelectorAll('.step');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const gcashReferenceContainer = document.getElementById('gcashReferenceContainer');
+    let currentStep = 0;
+
+    function showStep(stepIndex) {
+      steps.forEach((step, index) => {
+        step.style.display = index === stepIndex ? 'block' : 'none';
+      });
+
+      // Show GCash reference input only on Step 3
+      if (stepIndex === 2) {
+        gcashReferenceContainer.style.display = 'block';
+      } else {
+        gcashReferenceContainer.style.display = 'none';
+      }
+
+      // Update button visibility
+      prevBtn.style.display = stepIndex === 0 ? 'none' : 'inline-block';
+      nextBtn.textContent = stepIndex === steps.length - 1 ? 'Finish' : 'Next';
+    }
+
+    prevBtn.addEventListener('click', function () {
+      if (currentStep > 0) {
+        currentStep--;
+        showStep(currentStep);
+      }
+    });
+
+    nextBtn.addEventListener('click', function () {
+      if (currentStep < steps.length - 1) {
+        currentStep++;
+        showStep(currentStep);
+      }
+    });
+
+    // Initialize the first step
+    showStep(currentStep);
+  });
+</script>
+
+
+
+
+
+
+
   <div class="step">
-    <h4>Step 4: Checkout</h4>
+    <h4>Step 4: Summary</h4>
+    <p>Review your request details before submission.</p>
 
-    <div class="form-floating mb-3">
-      <textarea class="form-control" name="purpose" id="purpose" placeholder="Purpose of Request" style="height: 80px;" required></textarea>
-      <label for="purpose" style="color: var(--text-color);">Purpose of Request</label>
-    </div>
+    <div id="summaryDetails" class="mb-3">
+      <h5>Student Information</h5>
+      <p><strong>Student ID:</strong> <span id="summaryStudentId"><?php echo htmlspecialchars($_SESSION['sessionuser']['student_id']); ?></span></p>
+      <p><strong>Name:</strong> <span id="summaryStudentName"><?php 
+        $firstName = $_SESSION['sessionuser']['first_name'] ?? '';
+        $middleName = substr($_SESSION['sessionuser']['middle_name'], 0, 1) ?? '';
+        $lastName = $_SESSION['sessionuser']['last_name'] ?? '';
+        $userName = $_SESSION['user_name'] ?? 'Guest';
 
-    <div class="d-grid mb-2">
-      <button type="submit" class="btn btn-success btn-lg btn-block">Submit</button>
+        echo htmlspecialchars(trim("$firstName $middleName. $lastName") ?: $userName);
+      ?></span></p>
+      <p><strong>Program & Section:</strong> <span id="summaryProgramSection"><?php 
+        $program = $_SESSION['sessionuser']['program'] ?? '';
+        $year = $_SESSION['sessionuser']['year'] ?? '';
+        $section = $_SESSION['sessionuser']['section'] ?? '';
+        $status = $_SESSION['sessionuser']['status'] ?? '';
+
+        echo htmlspecialchars(trim("$program - $year$section ($status)"));
+      ?></span></p>
+
+      <h5>Selected Documents</h5>
+      <ul id="summaryDocumentsList" class="list-group mb-3">
+        <?php
+        if (!empty($result)) {
+          foreach ($result as $row) {
+        $docId = htmlspecialchars($row['id']);
+        $docName = htmlspecialchars($row['name']);
+        if (isset($_POST['documents']) && in_array($docId, $_POST['documents'])) {
+          echo "<li class='list-group-item'>{$docName}</li>";
+        }
+          }
+        }
+        ?>
+      </ul>
+
+      <h5>Delivery Option</h5>
+      <p id="summaryDeliveryOption" class="text-muted">
+        <?php echo htmlspecialchars($_POST['delivery_option'] ?? 'Not selected'); ?>
+      </p>
+
+      <h5>Payment Details</h5>
+      <p id="summaryPaymentDetails" class="text-muted">
+        <?php echo isset($_POST['gcash_reference']) ? 'GCash Reference: ' . htmlspecialchars($_POST['gcash_reference']) : 'No payment details provided'; ?>
+      </p>
+
+      <h5>Total Price</h5>
+      <p id="summaryTotalPrice" class="fw-bold">
+        <?php echo isset($_POST['total_price']) ? '₱' . htmlspecialchars($_POST['total_price']) : '₱0.00'; ?>
+      </p>
+        </div>
+
+        <div class="d-grid mb-2">
+      <button type="button" class="btn btn-success btn-lg btn-block" id="submitRequestBtn">Submit</button>
+        </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmationModalLabel">Confirm Your Request</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Your request has been generated with the following details:</p>
+          <p><strong>Request Number:</strong> <span id="generatedRequestNumber"></span></p>
+          <div id="modalSummaryDetails"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="confirmSubmitBtn">Confirm</button>
+        </div>
+      </div>
     </div>
   </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const submitRequestBtn = document.getElementById('submitRequestBtn');
+      const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+      const generatedRequestNumber = document.getElementById('generatedRequestNumber');
+      const modalSummaryDetails = document.getElementById('modalSummaryDetails');
+      const confirmSubmitBtn = document.getElementById('confirmSubmitBtn');
+
+      submitRequestBtn.addEventListener('click', function () {
+        // Generate a random request number
+        const requestNumber = 'REQ-' + Math.floor(100000 + Math.random() * 900000);
+        generatedRequestNumber.textContent = requestNumber;
+      
+        // Populate modal with summary details
+        const summaryDocumentsList = document.getElementById('summaryDocumentsList');
+        const summaryDeliveryOption = document.getElementById('summaryDeliveryOption');
+        const summaryPaymentDetails = document.getElementById('summaryPaymentDetails');
+        const summaryTotalPrice = document.getElementById('summaryTotalPrice');
+      
+        // Clear existing data
+        summaryDocumentsList.innerHTML = '';
+        summaryDeliveryOption.textContent = '';
+        summaryPaymentDetails.textContent = '';
+        summaryTotalPrice.textContent = '';
+      
+        // Populate with selected data
+        document.querySelectorAll('.document-toggle.active').forEach(button => {
+          const docName = button.textContent.trim();
+          const listItem = document.createElement('li');
+          listItem.className = 'list-group-item';
+          listItem.textContent = docName;
+          summaryDocumentsList.appendChild(listItem);
+        });
+      
+        const selectedDeliveryOption = document.getElementById('delivery_option').value;
+        summaryDeliveryOption.textContent = selectedDeliveryOption ? selectedDeliveryOption : 'Not selected';
+      
+        const gcashReference = document.getElementById('gcash_reference').value;
+        summaryPaymentDetails.textContent = gcashReference ? `GCash Reference: ${gcashReference}` : 'No payment details provided';
+      
+        const totalPriceDisplay = document.getElementById('total_price_display').textContent;
+        summaryTotalPrice.textContent = totalPriceDisplay ? totalPriceDisplay : '₱0.00';
+      
+        // Show the modal
+        confirmationModal.show();
+      });
+
+      confirmSubmitBtn.addEventListener('click', function () {
+        // Submit the form
+        document.getElementById('step1form').submit();
+      });
+    });
+  </script>
+
+
+
 
   <!-- Stepper Navigation Buttons -->
   <div class="d-flex justify-content-between mt-4">
     <button type="button" class="btn btn-secondary" id="prevBtn">Back</button>
     <button type="button" class="btn btn-primary" id="nextBtn">Next</button>
   </div>
-
-
-
-
         <p class="text-center mt-3" style="color: var(--text-color);">
           Need help? <a href="/contact.php" style="color: var(--link-color);">Contact Us</a>
         </p>
