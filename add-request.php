@@ -30,7 +30,7 @@ $cm = new class_model();
 
   <nav class="navbar navbar-expand-lg navbar-light bg-success fixed-top">
   <div class="container-fluid ">
-    <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="/create.php"> 
+    <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="/dashboard.php"> 
       <img src="./assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;" class="me-3">
       <span style="font-size: 1.50rem; line-height: 60px;">Pateros Technological College</span>
     </a>
@@ -39,7 +39,7 @@ $cm = new class_model();
     </button>
 
     <div class="d-lg-none d-flex justify-content-center">
-      <a class="navbar-brand text-white d-flex align-items-center" href="/create.php">
+      <a class="navbar-brand text-white d-flex align-items-center" href="/dashboard.php">
         <img src="./assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;">
       </a>
     </div>
@@ -120,25 +120,25 @@ $cm = new class_model();
 
     <div class="form-floating mb-3">
       <input type="text" class="form-control" name="full_name" id="full_name" placeholder="Full Name" required disabled value="<?php 
-        $firstName = $_SESSION['sessionuser']['first_name'] ?? '';
-        $middleName = substr($_SESSION['sessionuser']['middle_name'], 0, 1) ?? '';
-        $lastName = $_SESSION['sessionuser']['last_name'] ?? '';
-        $userName = $_SESSION['user_name'] ?? 'Guest';
+        // $firstName = $_SESSION['sessionuser']['first_name'] ?? '';
+        // $middleName = substr($_SESSION['sessionuser']['middle_name'], 0, 1) ?? '';
+        // $lastName = $_SESSION['sessionuser']['last_name'] ?? '';
+        // $userName = $_SESSION['user_name'] ?? 'Guest';
 
-        echo htmlspecialchars(trim("$firstName $middleName. $lastName") ?: $userName);
+        // echo htmlspecialchars(trim("$firstName $middleName. $lastName") ?: $userName);
       ?>">
       <label for="full_name" class="text-muted">Name</label>
     </div>
 
     <div class="form-floating mb-3">
       <input type="text" class="form-control" name="program_section" id="program_section" placeholder="Program & Section" required disabled value="<?php 
-        $program = $_SESSION['sessionuser']['program'] ?? '';
-        $year = $_SESSION['sessionuser']['year'] ?? '';
-        $section = $_SESSION['sessionuser']['section'] ?? '';
-        $status = $_SESSION['sessionuser']['status'] ?? '';
+      //   $program = $_SESSION['sessionuser']['program'] ?? '';
+      //   $year = $_SESSION['sessionuser']['year'] ?? '';
+      //   $section = $_SESSION['sessionuser']['section'] ?? '';
+      //   $status = $_SESSION['sessionuser']['status'] ?? '';
 
-        echo htmlspecialchars(trim("$program - $year$section ($status)"));
-      ?>">
+      //   echo htmlspecialchars(trim("$program - $year$section ($status)"));
+      // ?>">
       <label for="program_section" class="text-muted">Program & Section</label>
     </div> -->
 
@@ -284,6 +284,7 @@ if (!empty($result)) {
 
           const finalPrice = totalPrice + systemFee;
           totalPriceDisplay.textContent = `₱${finalPrice.toFixed(2)}`;
+          document.getElementById('totalAmountPayable').textContent = `₱${finalPrice.toFixed(2)}`;
         });
       });
     });
@@ -307,6 +308,14 @@ if (!empty($result)) {
     <a href="./assets/images/gcashqr2.png" download="GCash-QR-Code.jpg" class="btn btn-outline-primary btn-sm mb-4">
       <i class="fas fa-download me-2"></i>Download QR Code
     </a>
+  </div>
+
+  <!-- Total Amount Payable -->
+  <div class="text-center mb-3">
+    <h5>Total Amount Payable:</h5>
+      <span id="totalAmountPayable">₱0.00</span>
+    </p>
+    </p>
   </div>
 
   <!-- GCash Reference Input -->

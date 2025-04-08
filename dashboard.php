@@ -30,7 +30,7 @@ if (!isset($_SESSION['sessionuser']) && !isset($_SESSION['user_email']) ) {
 
   <nav class="navbar navbar-expand-lg navbar-light bg-success fixed-top">
   <div class="container-fluid ">
-    <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="/create.php"> 
+    <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="/dashboard.php"> 
       <img src="./assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;" class="me-3">
       <span style="font-size: 1.50rem; line-height: 60px;">Pateros Technological College</span>
     </a>
@@ -39,7 +39,7 @@ if (!isset($_SESSION['sessionuser']) && !isset($_SESSION['user_email']) ) {
     </button>
 
     <div class="d-lg-none d-flex justify-content-center">
-      <a class="navbar-brand text-white d-flex align-items-center" href="/create.php">
+      <a class="navbar-brand text-white d-flex align-items-center" href="/dashboard.php">
         <img src="./assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;">
       </a>
     </div>
