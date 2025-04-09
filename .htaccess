@@ -2,3 +2,10 @@
 #RewriteBase /
 #RewriteCond %{REQUEST_URI} ^/drmsv3/
 #RewriteRule ^drmsv3/(.*)$ /$1 [L,R=301]
+
+#ErrorDocument 404 /drmsv3/404.php
+#Redirect 302 /drmsv3/test-htaccess /drmsv3/404.php
+
+
+
+
