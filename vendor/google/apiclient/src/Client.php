@@ -425,7 +425,6 @@ class Client
             'access_type' => $this->config['access_type'],
             'approval_prompt' => $approvalPrompt,
             'hd' => 'paterostechnologicalcollege.edu.ph',
-            // 'hd' => $this->config['hd'],
             'include_granted_scopes' => $includeGrantedScopes,
             'login_hint' => $this->config['login_hint'],
             'openid.realm' => $this->config['openid.realm'],

@@ -19,6 +19,13 @@ class class_model {
 
 
     }
+
+    public function getUserByEmail($email) {
+        $stmt = $this->mysqli->prepare("SELECT * FROM students WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc() ?: null;
+    }
    
 
     public function updateUserPassword($student_id, $password) {
@@ -36,6 +43,16 @@ class class_model {
         $result = $this->mysqli->query($sql);
 
         return $result->fetch_all(MYSQLI_ASSOC);
+    }
+    
+    public function getStudentByEmail($email) {
+        $sql = "SELECT * FROM students WHERE email = ?";
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        return $result->fetch_assoc();
     }
 
   

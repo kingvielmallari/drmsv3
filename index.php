@@ -1,11 +1,14 @@
 <?php
 
-// require_once './services/config.php';
+require_once 'config/config.php';
 
-// $authUrl = $client->createAuthUrl();
+// Redirect to Google OAuth
+$loginUrl = $client->createAuthUrl()
 
 
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -101,7 +104,7 @@
       </div>
       <div class="text-center my-1">
       <p style="color: var(--text-color);">or</p>
-      <a href="<?= htmlspecialchars($authUrl); ?>" class="btn btn-outline-secondary btn-md d-flex align-items-center justify-content-center">
+      <a href="<?= htmlspecialchars($loginUrl); ?>" class="btn btn-outline-secondary btn-md d-flex align-items-center justify-content-center">
     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style="width: 20px; height: 20px; margin-right: 10px;">
     Login with Google
 </a>

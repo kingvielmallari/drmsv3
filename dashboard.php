@@ -3,7 +3,7 @@
 require_once 'config/db.php';
 
 session_start();
-if (!isset($_SESSION['sessionuser']) && !isset($_SESSION['user_email']) ) {
+if (!isset($_SESSION['sessionuser']) ) {
     header('Location: ./index.php');
     exit;
 }
@@ -77,7 +77,7 @@ if (!isset($_SESSION['sessionuser']) && !isset($_SESSION['user_email']) ) {
     <div class="card-header bg-primary text-white text-start py-3 mt-5">
         <h4 class="mb-0">Welcome, <strong>
             <?php 
-                $firstName = $_SESSION['sessionuser']['first_name'] ?? '';
+                $firstName = $_SESSION['sessionuser']['first_name'] ?? $_SESSION['user_email'] ?? '';
                 $middleName = $_SESSION['sessionuser']['middle_name'] ?? '';
                 $lastName = $_SESSION['sessionuser']['last_name'] ?? '';
                 $program = $_SESSION['sessionuser']['program'] ?? '';
@@ -127,11 +127,11 @@ if (!isset($_SESSION['sessionuser']) && !isset($_SESSION['user_email']) ) {
 </div>
 
  
-<script src="./js/loginStudent.js"></script>
+
 
 <script src="./vendor/bootstrapv5/js/bootstrap.bundle.min.js"></script>
 
-
+<!-- <script src="./js/loginStudent.js"></script> -->
 
 </body>
 </html>

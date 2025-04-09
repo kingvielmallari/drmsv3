@@ -1,6 +1,5 @@
 <?php
 require_once '../config/db.php';
-require_once '../vendor/autoload.php'; // Ensure the Google Client library is loaded
 
 
 $cm = new class_model(); 
