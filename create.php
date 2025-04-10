@@ -87,5 +87,7 @@
     </footer>
 
 <script src="./js/addStudent.js"></script>
+<script src="./vendor/bootstrapv5/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
