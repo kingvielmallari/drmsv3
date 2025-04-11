@@ -66,6 +66,25 @@ class class_model {
        return $stmt->execute();
     }
 
+    
+    public function deleteDocument($id) {
+        $sql = "DELETE FROM documents WHERE id = ?";
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("i", $id);
+
+       return $stmt->execute();
+    }
+
+    public function insertSelectedItem($item_name) {
+        if (is_array($item_name)) {
+            $item_name = implode(", ", $item_name); // Convert array to string if necessary
+        }
+        $sql = "INSERT INTO requests (name) VALUES (?)";
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("s", $item_name);
+
+        return $stmt->execute();
+    }
 
 
     public function loginUsers($student_id, $password) {

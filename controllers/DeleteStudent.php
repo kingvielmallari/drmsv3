@@ -10,4 +10,10 @@ if (isset($_POST['student_id'])) {
     $deleted = $cm->deleteStudent($student_id);
 
     }
+    else {
+        // Handle the case where student_id is not set
+        echo json_encode(["message" => "Student ID not provided"]);
+        exit();
+    }
+    
 ?>
