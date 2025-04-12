@@ -86,6 +86,21 @@ class class_model {
         return $stmt->execute();
     }
 
+    public function loginStaff($username, $password) {
+        $sql = "SELECT * FROM staff WHERE username = ?";
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $staff = $result->fetch_assoc();
+
+        if ($staff && $password === $staff['password']) {
+            return $staff;
+        } else {
+            return false;
+        }
+    }
+    
 
     public function loginUsers($student_id, $password) {
         $sql = "SELECT * FROM students WHERE student_id = ?";

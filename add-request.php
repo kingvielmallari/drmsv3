@@ -29,7 +29,7 @@ $cm = new class_model();
 <header class="text-white text-center">
     <nav class="navbar ">
         <nav class="container-fluid bg-success navbar-expand-lg navbar-light fixed-top">
-            <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="/dashboard.php"> 
+            <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="/student-dashboard.php"> 
                 <img src="./assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;" class="me-3">
                 <span style="font-size: 1.50rem; line-height: 60px;">Pateros Technological College</span>
             </a>
@@ -174,6 +174,7 @@ $cm = new class_model();
                         </div>
                     </div>
 
+
                     <!-- Step 3: Appointment -->
                     <div class="step" id="step3">
                         <h4 class="mb-4">Step 3: Schedule</h4>
@@ -204,58 +205,58 @@ $cm = new class_model();
 
                         <div id="summaryDetails">
                             <div class="summary-item">
-                                <h5>Student Information</h5>
                                 <div class="mb-2">
-                                    <strong>Student ID:</strong> 
-                                    <span id="summaryStudentId"><?php echo htmlspecialchars($_SESSION['sessionuser']['student_id'] ?? ''); ?></span>
+                                    Student ID: 
+                                    <strong id="summaryStudentId"><?php echo htmlspecialchars($_SESSION['sessionuser']['student_id'] ?? ''); ?></strong>
                                 </div>
                                 <div class="mb-2">
-                                    <strong>Name:</strong> 
-                                    <span id="summaryStudentName">
-                                        <?php 
+                                    Name: 
+                                    <strong id="summaryStudentName"><?php 
                                         $firstName = $_SESSION['sessionuser']['first_name'] ?? '';
                                         $middleName = substr($_SESSION['sessionuser']['middle_name'] ?? '', 0, 1);
                                         $lastName = $_SESSION['sessionuser']['last_name'] ?? '';
                                         $userName = $_SESSION['user_name'] ?? 'Guest';
                                         echo htmlspecialchars(trim("$firstName $middleName. $lastName") ?: $userName);
-                                        ?>
-                                    </span>
+                                        ?></strong>
+                                        
+                                    </strong>
                                 </div>
                                 <div class="mb-2">
-                                    <strong>Program & Section:</strong> 
-                                    <span id="summaryProgramSection">
-                                        <?php 
+                                    Program & Section: 
+                                    <strong id="summaryProgramSection"><?php 
                                         $program = $_SESSION['sessionuser']['program'] ?? '';
                                         $year = $_SESSION['sessionuser']['year'] ?? '';
                                         $section = $_SESSION['sessionuser']['section'] ?? '';
                                         $status = $_SESSION['sessionuser']['status'] ?? '';
                                         echo htmlspecialchars(trim("$program - $year$section ($status)"));
-                                        ?>
-                                    </span>
+                                        ?></strong>
+                                        
+                                    </strong>
+                                </div>
+                                
+                                <div class="mb-2">
+                                Requested Documents: 
+                                    <strong id="summaryDocumentsList"></strong>
+                                    </strong>
+                                </div>
+                                <div class="mb-2">
+                                Appointment: 
+                                    <strong id="summaryAppointment"></strong>
+                                    </strong>
+                                </div>
+                                <div class="mb-2">
+                                Delivery Option: 
+                                    <strong id="summaryDeliveryOption"></strong>
+                                    </strong>
+                                </div>
+                                <div class="mb-2">
+                                Total Price: 
+                                    <strong id="summaryTotalPrice"></strong>
+                                    </strong>
                                 </div>
                             </div>
 
-                            <div class="summary-item">
-                                <h5>Selected Documents</h5>
-                                <ul id="summaryDocumentsList" class="list-group mb-3">
-                                    <!-- Will be populated by JavaScript -->
-                                </ul>
-                            </div>
-
-                            <div class="summary-item">
-                                <h5>Delivery Option</h5>
-                                <p id="summaryDeliveryOption">Not selected yet</p>
-                            </div>
-
-                            <div class="summary-item">
-                                <h5>Appointment</h5>
-                                <p id="summaryAppointment">Not scheduled yet</p>
-                            </div>
-
-                            <div class="summary-item">
-                                <h5>Total Price</h5>
-                                <p id="summaryTotalPrice" class="fw-bold">₱0.00</p>
-                            </div>
+                            
                         </div>
 
                         <div class="form-check mb-3">
@@ -272,7 +273,7 @@ $cm = new class_model();
 
                     <!-- Stepper Navigation Buttons -->
                     <div class="d-flex justify-content-between mt-4">
-                        <button type="button" class="btn btn-secondary" id="prevBtn" disabled>Back</button>
+                        <button type="button" class="btn btn-danger" id="prevBtn">Cancel</button>
                         <button type="button" class="btn btn-primary" id="nextBtn">Next</button>
                     </div>
                 </form>
@@ -288,95 +289,8 @@ $cm = new class_model();
 <script src="./vendor/bootstrapv5/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
-    // Handle special document instances
-document.querySelectorAll('.document-toggle').forEach(button => {
-    button.addEventListener('click', function() {
-        const isSpecial = this.dataset.isSpecial === 'true';
-        const specialFields = this.parentNode.querySelector('.special-doc-fields');
-        
-        if (isSpecial && this.classList.contains('active')) {
-            specialFields.style.display = 'block';
-        } else if (isSpecial) {
-            specialFields.style.display = 'none';
-            specialFields.querySelectorAll('.doc-instance').forEach((instance, index) => {
-                if (index > 0) instance.remove();
-            });
-        }
-    });
-});
+ 
 
-// Add instance button
-document.addEventListener('click', function(e) {
-    if (e.target.closest('.add-instance')) {
-        const instanceContainer = e.target.closest('.special-doc-fields');
-        const originalInstance = instanceContainer.querySelector('.doc-instance');
-        const newInstance = originalInstance.cloneNode(true);
-        
-        // Reset values
-        newInstance.querySelector('.year').value = '';
-        newInstance.querySelector('.semester').value = '';
-        newInstance.querySelector('.copies').value = 1;
-        newInstance.querySelector('.add-instance').innerHTML = '<i class="fas fa-times"></i>';
-        newInstance.querySelector('.add-instance').classList.replace('btn-success', 'btn-danger');
-        newInstance.querySelector('.add-instance').classList.add('remove-instance');
-        
-        instanceContainer.appendChild(newInstance);
-    }
-    
-    if (e.target.closest('.remove-instance')) {
-        e.target.closest('.doc-instance').remove();
-    }
-});
-
-// Update document selection handler
-document.querySelectorAll('.document-toggle').forEach(button => {
-    button.addEventListener('click', function() {
-        // ... existing code ...
-        
-        if (this.classList.contains('active')) {
-            // Handle special documents
-            if (isSpecial) {
-                const instances = this.parentNode.querySelectorAll('.doc-instance');
-                instances.forEach(instance => {
-                    const year = instance.querySelector('.year').value;
-                    const semester = instance.querySelector('.semester').value;
-                    const copies = instance.querySelector('.copies').value || 1;
-                    
-                    if (!year || !semester) {
-                        // Handle validation error
-                        return;
-                    }
-                    
-                    selectedDocuments.push({
-                        id: docId,
-                        name: docName,
-                        price: docPrice,
-                        eta: docEta,
-                        year: year,
-                        semester: semester,
-                        copies: parseInt(copies),
-                        uniqueKey: `${docId}-${year}-${semester}`
-                    });
-                });
-            } else {
-                // Regular document handling
-                selectedDocuments.push({
-                    id: docId,
-                    name: docName,
-                    price: docPrice,
-                    eta: docEta
-                });
-            }
-        } else {
-            // Remove document and all instances
-            selectedDocuments = selectedDocuments.filter(doc => 
-                !isSpecial ? doc.id !== docId : doc.uniqueKey?.startsWith(docId)
-            );
-        }
-        
-        updateDocumentDetails();
-    });
-});
 
 // Update document details table
 function updateDocumentDetails() {
@@ -409,12 +323,12 @@ function updateDocumentDetails() {
         totalPrice += doc.price * (doc.copies || 1);
     });
     
-    // ... rest of the existing code ...
+
 }
 
 // Add validation for special documents
 function validateStep(step) {
-    // ... existing code ...
+ 
     
     if (step === 0) {
         const hasInvalidSpecialDoc = selectedDocuments.some(doc => {
@@ -445,13 +359,36 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize Flatpickr
     flatpickr("#appointment_date", {
-        dateFormat: "Y-m-d",
+        dateFormat: "F j, Y", // Format changed to "Month Day, Year"
         minDate: "today",
+        defaultDate: "today",
         disable: [
             function(date) {
-                return (date.getDay() === 0 || date.getDay() === 6);
+                return (date.getDay() === 0 || date.getDay() === 6 || date < new Date().setHours(0, 0, 0, 0));
             }
-        ]
+        ],
+        onDayCreate: function(dObj, dStr, fp, dayElem) {
+            // Highlight weekends in red
+            if (dayElem.dateObj.getDay() === 0 || dayElem.dateObj.getDay() === 6) {
+            dayElem.style.color = "red";
+            }
+            // Apply low opacity to past weekends
+            if (dayElem.dateObj.getDay() === 0 || dayElem.dateObj.getDay() === 6) {
+            if (dayElem.dateObj < new Date().setHours(0, 0, 0, 0)) {
+                dayElem.style.opacity = "0.1";
+            }
+            }
+            // Highlight the current day with a gray shade
+            const today = new Date();
+            if (
+            dayElem.dateObj.getDate() === today.getDate() &&
+            dayElem.dateObj.getMonth() === today.getMonth() &&
+            dayElem.dateObj.getFullYear() === today.getFullYear()
+            ) {
+            dayElem.style.backgroundColor = "#d3d3d3"; // Gray shade
+            dayElem.style.borderRadius = "50%"; // Make it circular
+            }
+        }
     });
 
     // Document selection functionality
@@ -521,14 +458,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateSummary() {
         // Update selected documents
         const docsList = document.getElementById('summaryDocumentsList');
-        docsList.innerHTML = '';
-        
-        selectedDocuments.forEach(doc => {
-            const li = document.createElement('li');
-            li.className = 'list-group-item';
-            li.textContent = doc.name;
-            docsList.appendChild(li);
-        });
+        docsList.textContent = selectedDocuments.map(doc => doc.name).join(', ');
         
         // Update delivery option
         const deliveryOption = document.getElementById('delivery_option').value;
@@ -565,6 +495,8 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('summaryTotalPrice').textContent = `₱${totalWithFee.toFixed(2)}`;
     }
     
+
+
     // Stepper navigation
     document.getElementById('nextBtn').addEventListener('click', function() {
         // Validate current step before proceeding
@@ -580,8 +512,24 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById(`step-circle-${currentStep}`).classList.add('active');
         
         // Update navigation buttons
-        document.getElementById('prevBtn').disabled = currentStep === 0;
-        document.getElementById('nextBtn').textContent = currentStep === totalSteps - 1 ? 'Submit' : 'Next';
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        if (currentStep === 0) {
+            prevBtn.textContent = 'Cancel';
+            prevBtn.className = 'btn btn-danger';
+            prevBtn.href = '/drmsv3/student-dashboard.php';
+        } else {
+            prevBtn.textContent = 'Back';
+            prevBtn.className = 'btn btn-secondary';
+            prevBtn.href = 'javascript:void(0)';
+        }
+        
+        if (currentStep === totalSteps - 1) {
+            nextBtn.style.display = 'none'; // Hide the next button on the last step
+        } else {
+            nextBtn.textContent = 'Next';
+            nextBtn.style.display = 'inline-block'; // Ensure the next button is visible for other steps
+        }
         
         // If we're on the summary step, update it
         if (currentStep === 3) {
@@ -590,6 +538,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     document.getElementById('prevBtn').addEventListener('click', function() {
+        if (currentStep === 0) {
+            // Redirect to dashboard if on the first step
+            window.location.href = '/drmsv3/student-dashboard.php';
+            return;
+        }
+        
         // Hide current step
         steps[currentStep].classList.remove('active');
         document.getElementById(`step-circle-${currentStep}`).classList.remove('active');
@@ -600,9 +554,23 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById(`step-circle-${currentStep}`).classList.add('active');
         
         // Update navigation buttons
-        document.getElementById('prevBtn').disabled = currentStep === 0;
-        document.getElementById('nextBtn').textContent = currentStep === totalSteps - 1 ? 'Submit' : 'Next';
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        if (currentStep === 0) {
+            prevBtn.textContent = 'Cancel';
+            prevBtn.className = 'btn btn-danger';
+            prevBtn.href = '/drmsv3/student-dashboard.php';
+        } else {
+            prevBtn.textContent = 'Back';
+            prevBtn.className = 'btn btn-secondary';
+            prevBtn.href = 'javascript:void(0)';
+        }
+        
+        nextBtn.style.display = 'inline-block'; // Ensure the next button is visible when navigating back
+        nextBtn.textContent = 'Next';
     });
+
+
     
     // Form submission
     document.getElementById('addRequestForm').addEventListener('submit', function(e) {
@@ -650,12 +618,14 @@ document.addEventListener('DOMContentLoaded', function() {
           alert('Error: ' + (data.message || 'Failed to submit request'));
         }
       })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred while submitting your request.');
-      });
+    .catch(error => {
+      console.error('Error:', error);
+      alert('An error occurred while submitting your request.');
     });
-    
+    });
+
+
+
     // Step validation
     function validateStep(step) {
         const showToast = (message) => {
@@ -718,17 +688,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 return true;
         }
     }
-    
-    // Update next button text when reaching last step
-    document.getElementById('nextBtn').addEventListener('click', function() {
-        if (currentStep === totalSteps - 2) { // If next step is the last one
-            this.textContent = 'Submit';
-        }
-    });
+   
 });
 </script>
 <!-- Toast Container -->
-<div id="toastContainer" class="position-fixed top-0 start-50 translate-middle-x mt-5" style="z-index: 1055;"></div>
+<div id="toastContainer" class="position-fixed" style="top: 12%; left: 50%; transform: translateX(-50%); z-index: 1055;"></div>
 
 </body>
 </html>

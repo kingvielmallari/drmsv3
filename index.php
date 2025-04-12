@@ -1,5 +1,7 @@
 <?php
 
+// require 'router.php';
+
 require_once 'config/config.php';
 
 // Redirect to Google OAuth

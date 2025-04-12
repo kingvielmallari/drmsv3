@@ -22,13 +22,15 @@ wrap: true // Loop slides infinitely
                 body: formData,
             });
 
+            
+
             const result = await response.json(); // Expect JSON response
 
             if (result.success) {
                 // Show loading spinner
                 document.querySelector("#response").innerHTML = '<span class="spinner-border spinner-border-sm text-success"></span>';        // Fake delay before redirect
                 setTimeout(() => {
-                    window.location.href = "./dashboard.php"; // Redirect to dashboard
+                    window.location.href = "./student-dashboard.php"; // Redirect to dashboard
                 }, 2000);
             } else {
                 const responseElement = document.querySelector("#response");

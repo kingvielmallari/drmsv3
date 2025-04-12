@@ -10,6 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 body: formData,
             });
 
+    
+
             const result = await response.text();
             document.querySelector("#response").textContent = result;
             e.target.reset();
