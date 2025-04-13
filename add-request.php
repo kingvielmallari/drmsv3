@@ -98,36 +98,68 @@ $cm = new class_model();
                 <form id="addRequestForm">
                     <!-- Step 1: Documents -->
                     <div class="step active" id="step1">
-                        <h4>Step 1: Select Documents</h4>
-                        <?php
-                        $result = $cm->getDocuments();
-                        if (!empty($result)) {
-                            echo '<div class="mb-3">';
-                            echo '<label for="document_selection" class="form-label">Available Documents</label>';
-                            echo '<div id="document_selection" class="d-flex flex-wrap">';
-                            foreach ($result as $row) {
-                                $docId = htmlspecialchars($row['id']);
-                                $docName = htmlspecialchars($row['name']);
-                                $docPrice = htmlspecialchars($row['price'] ?? 0);
-                                $docEta = htmlspecialchars($row['eta'] ?? 0);
-                                
-                                echo '<div>';
-                                echo '<button type="button" class="btn btn-outline-success document-toggle mb-2" 
-                                      data-doc-id="'.$docId.'" 
-                                      data-doc-name="'.$docName.'"
-                                      data-doc-price="'.$docPrice.'"
-                                      data-doc-eta="'.$docEta.'">';
-                                echo $docName;
-                                echo '</button>';
-                                echo '</div>';
-                            }
-                            echo '</div>';
-                            echo '</div>';
-                        } else {
-                            echo '<p class="text-muted">No documents available for request.</p>';
-                        }
-                        ?>
-                    </div>
+    <h4 class="mb-4">Step 1: Select Documents</h4>
+    <?php $result = $cm->getDocuments(); ?>
+    <?php if (!empty($result)): ?>
+        <div class="mb-3">
+            <label for="document_selection" class="form-label fw-bold">Available Documents</label>
+            <ul id="document_selection" class="list-group" style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd; border-radius: 5px;">
+                <?php foreach ($result as $row): 
+                    $docId = htmlspecialchars($row['id']);
+                    $docName = htmlspecialchars($row['name']);
+                    $docPrice = htmlspecialchars($row['price'] ?? 0);
+                    $docEta = htmlspecialchars($row['eta'] ?? 0);
+                    $needsExtraInputs = in_array($docName, ['Certificate of Grades', 'Certificate of Registration']);
+                ?>
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button type="button" 
+                                    class="btn btn-outline-success document-toggle w-75 text-start"
+                                    data-doc-id="<?= $docId ?>"
+                                    data-doc-name="<?= $docName ?>"
+                                    data-doc-price="<?= $docPrice ?>"
+                                    data-doc-eta="<?= $docEta ?>">
+                                <i class="fas fa-file-alt me-2"></i><?= $docName ?>
+                            </button>
+                            <span class="badge bg-danger rounded-pill">₱<?= $docPrice ?></span>
+                        </div>
+
+                        <?php if ($needsExtraInputs): ?>
+                            <div class="mt-2 p-2 bg-light rounded" style="display: none;" id="inputs-<?= $docId ?>">
+                                <div class="d-flex gap-2 align-items-center">
+                                    <div class="form-floating" style="max-width: 120px;">
+                                        <select class="form-select year-input" id="year-<?= $docId ?>" style="height: 35px; font-size: 0.85rem;">
+                                            <option value="" disabled selected>Year</option>
+                                            <option value="4th Year">4th Year</option>
+                                            <option value="3rd Year">3rd Year</option>
+                                            <option value="2nd Year">2nd Year</option>
+                                            <option value="1st Year">1st Year</option>
+                                        </select>
+                                        <label for="year-<?= $docId ?>" style="font-size: 0.75rem;">Year</label>
+                                    </div>
+                                    <div class="form-floating" style="max-width: 120px;">
+                                        <select class="form-select sem-input" id="sem-<?= $docId ?>" style="height: 35px; font-size: 0.85rem;">
+                                            <option value="" disabled selected>Sem</option>
+                                            <option value="1st Sem">1st Sem</option>
+                                            <option value="2nd Sem">2nd Sem</option>
+                                        </select>
+                                        <label for="sem-<?= $docId ?>" style="font-size: 0.75rem;">Sem</label>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-success add-more justify-content-end" data-doc-id="<?= $docId ?>" style="height: 35px;">+ </button>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php else: ?>
+        <p class="text-muted text-center">No documents available for request.</p>
+    <?php endif; ?>
+</div>
+
+
+
 
                     <!-- Step 2: Details -->
                     <div class="step" id="step2">
@@ -267,7 +299,7 @@ $cm = new class_model();
                         </div>
 
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-success">Submit Request</button>
+                            <button type="submit" class="btn btn-primary">Submit Request</button>
                         </div>
                     </div>
 
@@ -291,8 +323,28 @@ $cm = new class_model();
 <script>
  
 
+// show year and sem
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.document-toggle').forEach(button => {
+            button.addEventListener('click', function() {
+                const docId = this.getAttribute('data-doc-id');
+                const inputsContainer = document.getElementById('inputs-' + docId);
 
-// Update document details table
+                if (this.classList.contains('active')) {
+                    // Hide inputs when deselected
+                    if (inputsContainer) inputsContainer.style.display = 'none';
+                } else {
+                    // Show inputs when selected
+                    if (inputsContainer) inputsContainer.style.display = 'block';
+                }
+            });
+        });
+    });
+
+
+
+
+// Step 2: Table
 function updateDocumentDetails() {
     const tableBody = document.getElementById('documentDetailsTable');
     tableBody.innerHTML = '';
@@ -312,7 +364,7 @@ function updateDocumentDetails() {
         row.innerHTML = `
             <td>
                 ${doc.name}
-                ${doc.year ? `(Year ${doc.year}, Sem ${doc.semester} x${doc.copies})` : ''}
+               
             </td>
             <td>${doc.eta} day(s)</td>
             <td>${formattedDate}</td>
@@ -325,6 +377,8 @@ function updateDocumentDetails() {
     
 
 }
+
+
 
 // Add validation for special documents
 function validateStep(step) {
@@ -390,34 +444,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-
-    // Document selection functionality
-    document.querySelectorAll('.document-toggle').forEach(button => {
-        button.addEventListener('click', function() {
-            const docId = this.getAttribute('data-doc-id');
-            const docName = this.getAttribute('data-doc-name');
-            const docPrice = parseFloat(this.getAttribute('data-doc-price'));
-            const docEta = parseInt(this.getAttribute('data-doc-eta'));
-            
-            if (this.classList.contains('active')) {
-                // Remove document
-                this.classList.remove('active');
-                selectedDocuments = selectedDocuments.filter(doc => doc.id !== docId);
-            } else {
-                // Add document
-                this.classList.add('active');
-                selectedDocuments.push({
-                    id: docId,
-                    name: docName,
-                    price: docPrice,
-                    eta: docEta
-                });
-            }
-            
-            updateDocumentDetails();
-        });
-    });
-
+  
     // Update document details table
     function updateDocumentDetails() {
         const tableBody = document.getElementById('documentDetailsTable');
@@ -572,16 +599,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     
-    // Form submission
+    // AJAX submission
     document.getElementById('addRequestForm').addEventListener('submit', function(e) {
       e.preventDefault();
       
       if (!validateStep(currentStep)) return;
       
-      // Get all selected document names
-      const selectedDocs = Array.from(document.querySelectorAll('.document-toggle.active'))
-        .map(button => button.getAttribute('data-doc-name'))
-        .join(', '); // Combine into a single string
+    // Get all selected document names with additional inputs for COG and COR
+    const selectedDocs = Array.from(document.querySelectorAll('.document-toggle.active')).map(button => {
+      const docName = button.getAttribute('data-doc-name');
+      const docId = button.getAttribute('data-doc-id');
+      const yearInput = document.getElementById(`year-${docId}`);
+      const semInput = document.getElementById(`sem-${docId}`);
+      
+      if (yearInput && semInput && yearInput.value && semInput.value) {
+        return `${docName} (${yearInput.value}, ${semInput.value})`;
+      }
+      return docName;
+    }).join(', '); // Combine into a single string
 
       // Prepare form data
       const formData = new FormData();
@@ -601,7 +636,10 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // Calculate total price
       const totalPrice = selectedDocuments.reduce((sum, doc) => sum + doc.price, 0) + parseFloat(systemFee);
+
       formData.append('total_price', totalPrice.toFixed(2));
+
+      
       
       // Submit via AJAX
       fetch('api/add-request.php', {
@@ -624,7 +662,43 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     });
 
-
+    
+      // Activate button functionality
+  document.querySelectorAll('.document-toggle').forEach(button => {
+        button.addEventListener('click', function() {
+            const docId = this.getAttribute('data-doc-id');
+            const docName = this.getAttribute('data-doc-name');
+            const docPrice = parseFloat(this.getAttribute('data-doc-price'));
+            const docEta = parseInt(this.getAttribute('data-doc-eta'));
+            
+            if (this.classList.contains('active')) {
+                // Remove document
+                this.classList.remove('active', 'btn-success', 'text-white', 'bg-success');
+                this.classList.add('btn-outline-success', 'text-success', 'bg-white');
+                selectedDocuments = selectedDocuments.filter(doc => doc.id !== docId);
+                
+                // Hide additional inputs if present
+                const inputsContainer = document.getElementById('inputs-' + docId);
+                if (inputsContainer) inputsContainer.style.display = 'none';
+            } else {
+                // Add document
+                this.classList.add('active', 'btn-success', 'text-white', 'bg-success');
+                this.classList.remove('btn-outline-success', 'text-success', 'bg-white');
+                selectedDocuments.push({
+                    id: docId,
+                    name: docName,
+                    price: docPrice,
+                    eta: docEta
+                });
+                
+                // Show additional inputs if present
+                const inputsContainer = document.getElementById('inputs-' + docId);
+                if (inputsContainer) inputsContainer.style.display = 'block';
+            }
+            
+            updateDocumentDetails();
+        });
+    });
 
     // Step validation
     function validateStep(step) {
@@ -656,6 +730,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (selectedDocuments.length === 0) {
                     showToast('Please select at least one document');
                     return false;
+                }
+
+                // Validate inputs for Certificate of Grades or Registration
+                for (const doc of selectedDocuments) {
+                    if (['Certificate of Grades', 'Certificate of Registration'].includes(doc.name)) {
+                        const yearInput = document.getElementById(`year-${doc.id}`);
+                        const semInput = document.getElementById(`sem-${doc.id}`);
+
+                        if (!yearInput || !semInput || !yearInput.value || !semInput.value) {
+                            showToast(`Please select both Year and Semester for ${doc.name}`);
+                            return false;
+                        }
+
+                        // Update the document object with year and semester values
+                        doc.year = yearInput.value;
+                        doc.semester = semInput.value;
+                    }
                 }
                 return true;
 
@@ -690,6 +781,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
    
 });
+
+
 </script>
 <!-- Toast Container -->
 <div id="toastContainer" class="position-fixed" style="top: 12%; left: 50%; transform: translateX(-50%); z-index: 1055;"></div>
