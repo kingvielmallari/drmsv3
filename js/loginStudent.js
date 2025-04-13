@@ -10,7 +10,7 @@ wrap: true // Loop slides infinitely
 
 // login AJAX
 
-  document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#userForm").addEventListener("submit", async (e) => {
         e.preventDefault();
 
@@ -22,15 +22,19 @@ wrap: true // Loop slides infinitely
                 body: formData,
             });
 
-            
-
             const result = await response.json(); // Expect JSON response
 
             if (result.success) {
                 // Show loading spinner
-                document.querySelector("#response").innerHTML = '<span class="spinner-border spinner-border-sm text-success"></span>';        // Fake delay before redirect
+                document.querySelector("#response").innerHTML = '<span class="spinner-border spinner-border-sm text-success"></span>';
+                
+                // Fake delay before redirect
                 setTimeout(() => {
-                    window.location.href = "./student-dashboard.php"; // Redirect to dashboard
+                    if (result.message.includes("Staff")) {
+                        window.location.href = "./staff-dashboard.php"; // Redirect to staff dashboard
+                    } else if (result.message.includes("Student")) {
+                        window.location.href = "./student-dashboard.php"; // Redirect to student dashboard
+                    }
                 }, 2000);
             } else {
                 const responseElement = document.querySelector("#response");

@@ -299,7 +299,7 @@ $cm = new class_model();
                         </div>
 
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Submit Request</button>
+                            <button type="submit" class="btn btn-success">Submit Request</button>
                         </div>
                     </div>
 
@@ -344,39 +344,40 @@ $cm = new class_model();
 
 
 
-// Step 2: Table
-function updateDocumentDetails() {
-    const tableBody = document.getElementById('documentDetailsTable');
-    tableBody.innerHTML = '';
+// // Step 2: Table
+// function updateDocumentDetails() {
+//     const tableBody = document.getElementById('documentDetailsTable');
+//     tableBody.innerHTML = '';
     
-    let totalPrice = 0;
+//     let totalPrice = 0;
     
-    selectedDocuments.forEach(doc => {
-        const releaseDate = new Date();
-        releaseDate.setDate(releaseDate.getDate() + doc.eta);
-        const formattedDate = releaseDate.toLocaleDateString('en-US', { 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-        });
+//     selectedDocuments.forEach(doc => {
+//         const releaseDate = new Date();
+//         releaseDate.setDate(releaseDate.getDate() + doc.eta);
+//         const formattedDate = releaseDate.toLocaleDateString('en-US', { 
+//             year: 'numeric', 
+//             month: 'long', 
+//             day: 'numeric' 
+//         });
         
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>
-                ${doc.name}
+//         const row = document.createElement('tr');
+//         row.innerHTML = `
+//             <td>
+//                 ${doc.name}
+
                
-            </td>
-            <td>${doc.eta} day(s)</td>
-            <td>${formattedDate}</td>
-            <td>₱${(doc.price * (doc.copies || 1)).toFixed(2)}</td>
-        `;
-        tableBody.appendChild(row);
+//             </td>
+//             <td>${doc.eta} day(s)</td>
+//             <td>${formattedDate}</td>
+//             <td>₱${(doc.price * (doc.copies || 1)).toFixed(2)}</td>
+//         `;
+//         tableBody.appendChild(row);
         
-        totalPrice += doc.price * (doc.copies || 1);
-    });
+//         totalPrice += doc.price * (doc.copies || 1);
+//     });
     
 
-}
+// }
 
 
 
@@ -463,7 +464,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>${doc.name}</td>
+                <td>${doc.name}<br>${doc.year && doc.semester ? '(' + doc.year + ', ' + doc.semester + ')' : ''}</td>
                 <td>${doc.eta} day(s)</td>
                 <td>${formattedDate}</td>
                 <td>₱${doc.price.toFixed(2)}</td>
@@ -485,7 +486,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateSummary() {
         // Update selected documents
         const docsList = document.getElementById('summaryDocumentsList');
-        docsList.textContent = selectedDocuments.map(doc => doc.name).join(', ');
+        docsList.textContent = selectedDocuments.map(doc => 
+            `${doc.name}${doc.year && doc.semester ? ' (' + doc.year + ', ' + doc.semester + ')' : ''}`
+        ).join(', ');
         
         // Update delivery option
         const deliveryOption = document.getElementById('delivery_option').value;
@@ -688,8 +691,30 @@ document.addEventListener('DOMContentLoaded', function() {
                     id: docId,
                     name: docName,
                     price: docPrice,
-                    eta: docEta
+                    eta: docEta,
+                    year: document.getElementById(`year-${docId}`)?.value || null,
+                    semester: document.getElementById(`sem-${docId}`)?.value || null
                 });
+
+                // Update year and semester inputs dynamically
+                const yearInput = document.getElementById(`year-${docId}`);
+                const semInput = document.getElementById(`sem-${docId}`);
+                if (yearInput && semInput) {
+                    yearInput.addEventListener('change', function () {
+                        const docIndex = selectedDocuments.findIndex(doc => doc.id === docId);
+                        if (docIndex !== -1) {
+                            selectedDocuments[docIndex].year = this.value || null;
+                        }
+                        updateDocumentDetails(); // Ensure table updates dynamically
+                    });
+                    semInput.addEventListener('change', function () {
+                        const docIndex = selectedDocuments.findIndex(doc => doc.id === docId);
+                        if (docIndex !== -1) {
+                            selectedDocuments[docIndex].semester = this.value || null;
+                        }
+                        updateDocumentDetails(); // Ensure table updates dynamically
+                    });
+                }
                 
                 // Show additional inputs if present
                 const inputsContainer = document.getElementById('inputs-' + docId);
@@ -780,6 +805,33 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
    
+});
+
+// Change Theme
+document.getElementById('themeToggle').addEventListener('change', function() {
+    if (this.checked) {
+        document.documentElement.setAttribute('data-bs-theme', 'dark');
+        document.cookie = "theme=dark; path=/; SameSite=Strict";
+    } else {
+        document.documentElement.removeAttribute('data-bs-theme');
+        document.cookie = "theme=light; path=/; SameSite=Strict";
+    }
+});
+
+
+// Load Theme from Cookie
+window.addEventListener('load', function() {
+    const theme = document.cookie.split(';').find((item) => item.trim().startsWith('theme='));
+    if (theme) {
+        const themeValue = theme.split('=')[1];
+        if (themeValue === 'dark') {
+            document.documentElement.setAttribute('data-bs-theme', 'dark');
+            document.getElementById('themeToggle').checked = true;
+        } else {
+            document.documentElement.removeAttribute('data-bs-theme');
+            document.getElementById('themeToggle').checked = false;
+        }
+    }
 });
 
 
