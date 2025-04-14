@@ -18,7 +18,7 @@ $cm = new class_model();
     <title>Document Request</title>
     <link rel="stylesheet" href="./vendor/bootstrapv5/css/bootstrap.min.css">
     <link rel="stylesheet" href="./assets/css/app.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"> -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
         /* Custom styles */
@@ -212,20 +212,22 @@ $cm = new class_model();
                         <h4 class="mb-4">Step 3: Schedule</h4>
                         <div class="mb-3">
                             <label for="appointment_date" class="form-label">Select Date</label>
-                            <input type="text" id="appointment_date" name="appointment_date" class="form-control" placeholder="Pick a date" readonly required>
+                            <input type="text" id="pretty_date" placeholder="Select a date">
+                            <input type="hidden" name="appointment_date" id="appointment_date" placeholder="Pick a date" readonly required>
+                            <!-- <input type="text" id="appointment_date" name="appointment_date" class="form-control" placeholder="Pick a date" readonly required> -->
                         </div>
 
                         <div class="mb-3">
                             <label for="appointment_time" class="form-label">Pick a Time</label>
                             <select id="appointment_time" name="appointment_time" class="form-select" required>
                                 <option value="" disabled selected>Select a time</option>
-                                <option value="09:00">9:00 AM</option>
-                                <option value="10:00">10:00 AM</option>
-                                <option value="11:00">11:00 AM</option>
-                                <option value="13:00">1:00 PM</option>
-                                <option value="14:00">2:00 PM</option>
-                                <option value="15:00">3:00 PM</option>
-                                <option value="16:00">4:00 PM</option>
+                                <option value="9:00 AM">9:00 AM</option>
+                                <option value="10:00 AM">10:00 AM</option>
+                                <option value="11:00 AM">11:00 AM</option>
+                                <option value="1:00 PM">1:00 PM</option>
+                                <option value="2:00 PM">2:00 PM</option>
+                                <option value="3:00 PM">3:00 PM</option>
+                                <option value="4:00 PM">4:00 PM</option>
                             </select>
                         </div>
                     </div>
@@ -413,35 +415,39 @@ document.addEventListener('DOMContentLoaded', function() {
     let selectedDocuments = [];
     
     // Initialize Flatpickr
-    flatpickr("#appointment_date", {
-        dateFormat: "F j, Y", // Format changed to "Month Day, Year"
+    flatpickr("#pretty_date", {
+        altInput: true,
+        altFormat: "F j, Y",
+        dateFormat: "Y-m-d", // This is what gets saved to #appointment_date
         minDate: "today",
-        defaultDate: "today",
         disable: [
             function(date) {
                 return (date.getDay() === 0 || date.getDay() === 6 || date < new Date().setHours(0, 0, 0, 0));
             }
         ],
+        onChange: function(selectedDates, dateStr, instance) {
+            document.getElementById("appointment_date").value = dateStr;
+        },
         onDayCreate: function(dObj, dStr, fp, dayElem) {
             // Highlight weekends in red
             if (dayElem.dateObj.getDay() === 0 || dayElem.dateObj.getDay() === 6) {
-            dayElem.style.color = "red";
+                dayElem.style.color = "red";
             }
             // Apply low opacity to past weekends
             if (dayElem.dateObj.getDay() === 0 || dayElem.dateObj.getDay() === 6) {
-            if (dayElem.dateObj < new Date().setHours(0, 0, 0, 0)) {
-                dayElem.style.opacity = "0.1";
-            }
+                if (dayElem.dateObj < new Date().setHours(0, 0, 0, 0)) {
+                    dayElem.style.opacity = "0.1";
+                }
             }
             // Highlight the current day with a gray shade
             const today = new Date();
             if (
-            dayElem.dateObj.getDate() === today.getDate() &&
-            dayElem.dateObj.getMonth() === today.getMonth() &&
-            dayElem.dateObj.getFullYear() === today.getFullYear()
+                dayElem.dateObj.getDate() === today.getDate() &&
+                dayElem.dateObj.getMonth() === today.getMonth() &&
+                dayElem.dateObj.getFullYear() === today.getFullYear()
             ) {
-            dayElem.style.backgroundColor = "#d3d3d3"; // Gray shade
-            dayElem.style.borderRadius = "50%"; // Make it circular
+                dayElem.style.backgroundColor = "#d3d3d3"; // Gray shade
+                dayElem.style.borderRadius = "50%"; // Make it circular
             }
         }
     });
@@ -499,13 +505,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const appointmentDate = document.getElementById('appointment_date').value;
         const appointmentTime = document.getElementById('appointment_time').value;
         if (appointmentDate && appointmentTime) {
-            const timeText = appointmentTime === '09:00' ? '9:00 AM' : 
-                           appointmentTime === '10:00' ? '10:00 AM' :
-                           appointmentTime === '11:00' ? '11:00 AM' :
-                           appointmentTime === '13:00' ? '1:00 PM' :
-                           appointmentTime === '14:00' ? '2:00 PM' :
-                           appointmentTime === '15:00' ? '3:00 PM' :
-                           appointmentTime === '16:00' ? '4:00 PM' : '';
+            const timeText = appointmentTime;
             
             const dateObj = new Date(appointmentDate);
             const formattedDate = dateObj.toLocaleDateString('en-US', { 
@@ -555,7 +555,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         if (currentStep === totalSteps - 1) {
-            nextBtn.style.display = 'none'; // Hide the next button on the last step
+            nextBtn.textContent = 'Dashboard'; // Change button label to 'Dashboard'
+            nextBtn.style.display = 'inline-block'; // Ensure the button is visible
+            nextBtn.addEventListener('click', function() {
+            window.location.href = '/drmsv3/student-dashboard.php'; // Redirect to dashboard
+            });
         } else {
             nextBtn.textContent = 'Next';
             nextBtn.style.display = 'inline-block'; // Ensure the next button is visible for other steps
@@ -645,7 +649,7 @@ document.addEventListener('DOMContentLoaded', function() {
       
       
       // Submit via AJAX
-      fetch('api/add-request.php', {
+      fetch('./controllers/AddRequest.php', {
         method: 'POST',
         body: formData
       })

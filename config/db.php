@@ -3,7 +3,7 @@ class class_model {
     private string $host = "localhost";
     private string $user = "root";
     private string $pass = "";
-    private string $dbname = "practice";
+    private string $dbname = "practice2";
     private mysqli $mysqli;
 
 
@@ -73,6 +73,15 @@ class class_model {
         $stmt->bind_param("i", $id);
 
        return $stmt->execute();
+    }
+
+    public function addRequest($studentId, $studentName, $programSection, $documentRequest, $deliveryOption, $appointmentDate, $appointmentTime, $totalPrice) {
+        $sql = "INSERT INTO requests (student_id, student_name, program_section, document_request, delivery_option, appointment_date, appointment_time, total_price) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("sssssssd", $studentId, $studentName, $programSection, $documentRequest, $deliveryOption, $appointmentDate, $appointmentTime, $totalPrice);
+
+        return $stmt->execute();
     }
 
     public function insertSelectedItem($item_name) {

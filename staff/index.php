@@ -1,6 +1,6 @@
 <?php
 
-require_once 'config/db.php';
+require_once '../config/db.php';
 
 session_start();
 
@@ -9,7 +9,7 @@ if (
   !isset($_SESSION['role']) ||
   $_SESSION['role'] !== 'Staff'
 ) {
-  header('Location: ./student-dashboard.php');
+  header('Location: ../index.php');
   exit;
 }
 
@@ -25,8 +25,8 @@ if (
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Users List</title>
-    <link rel="stylesheet" href="./vendor/bootstrapv5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="./assets/css/app.css">
+    <link rel="stylesheet" href="../vendor/bootstrapv5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/app.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 </head>
@@ -36,7 +36,7 @@ if (
   <nav class="navbar navbar-expand-lg navbar-light bg-success fixed-top">
   <div class="container-fluid ">
     <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="/drmsv3/student-dashboard.php"> 
-      <img src="./assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;" class="me-3">
+      <img src="../assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;" class="me-3">
       <span style="font-size: 1.50rem; line-height: 60px;">Pateros Technological College</span>
     </a>
     <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,78 +85,25 @@ if (
         </h4>
     </div>
     <div class="text-center mt-4">
-    <a href="./controllers/LogoutStudent.php" class="btn btn-danger btn-lg px-5">Logout</a>
-</div>
-</div>
-<div class="container bg-primary">
-    <div class="row d-flex justify-content-center mt-5">
-        <div class="col">
-            <button class="btn btn-success">SUCCESS</button>
-        </div>
-        <div class="col">
-            <button class="btn btn-danger">DANGER</button>
-        </div>
+    <a href="../controllers/LogoutStudent.php" class="btn btn-danger btn-lg px-5">Logout</a>
     </div>
 </div>
-
-<div class="container-fluid bg-primary my-5 p-0 ">
-    <h1 class="py-5 m-0">HELLO</h1>
-
 </div>
 
-<h1 class="m-0">HELLO WITHOUT BS</h1>
+<div class="container vh-100 d-flex flex-column justify-content-center align-items-center">
 
-<div class="p-5 mb-4 bg-light rounded-3">
-  <div class="container-fluid py-5">
-    <h1 class="display-5 fw-bold">Custom Jumbotron</h1>
-    <p class="col-md-8 fs-4">Use utility classes to style it the same way.</p>
-    <button class="btn btn-primary btn-lg" type="button">Example button</button>
-  </div>
-</div>
-
-<div class="p-5">
-<table class="table table-striped table-bordered table-hover">
-    <thead>
-        
-        <th>User Name</th>
-        <th>Email</th>
-        <th>Actions</th>
-    </thead>
-    <tbody> 
-        <tr>
-            <td>John Doe</td>
-            <td>john.doe@example.com</td>
-            <td>
-                <a href="#" class="btn btn-info">Edit</a>
-                <a href="#" class="btn btn-danger">Delete</a>
-            </td>
-        </tr>
-        <tr>
-            <td>John Doe</td>
-            <td>john.doe@example.com</td>
-            <td>
-                <a href="#" class="btn btn-info">Edit</a>
-                <a href="#" class="btn btn-danger">Delete</a>
-            </td>
-        </tr>
-        <tr>
-            <td>John Doe</td>
-            <td>john.doe@example.com</td>
-            <td>
-                <a href="#" class="btn btn-info">Edit</a>
-                <a href="#" class="btn btn-danger">Delete</a>
-            </td>
-        </tr>
-        <tr>
-            <td>John Doe</td>
-            <td>john.doe@example.com</td>
-            <td>
-                <a href="#" class="btn btn-info">Edit</a>
-                <a href="#" class="btn btn-danger">Delete</a>
-            </td>
-        </tr>
-    </tbody>
-</table>
+    <div class="row w-100 mb-4">
+        <div class="col-md-6 mb-3 mb-md-0 d-flex justify-content-center">
+            <a href="add-request.php" class="btn btn-lg btn-primary w-75 py-4 shadow-sm">
+                <i class="fas fa-plus-circle me-2"></i>New Request
+            </a>
+        </div>
+        <div class="col-md-6 d-flex justify-content-center">
+            <a href="track_request.php" class="btn btn-lg btn-secondary w-75 py-4 shadow-sm">
+                <i class="fas fa-search me-2"></i>My Request
+            </a>
+        </div>
+    </div>
 
 </div>
 
@@ -164,9 +111,9 @@ if (
  
 
 
-<script src="./vendor/bootstrapv5/js/bootstrap.bundle.min.js"></script>
+<script src="../vendor/bootstrapv5/js/bootstrap.bundle.min.js"></script>
 
-<script src="./js/dashboard.js"></script>
+<script src="../js/dashboard2.js"></script>
 
 </body>
 </html>

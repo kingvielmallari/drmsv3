@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Fake delay before redirect
                 setTimeout(() => {
                     if (result.message.includes("Staff")) {
-                        window.location.href = "./staff-dashboard.php"; // Redirect to staff dashboard
+                        window.location.href = "./staff"; // Redirect to staff dashboard
                     } else if (result.message.includes("Student")) {
                         window.location.href = "./student-dashboard.php"; // Redirect to student dashboard
                     }
