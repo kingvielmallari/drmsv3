@@ -1,5 +1,5 @@
 <?php
-require_once 'config/db.php';
+require_once '../config/db.php';
 
 session_start();
 if (!isset($_SESSION['sessionuser'])) {
@@ -16,8 +16,8 @@ $cm = new class_model();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document Request</title>
-    <link rel="stylesheet" href="./vendor/bootstrapv5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="./assets/css/app.css">
+    <link rel="stylesheet" href="../vendor/bootstrapv5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/app.css">
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"> -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
@@ -39,7 +39,7 @@ $cm = new class_model();
 
             <div class="d-lg-none d-flex justify-content-center">
                 <a class="navbar-brand text-white d-flex align-items-center" href="/dashboard.php">
-                    <img src="./assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;">
+                    <img src="../assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;">
                 </a>
             </div>
 
@@ -121,7 +121,17 @@ $cm = new class_model();
                                     data-doc-eta="<?= $docEta ?>">
                                 <i class="fas fa-file-alt me-2"></i><?= $docName ?>
                             </button>
-                            <span class="badge bg-danger rounded-pill">₱<?= $docPrice ?></span>
+                            <span class="badge bg-<?= $row['is_available'] === 'yes' ? 'success' : 'danger' ?> rounded-pill">
+                                <?= $row['is_available'] === 'yes' ? 'Available' : 'Not Available' ?>
+                            </span>
+                            <script>
+                                if ('<?= $row['is_available'] ?>' === 'no') {
+                                    const button = document.querySelector('[data-doc-id="<?= $docId ?>"]');
+                                    button.disabled = true;
+                                    button.classList.remove('btn-outline-success');
+                                    button.classList.add('btn-outline-danger');
+                                }
+                            </script>
                         </div>
 
                         <?php if ($needsExtraInputs): ?>
@@ -320,7 +330,7 @@ $cm = new class_model();
     </div>
 </div>
 
-<script src="./vendor/bootstrapv5/js/bootstrap.bundle.min.js"></script>
+<script src="../vendor/bootstrapv5/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
  
@@ -547,7 +557,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (currentStep === 0) {
             prevBtn.textContent = 'Cancel';
             prevBtn.className = 'btn btn-danger';
-            prevBtn.href = '/drmsv3/student-dashboard.php';
+            prevBtn.href = '/drmsv3/student';
         } else {
             prevBtn.textContent = 'Back';
             prevBtn.className = 'btn btn-secondary';
@@ -555,11 +565,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         if (currentStep === totalSteps - 1) {
-            nextBtn.textContent = 'Dashboard'; // Change button label to 'Dashboard'
+            nextBtn.textContent = 'Dashbsoard'; // Change button label to 'Dashboard'
+            nextBtn.href = '/drmsv3/student'; // Redirect to dashboard
             nextBtn.style.display = 'inline-block'; // Ensure the button is visible
-            nextBtn.addEventListener('click', function() {
-            window.location.href = '/drmsv3/student-dashboard.php'; // Redirect to dashboard
-            });
         } else {
             nextBtn.textContent = 'Next';
             nextBtn.style.display = 'inline-block'; // Ensure the next button is visible for other steps
@@ -570,11 +578,13 @@ document.addEventListener('DOMContentLoaded', function() {
             updateSummary();
         }
     });
+
+
     
     document.getElementById('prevBtn').addEventListener('click', function() {
         if (currentStep === 0) {
             // Redirect to dashboard if on the first step
-            window.location.href = '/drmsv3/student-dashboard.php';
+            window.location.href = '/drmsv3/student';
             return;
         }
         
@@ -593,7 +603,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (currentStep === 0) {
             prevBtn.textContent = 'Cancel';
             prevBtn.className = 'btn btn-danger';
-            prevBtn.href = '/drmsv3/student-dashboard.php';
+            prevBtn.href = '/drmsv3/student';
         } else {
             prevBtn.textContent = 'Back';
             prevBtn.className = 'btn btn-secondary';

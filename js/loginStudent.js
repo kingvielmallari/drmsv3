@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (result.message.includes("Staff")) {
                         window.location.href = "./staff"; // Redirect to staff dashboard
                     } else if (result.message.includes("Student")) {
-                        window.location.href = "./student-dashboard.php"; // Redirect to student dashboard
+                        window.location.href = "./student"; // Redirect to student dashboard
                     }
                 }, 2000);
             } else {
