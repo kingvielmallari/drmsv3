@@ -55,7 +55,15 @@ class class_model {
         return $result->fetch_assoc();
     }
 
-  
+
+
+
+
+
+
+
+
+
 
 
     public function deleteStudent($student_id) {
@@ -171,6 +179,51 @@ class class_model {
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
+    // generate reset tokens to db
+    public function cleanupExpiredTokens() {
+        $query = "DELETE FROM password_resets WHERE expires_at < NOW()";
+        return $this->mysqli->query($query);
+    }
+    
+    public function saveResetToken($email, $token, $created_at, $expires_at) {
+        $stmt = $this->mysqli->prepare("INSERT INTO password_resets (email, token, created_at, expires_at) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("ssss", $email, $token, $created_at, $expires_at);
+        return $stmt->execute();
+    }
+    
 
 
+    // find token in db
+  public function findToken($token) {
+    $stmt = $this->mysqli->prepare("
+        SELECT * FROM password_resets 
+        WHERE token = ? AND expires_at > NOW()
+        LIMIT 1
+    ");
+    $stmt->bind_param("s", $token);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc(); // returns false if not found
+}
+
+
+    public function findByEmail($email) {
+        $stmt = $this->mysqli->prepare("SELECT * FROM students WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc(); // returns false if not found
+    }
+    
+    public function hasValidToken($email) {
+        $stmt = $this->mysqli->prepare("SELECT * FROM password_resets WHERE email = ? AND expires_at > NOW() LIMIT 1");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc(); // returns row if valid token exists
+    }
+    
+    public function deleteToken($token) {
+        $stmt = $this->mysqli->prepare("DELETE FROM password_resets WHERE token = ?");
+        $stmt->bind_param("s", $token);
+        return $stmt->execute();
+    }
+    
 }

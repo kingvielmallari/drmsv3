@@ -11,6 +11,11 @@ wrap: true // Loop slides infinitely
 // login AJAX
 
 document.addEventListener("DOMContentLoaded", () => {
+    // Clear spinner on page load
+    const responseElement = document.querySelector("#response");
+    if (responseElement) {
+        responseElement.innerHTML = "";
+    }
     document.querySelector("#userForm").addEventListener("submit", async (e) => {
         e.preventDefault();
 
@@ -31,9 +36,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Fake delay before redirect
                 setTimeout(() => {
                     if (result.message.includes("Staff")) {
-                        window.location.href = "./staff"; // Redirect to staff dashboard
+                        window.location.href = "./staff/index.php"; // Redirect to staff dashboard
                     } else if (result.message.includes("Student")) {
-                        window.location.href = "./student"; // Redirect to student dashboard
+                        window.location.href = "./student/index.php"; // Redirect to student dashboard
                     }
                 }, 2000);
             } else {

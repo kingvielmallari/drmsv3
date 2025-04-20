@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+
     document.querySelector("#userForm").addEventListener("submit", async (e) => {
         e.preventDefault();
 
@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("Error:", error);
         }
     });
-});
+
 
 // Prevent form submission if passwords don't match
 document.getElementById("floatingConfirmPassword").addEventListener("input", function() {

@@ -30,7 +30,7 @@ if (!isset($_SESSION['sessionuser'])) {
 
   <nav class="navbar navbar-expand-lg navbar-light bg-success fixed-top">
   <div class="container-fluid ">
-    <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="/drmsv3/student-dashboard.php"> 
+    <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="/drmsv3/student/index.php"> 
       <img src="../assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;" class="me-3">
       <span style="font-size: 1.50rem; line-height: 60px;">Pateros Technological College</span>
     </a>
@@ -39,7 +39,7 @@ if (!isset($_SESSION['sessionuser'])) {
     </button>
 
     <div class="d-lg-none d-flex justify-content-center">
-      <a class="navbar-brand text-white d-flex align-items-center" href="/drmsv3/student-dashboard.php">
+      <a class="navbar-brand text-white d-flex align-items-center" href="/drmsv3/student/index.php">
         <img src="../assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;">
       </a>
     </div>
@@ -75,7 +75,7 @@ if (!isset($_SESSION['sessionuser'])) {
 
 <div class="card mt-5 mx-auto shadow-lg" style="width: 80%; padding: 20px;">
     <div class="card-header bg-primary text-white text-start py-3 mt-5">
-        <h4 class="mb-0">Welcome, <? echo htmlspecialchars($SESSION['role']); ?><strong>
+        <h4 class="mb-0">Welcome PTC Student!, <? echo htmlspecialchars($SESSION['role']); ?><strong>
             <?php 
                 $firstName = $_SESSION['sessionuser']['first_name'] ?? $_SESSION['user_email'] ?? '';
                 $middleName = $_SESSION['sessionuser']['middle_name'] ?? '';
@@ -92,7 +92,7 @@ if (!isset($_SESSION['sessionuser'])) {
         </strong></h4>
     </div>
     <div class="text-center mt-4">
-    <a href="./controllers/LogoutStudent.php" class="btn btn-danger btn-lg px-5">Logout</a>
+    <a href="../controllers/LogoutStudent.php" class="btn btn-danger btn-lg px-5">Logout</a>
 </div>
 </div>
 

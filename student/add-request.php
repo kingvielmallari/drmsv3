@@ -29,8 +29,8 @@ $cm = new class_model();
 <header class="text-white text-center">
     <nav class="navbar ">
         <nav class="container-fluid bg-success navbar-expand-lg navbar-light fixed-top">
-            <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="/student-dashboard.php"> 
-                <img src="./assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;" class="me-3">
+            <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="index.php"> 
+                <img src="../assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;" class="me-3">
                 <span style="font-size: 1.50rem; line-height: 60px;">Pateros Technological College</span>
             </a>
             <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,7 @@ $cm = new class_model();
             </button>
 
             <div class="d-lg-none d-flex justify-content-center">
-                <a class="navbar-brand text-white d-flex align-items-center" href="/dashboard.php">
+                <a class="navbar-brand text-white d-flex align-items-center" href="/index.php">
                     <img src="../assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;">
                 </a>
             </div>
@@ -584,7 +584,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('prevBtn').addEventListener('click', function() {
         if (currentStep === 0) {
             // Redirect to dashboard if on the first step
-            window.location.href = '/drmsv3/student';
+            window.location.href = '/drmsv3/student/index.php';
             return;
         }
         
@@ -659,7 +659,7 @@ document.addEventListener('DOMContentLoaded', function() {
       
       
       // Submit via AJAX
-      fetch('./controllers/AddRequest.php', {
+      fetch('../controllers/AddRequest.php', {
         method: 'POST',
         body: formData
       })

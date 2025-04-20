@@ -81,7 +81,7 @@ if (
 
 <div class="card mt-5 mx-auto shadow-lg bg-succ" style="width: 80%; padding: 20px;">
     <div class="card-header bg-primary text-white text-start py-3 mt-5">
-        <h4 class="mb-0">Welcome, <h4><?php echo htmlspecialchars($_SESSION['sessionuser']['name']); ?></h4></strong>
+        <h4 class="mb-0">Welcome PTC Staff!, <h4><?php echo htmlspecialchars($_SESSION['sessionuser']['name']); ?></h4></strong>
         </h4>
     </div>
     <div class="text-center mt-4">

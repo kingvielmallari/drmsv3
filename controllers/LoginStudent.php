@@ -30,6 +30,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // No match
-    echo json_encode(["success" => false, "message" => "Invalid credentials"]);
+    echo json_encode(["success" => false, "message" => "Invalid Student ID or Password"]);
     exit();
 }

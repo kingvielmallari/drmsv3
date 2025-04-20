@@ -20,7 +20,7 @@ if (isset($_GET['code'])) {
     $_SESSION['sessionuser'] = $user;
   
 
-    header('Location: ../dashboard.php');
+    header('Location: ../student/index.php');
     exit();
 } else {
     echo "Invalid access.";
