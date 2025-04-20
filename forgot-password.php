@@ -93,6 +93,14 @@
             const responseElement = document.getElementById("response");
             responseElement.textContent = text;
 
+            if (text.includes("You have not set your password yet. Please create an account first.")) {
+                responseElement.className = "text-center text-danger";
+                setTimeout(() => {
+                    responseElement.textContent = "";
+                }, 2500);
+            }
+
+
             if (text.includes("You are not a student of PTC.")) {
                 responseElement.className = "text-center text-danger";
                 setTimeout(() => {

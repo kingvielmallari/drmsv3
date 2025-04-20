@@ -1,28 +1,55 @@
+document.querySelector("#userForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-    document.querySelector("#userForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
+    const formData = new FormData(e.target);
+    const submitButton = e.target.querySelector("button[type='submit']");
+    const responseElement = document.querySelector("#response");
 
-        const formData = new FormData(e.target);
+    // Change button content to loading spinner
+    submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+    submitButton.disabled = true;
 
-        try {
-            const response = await fetch("./controllers/AddUser.php", {
-                method: "POST",
-                body: formData,
-            });
+    try {
+        const response = await fetch("./controllers/AddUser.php", {
+            method: "POST",
+            body: formData,
+        });
 
-    
+        const result = await response.text();
 
-            const result = await response.text();
-            document.querySelector("#response").textContent = result;
-            e.target.reset();
+        // Update response text and style based on result
+        if (result === "Sorry, you are not a student of PTC." || result === "Account already exists.") {
+            responseElement.textContent = result;
+            responseElement.className = "text-danger text-center";
 
-            // Reset box shadows after form reset
-            document.getElementById("password").style.boxShadow = "none";
-            document.getElementById("floatingConfirmPassword").style.boxShadow = "none";
-        } catch (error) {
-            console.error("Error:", error);
+            // Make text disappear after 2 seconds
+            setTimeout(() => {
+                responseElement.textContent = "";
+            }, 2000);
+        } else {
+            responseElement.textContent = result;
+            responseElement.className = "text-success text-center";
+
+            // Simulate loading before redirect
+            setTimeout(() => {
+                submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+                setTimeout(() => {
+                    window.location.href = "index.php";
+                }, 1250);
+            }, 1250);
         }
-    });
+
+        // Do not reset the form inputs
+    } catch (error) {
+        console.error("Error:", error);
+    } finally {
+        // Reset button content and state if not redirecting
+        if (!responseElement.classList.contains("text-success")) {
+            submitButton.innerHTML = "Submit";
+            submitButton.disabled = false;
+        }
+    }
+});
 
 
 // Prevent form submission if passwords don't match

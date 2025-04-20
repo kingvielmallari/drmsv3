@@ -213,12 +213,12 @@ class class_model {
         return $stmt->get_result()->fetch_assoc(); // returns false if not found
     }
     
-    public function hasValidToken($email) {
-        $stmt = $this->mysqli->prepare("SELECT * FROM password_resets WHERE email = ? AND expires_at > NOW() LIMIT 1");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        return $stmt->get_result()->fetch_assoc(); // returns row if valid token exists
-    }
+    // public function hasValidToken($email) {
+    //     $stmt = $this->mysqli->prepare("SELECT * FROM password_resets WHERE email = ? AND expires_at > NOW() LIMIT 1");
+    //     $stmt->bind_param("s", $email);
+    //     $stmt->execute();
+    //     return $stmt->get_result()->fetch_assoc(); // returns row if valid token exists
+    // }
     
     public function deleteToken($token) {
         $stmt = $this->mysqli->prepare("DELETE FROM password_resets WHERE token = ?");
@@ -226,4 +226,10 @@ class class_model {
         return $stmt->execute();
     }
     
+    public function hasValidToken($email) {
+        $stmt = $this->mysqli->prepare("SELECT * FROM password_resets WHERE email = ? AND expires_at > NOW() LIMIT 1");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc(); // returns row if valid token exists
+    }
 }

@@ -9,6 +9,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $db->cleanupExpiredTokens();
 
+    $userCheck = $db->findByEmail($email);
+    if ($userCheck && is_null($userCheck['password'])) {
+        echo "You have not set your password yet. Please create an account first.";
+        exit;
+    }
+
     $existingToken = $db->hasValidToken($email);
 
     if ($existingToken) {

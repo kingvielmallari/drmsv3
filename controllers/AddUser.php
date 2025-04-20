@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             // Create user
             if ($cm->updateUserPassword($student_id, $password)) {
-                echo "Account created successfully!, please login to your account.";
+                echo "Account created successfully!";
             } else {
                 echo "Error adding user.";
             }
