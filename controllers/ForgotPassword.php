@@ -32,7 +32,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $db->saveResetToken($email, $token, $created_at, $expires);
 
 
-        $resetLink = "http://localhost/drmsv3/reset-password.php?token=$token";
+        // $resetLink = "https://ptc.ninja/drmsv3/reset-password.php?token=$token";
+
+        // Dynamically set base URL based on environment
+        if ($_SERVER['HTTP_HOST'] === 'localhost') {
+            $baseUrl = "http://localhost/drmsv3/";
+        } else {
+            $baseUrl = "https://ptc.ninja/drmsv3/";
+        }
+
+        $resetLink = $baseUrl . "reset-password.php?token=$token";
 
         $mail = new PHPMailer\PHPMailer\PHPMailer();
         try {
