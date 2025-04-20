@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 20, 2025 at 05:20 PM
+-- Generation Time: Apr 20, 2025 at 07:43 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -77,6 +77,13 @@ CREATE TABLE `password_resets` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `password_resets`
+--
+
+INSERT INTO `password_resets` (`id`, `email`, `token`, `expires_at`, `created_at`) VALUES
+(66, 'klmallari@paterostechnologicalcollege.edu.ph', 'd9cd3e361f6d19eb691e838be778aea433ee6f8849ef5d37ea2d3b076602396b', '2025-04-20 19:20:40', '2025-04-20 11:15:40');
+
 -- --------------------------------------------------------
 
 --
@@ -125,8 +132,8 @@ CREATE TABLE `students` (
 
 INSERT INTO `students` (`id`, `student_id`, `last_name`, `first_name`, `middle_name`, `email`, `gender`, `program`, `year`, `section`, `status`, `password`) VALUES
 (1, '23BSIT-0121', 'Abagat', 'Jazmine Louise', 'Joseph', 'jjabagat@paterostechnologicalcollege.edu.ph', 'Female', 'BSIT', '2', 'C', 'Regular', '$2y$10$x7Mig0lQQJbHN4WzZHFjC.y2Mr6ea3WaOJfW1QtIPm1xMqrdFMFxi'),
-(2, '24BSIT-2024', 'Mallari', 'King Viel', 'Labro', 'klmallari@paterostechnologicalcollege.edu.ph', 'Male', 'BSIT', '4', 'A', 'Regular', '$2y$10$isukIfNSx36j9xVYL3NWz.JimdHQ1WveDz7kAr2h4U1BL9ZptBeeC'),
-(3, '25BSOA-2025', 'Parman', 'Bernadette', 'Mendoza', 'mallariking0@gmail.com', 'Female', 'BSOA', '4', 'A', 'Regular', '$2y$10$aD./WLBepnVMTsdX9FzqMeZ2sUJ2.hcI4UbgVJ0pbGfC6XxcNR2/y');
+(2, '24BSIT-2024', 'Mallari', 'King Viel', 'Labro', 'klmallari@paterostechnologicalcollege.edu.ph', 'Male', 'BSIT', '4', 'A', 'Regular', '$2y$10$j0XS.87kNv.3eAzVb/jOw..wb1.cBHEl7xmTPlqSBO.aQnqoG3gqi'),
+(3, '25BSOA-2025', 'Parman', 'Bernadette', 'Mendoza', 'mallariking0@gmail.com', 'Female', 'BSOA', '4', 'A', 'Regular', '$2y$10$cYv6lte2rqA0UrTT9BivCOhutOaeyLGdsDpy44KLU2A5Mwb5cBgCG');
 
 --
 -- Indexes for dumped tables
@@ -182,7 +189,7 @@ ALTER TABLE `fees`
 -- AUTO_INCREMENT for table `password_resets`
 --
 ALTER TABLE `password_resets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
 
 --
 -- AUTO_INCREMENT for table `staff`
