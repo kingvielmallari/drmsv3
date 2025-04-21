@@ -1,4 +1,25 @@
 
+<?php
+
+require_once './config/db.php'; // Update with your actual DB connection file
+
+session_start();
+
+$token = $_GET['token'] ?? '';
+$sessionToken = $_SESSION['token'] ?? '';
+
+if (!$token || $token !== $sessionToken) {
+    // Block unauthorized access
+    header("Location: ./verify.php");
+    exit;
+}
+
+// Optional: regenerate session token to prevent reuse
+unset($_SESSION['token']);
+
+// Continue with password creation form
+?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -52,34 +73,43 @@
 
 
 <div class="container d-flex justify-content-center align-items-center flex-grow-1">
-<div class="row justify-content-center align-self-center w-100">
-<div class="col-md-6">
-<h2 class="text-center">Create New DRMS Account</h2>
-<p class="text-center text-muted">Make sure that your Student ID is registered in our school database to be able to create account.</p>
-<form id="userForm">
-    <div class="form-floating mb-3">
-        <input type="text" class="form-control text-uppercase" name="student_id" id="student_id" placeholder="floatingStudentID" required oninput="this.value = this.value.toUpperCase();">
-        <label for="floatingStudentID">Student ID</label>
+  <div class="row justify-content-center align-self-center w-100">
+    <div class="col-md-6">
+      <h2 class="text-center mb-4">Create New DRMS Account</h2>
+      <p class="text-center text-muted mb-4">Make sure that your Student ID is registered in our school database to be able to create an account.</p>
+      <form id="userForm" class="p-4">
+        <?php
+       
+
+        $email = $_SESSION['email'] ?? ''; // Email should be stored in session after OTP verification
+
+        $cm = new class_model();
+
+        $studentId = $cm->getStudentIdByEmail($email); // Fetch student ID based on email
+        ?>
+
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control text-uppercase" name="student_id" id="student_id" placeholder="Student ID" value="<?php echo htmlspecialchars($studentId); ?>" readonly required disabled>
+          <label for="student_id">Student ID</label>
+        </div>
+        <div class="form-floating mb-3 position-relative">
+          <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
+          <label for="password">New Password</label>
+          <i class="bi bi-eye-slash position-absolute top-50 end-0 translate-middle-y me-3" id="togglePassword" style="cursor: pointer;"></i>
+        </div>
+        <div class="form-floating mb-3">
+          <input type="password" class="form-control" name="confirm_password" id="floatingConfirmPassword" placeholder="Confirm Password" required>
+          <label for="floatingConfirmPassword">Confirm Password</label>
+        </div>
+        <p id="passwordError" class="text-danger text-center"></p>
+
+        <div class="d-grid mb-3">
+          <button type="submit" class="btn btn-success btn-block">Register</button>
+        </div>
+      </form>
+      <p id="response" class="text-center mt-3"></p>
     </div>
-    <div class="form-floating mb-3 position-relative">
-        <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
-        <label for="password">New Password</label>
-        <i class="bi bi-eye-slash position-absolute top-50 end-0 translate-middle-y me-3" id="togglePassword" style="cursor: pointer;"></i>
-    </div>    
-    <div class="form-floating mb-3">
-        <input type="password" class="form-control" name="confirm_password" id="floatingConfirmPassword" placeholder="Confirm Password" required>
-        <label for="floatingConfirmPassword">Confirm Password</label>
-    </div>
-    <p id="passwordError" class="text-danger text-center"></p>
-    
-    <div class="d-grid mb-3">
-        <button type="submit" class="btn btn-primary btn-block">Register</button>
-    </div>
-</form>
-<p id="response" class="text-center mt-3 "></p>
-</div>
-</div>
-</div>
+  </div>
 </div>
 
 <!-- Footer -->

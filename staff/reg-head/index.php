@@ -1,21 +1,7 @@
 <?php
-
-// require_once '../config/db.php';
-
-// // session_start();
-
-// // if (
-// //   !isset($_SESSION['sessionuser']) ||
-// //   !isset($_SESSION['role']) ||
-// //   $_SESSION['role'] !== 'mis-head'
-// // ) {
-// //   header('Location: ../index.php');
-// //   exit;
-// // }
-
-
+       
 session_start();
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'mis_head') {
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
     header("Location: ../../index.php");
     exit();
 }
@@ -98,8 +84,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'mis_head') {
 
     <div class="row w-100 mb-4">
         <div class="col-md-6 mb-3 mb-md-0 d-flex justify-content-center">
-            <a href="students.php" class="btn btn-lg btn-primary w-75 py-4 shadow-sm">
-                <i class="fas fa-plus-circle me-2"></i>Manage Students
+            <a href="requests.php" class="btn btn-lg btn-primary w-75 py-4 shadow-sm">
+                <i class="fas fa-plus-circle me-2"></i>Manage Request
             </a>
         </div>
         <div class="col-md-6 d-flex justify-content-center">

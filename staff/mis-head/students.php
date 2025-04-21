@@ -352,6 +352,17 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'mis_head') {
                     document.getElementById('editYear').value = student.year || '';
                     document.getElementById('editSection').value = student.section || '';
                     document.getElementById('editStatus').value = student.status || '';
+
+                    const passwordField = document.getElementById('editPassword');
+                    if (student.password) {
+                        passwordField.value = 'Set';
+                        passwordField.classList.remove('text-danger');
+                        passwordField.classList.add('text-success');
+                    } else {
+                        passwordField.value = 'Not Set';
+                        passwordField.classList.remove('text-success');
+                        passwordField.classList.add('text-danger');
+                    }
                 } else {
                     alert('Failed to fetch student data. Please try again.');
                 }

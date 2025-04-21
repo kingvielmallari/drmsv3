@@ -71,6 +71,7 @@
 </footer>
 
 
+
 <script>
     document.getElementById("forgotPasswordForm").addEventListener("submit", async function(e) {
         e.preventDefault();

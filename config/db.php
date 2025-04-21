@@ -28,12 +28,15 @@ class class_model {
     }
    
 
-    public function updateUserPassword($student_id, $password) {
+    public function updateUserPassword($password) {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-        $sql = "UPDATE students SET password = ? WHERE student_id = ?";
+        $sql = "UPDATE students SET password = ?";
         $stmt = $this->mysqli->prepare($sql);
-        $stmt->bind_param("ss", $hashedPassword, $student_id);
+        if (!$stmt) {
+            return false;
+        }
+        $stmt->bind_param("s", $hashedPassword);
 
         return $stmt->execute();
     }
@@ -81,9 +84,45 @@ class class_model {
     
         return $stmt->execute();
     }
+    public function fetchAllRequests() {
+        $sql = "SELECT 
+                    r.id,
+                    r.student_id,
+                    CONCAT(s.last_name, ', ', s.first_name, ' ', LEFT(s.middle_name, 1), '.') AS student_name,
+                    CONCAT(s.program, ' - ', s.year, s.section, ' (', s.status, ')') AS program_section,
+                    r.document_request,
+                    r.delivery_option,
+                    r.appointment_date,
+                    r.appointment_time,
+                    r.total_price
+                FROM 
+                    requests r
+                INNER JOIN 
+                    students s ON r.student_id = s.student_id
+                ORDER BY 
+                    r.appointment_date DESC";
+    
+        $result = $this->mysqli->query($sql);
+        $data = [];
+    
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
+        }
+    
+        return $data;
+    }
     
 
+    public function getStudentIdByEmail($email) {
+        $stmt = $this->mysqli->prepare("SELECT student_id FROM students WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $stmt->bind_result($studentId);
+        $stmt->fetch();
+        $stmt->close();
 
+        return $studentId ?: null;
+    }
 
 
     public function deleteStudent($student_id) {

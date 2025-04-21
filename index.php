@@ -115,7 +115,7 @@ $loginUrl = $client->createAuthUrl()
       </form>
 
       <p class="text-center mt-3" style="color: var(--text-color);">
-      No DRMS account? <a href="create.php" style="color: var(--link-color);">Create an Account</a>
+      No DRMS account? <a href="verify.php" style="color: var(--link-color);">Create an Account</a>
       </p>
       </div>
     </div>
