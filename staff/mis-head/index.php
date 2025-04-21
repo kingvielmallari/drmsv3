@@ -1,16 +1,23 @@
 <?php
 
-require_once '../config/db.php';
+// require_once '../config/db.php';
+
+// // session_start();
+
+// // if (
+// //   !isset($_SESSION['sessionuser']) ||
+// //   !isset($_SESSION['role']) ||
+// //   $_SESSION['role'] !== 'mis-head'
+// // ) {
+// //   header('Location: ../index.php');
+// //   exit;
+// // }
+
 
 session_start();
-
-if (
-  !isset($_SESSION['sessionuser']) ||
-  !isset($_SESSION['role']) ||
-  $_SESSION['role'] !== 'Staff'
-) {
-  header('Location: ../index.php');
-  exit;
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'mis_head') {
+    header("Location: ../../student/index.php");
+    exit();
 }
 
 
@@ -25,8 +32,8 @@ if (
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Users List</title>
-    <link rel="stylesheet" href="../vendor/bootstrapv5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../assets/css/app.css">
+    <link rel="stylesheet" href="../../vendor/bootstrapv5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/app.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 </head>
@@ -36,7 +43,7 @@ if (
   <nav class="navbar navbar-expand-lg navbar-light bg-success fixed-top">
   <div class="container-fluid ">
     <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="/drmsv3/student-dashboard.php"> 
-      <img src="../assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;" class="me-3">
+      <img src="../../assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;" class="me-3">
       <span style="font-size: 1.50rem; line-height: 60px;">Pateros Technological College</span>
     </a>
     <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,12 +87,9 @@ if (
 
 
 <div class="card mt-5 mx-auto shadow-lg bg-succ" style="width: 80%; padding: 20px;">
-    <div class="card-header bg-primary text-white text-start py-3 mt-5">
-        <h4 class="mb-0">Welcome PTC Staff!, <h4><?php echo htmlspecialchars($_SESSION['sessionuser']['name']); ?></h4></strong>
-        </h4>
-    </div>
+<div class="card-body">
     <div class="text-center mt-4">
-    <a href="../controllers/LogoutStudent.php" class="btn btn-danger btn-lg px-5">Logout</a>
+    <a href="../../controllers/LogoutStudent.php" class="btn btn-danger btn-lg px-5">Logout</a>
     </div>
 </div>
 </div>
@@ -94,13 +98,13 @@ if (
 
     <div class="row w-100 mb-4">
         <div class="col-md-6 mb-3 mb-md-0 d-flex justify-content-center">
-            <a href="add-request.php" class="btn btn-lg btn-primary w-75 py-4 shadow-sm">
-                <i class="fas fa-plus-circle me-2"></i>New Request
+            <a href="students.php" class="btn btn-lg btn-primary w-75 py-4 shadow-sm">
+                <i class="fas fa-plus-circle me-2"></i>Manage Students
             </a>
         </div>
         <div class="col-md-6 d-flex justify-content-center">
-            <a href="track_request.php" class="btn btn-lg btn-secondary w-75 py-4 shadow-sm">
-                <i class="fas fa-search me-2"></i>My Request
+            <a href="staff.php" class="btn btn-lg btn-secondary w-75 py-4 shadow-sm">
+                <i class="fas fa-search me-2"></i>Manage Staff
             </a>
         </div>
     </div>
@@ -111,9 +115,9 @@ if (
  
 
 
-<script src="../vendor/bootstrapv5/js/bootstrap.bundle.min.js"></script>
+<script src="../../vendor/bootstrapv5/js/bootstrap.bundle.min.js"></script>
 
-<script src="../js/dashboard2.js"></script>
+<!-- <script src="../js/dashboard2.js"></script> -->
 
 </body>
 </html>

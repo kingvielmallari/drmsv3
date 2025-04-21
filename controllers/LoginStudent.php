@@ -1,35 +1,52 @@
 <?php
+session_start();
 require_once '../config/db.php';
 
 $cm = new class_model(); 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = trim($_POST['student_id']); // can be used for both staff and student
+    $username = trim($_POST['student_id']);
     $password = trim($_POST['password']);
 
-    // Check staff first
     $staff = $cm->loginStaff($username, $password);
 
     if ($staff) {
-        session_start();
         $_SESSION['sessionuser'] = $staff;
-        $_SESSION['role'] = 'Staff';
-        echo json_encode(["success" => true, "message" => "Staff login successful"]);
+        $_SESSION['role'] = $staff['role'];
+
+        $redirect = '';
+        switch ($staff['role']) {
+            case 'mis_head':
+                $redirect = './staff/mis-head';
+                break;
+            case 'mis_staff':
+                $redirect = './staff/mis-staff';
+                break;
+            case 'reg_head':
+                $redirect = './staff/reg-head';
+                break;
+            case 'reg_staff':
+                $redirect = './staff/reg-staff';
+                break;
+            default:
+                echo json_encode(["success" => false, "message" => "Unknown role!"]);
+                exit();
+        }
+
+        echo json_encode(["success" => true, "message" => "Staff login successful", "redirect" => $redirect]);
         exit();
     }
 
-    // Then check student
     $student = $cm->loginUsers($username, $password);
 
     if ($student) {
-        session_start();
         $_SESSION['sessionuser'] = $student;
         $_SESSION['role'] = 'Student';
-        echo json_encode(["success" => true, "message" => "Student login successful"]);
+        echo json_encode(["success" => true, "message" => "Student login successful", "redirect" => "./student/index.php"]);
         exit();
     }
 
-    // No match
     echo json_encode(["success" => false, "message" => "Invalid Student ID or Password"]);
     exit();
 }
+

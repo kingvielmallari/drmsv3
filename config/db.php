@@ -55,13 +55,33 @@ class class_model {
         return $result->fetch_assoc();
     }
 
+    public function getSpecificStudent($student_id) {
+        $sql = "SELECT * FROM students WHERE student_id = ?";
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("s", $student_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        if ($result->num_rows > 0) {
+            return $result->fetch_assoc();
+        }
+    
+        return null;
+    }
+    
 
-
-
-
-
-
-
+    public function updateStudentData($student_id, $last_name, $first_name, $middle_name, $email, $gender, $program, $year, $section, $status) {
+        $sql = "UPDATE students SET last_name = ?, first_name = ?, middle_name = ?, email = ?, gender = ?, program = ?, year = ?, section = ?, status = ? WHERE student_id = ?";
+        $stmt = $this->mysqli->prepare($sql);
+        if (!$stmt) {
+            return false;
+        }
+        $stmt->bind_param("ssssssssss", $last_name, $first_name, $middle_name, $email, $gender, $program, $year, $section, $status,$student_id
+        );
+    
+        return $stmt->execute();
+    }
+    
 
 
 
@@ -103,20 +123,37 @@ class class_model {
         return $stmt->execute();
     }
 
+    // public function loginStaff($username, $password) {
+    //     $sql = "SELECT * FROM staff WHERE username = ?";
+    //     $stmt = $this->mysqli->prepare($sql);
+    //     $stmt->bind_param("s", $username);
+    //     $stmt->execute();
+    //     $result = $stmt->get_result();
+    //     $staff = $result->fetch_assoc();
+
+    //     if ($staff && $password === $staff['password']) {
+    //         return $staff;
+    //     } else {
+    //         return false;
+    //     }
+    // }
+
     public function loginStaff($username, $password) {
-        $sql = "SELECT * FROM staff WHERE username = ?";
-        $stmt = $this->mysqli->prepare($sql);
+        $stmt = $this->mysqli->prepare("SELECT * FROM staff WHERE username = ?");
         $stmt->bind_param("s", $username);
         $stmt->execute();
         $result = $stmt->get_result();
         $staff = $result->fetch_assoc();
-
+    
         if ($staff && $password === $staff['password']) {
-            return $staff;
-        } else {
-            return false;
-        }
+                    return $staff;
+                } else {
+                    return false;
+                }
+    
+        return false;
     }
+    
     
 
     public function loginUsers($student_id, $password) {

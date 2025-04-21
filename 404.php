@@ -7,8 +7,8 @@ http_response_code(404);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>404 - Page Not Found</title>
-    <link rel="stylesheet" href="./vendor/bootstrapv5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="./assets/css/app.css">
+    <link rel="stylesheet" href="/drmsv3/vendor/bootstrapv5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/drmsv3/assets/css/app.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body class="d-flex flex-column min-vh-100">
@@ -17,7 +17,7 @@ http_response_code(404);
     <nav class="navbar navbar-expand-lg navbar-light bg-success fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="index.php">
-                <img src="./assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;" class="me-3">
+                <img src="/drmsv3/assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;" class="me-3">
                 <span style="font-size: 1.50rem; line-height: 60px;">Pateros Technological College</span>
             </a>
             <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,7 +51,7 @@ http_response_code(404);
             <img src="https://media.giphy.com/media/14uQ3cOFteDaU/giphy.gif" alt="404 GIF" class="img-fluid mb-4" style="max-width: 100%; height: auto;">
             <h1 class="text-danger">Oops! Page Not Found</h1>
             <p class="text-muted">The page you’re looking for doesn’t exist or has been moved.</p>
-            <a href="index.php" class="btn btn-success btn-lg">Go to Home</a>
+            <a href="/drmsv3/index.php" class="btn btn-success btn-lg">Go to Home</a>
         </div>
     </div>
 </div>
@@ -60,6 +60,6 @@ http_response_code(404);
     &copy; <?php echo date('Y'); ?> PTC. All rights reserved.
 </footer>
 
-<script src="./vendor/bootstrapv5/js/bootstrap.bundle.min.js"></script>
+<script src="/drmsv3/vendor/bootstrapv5/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
