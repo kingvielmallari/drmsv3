@@ -79,7 +79,7 @@
                     <button type="submit" class="btn btn-primary btn-block">Verify</button>
                 </div>
             </form>
-            <p id="response" class="text-center mt-3"></p>
+            <p id="response2" class="text-center mt-3"></p>
             <p class="text-center mt-3">
                 Have an active PTC account?
                 <a id="createPTCAccountLink" class="text-decoration-underline" style="cursor: pointer;"> Create using PTC email here.</a>
@@ -156,7 +156,7 @@
             });
 
             const text = await res.text();
-            const responseElement = document.getElementById("response");
+            const responseElement = emailInput.name === "email" ? document.getElementById("response") : document.getElementById("response2");
             responseElement.textContent = text;
             responseElement.className = "text-center text-danger";   
 

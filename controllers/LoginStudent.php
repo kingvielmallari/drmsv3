@@ -5,10 +5,10 @@ require_once '../config/db.php';
 $cm = new class_model(); 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = trim($_POST['student_id']);
+    $input = trim($_POST['student_id']);
     $password = trim($_POST['password']);
 
-    $staff = $cm->loginStaff($username, $password);
+    $staff = $cm->loginStaff($input, $password);
 
     if ($staff) {
         $_SESSION['sessionuser'] = $staff;
@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 
-    $student = $cm->loginUsers($username, $password);
+    $student = $cm->loginUsers($input, $password);
 
     if ($student) {
         $_SESSION['sessionuser'] = $student;

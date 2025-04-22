@@ -28,15 +28,27 @@ class class_model {
     }
    
 
-    public function updateUserPassword($password) {
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    public function updateUserPassword($input, $confirm_password) {
+        $hashedPassword = password_hash($confirm_password, PASSWORD_DEFAULT);
 
-        $sql = "UPDATE students SET password = ?";
+        $sql = "UPDATE students SET password = ? WHERE student_id = ? OR email = ?";
         $stmt = $this->mysqli->prepare($sql);
         if (!$stmt) {
             return false;
         }
-        $stmt->bind_param("s", $hashedPassword);
+        $stmt->bind_param("sss", $hashedPassword, $input, $input);
+
+        return $stmt->execute();
+    }
+
+    public function createUser($last_name, $first_name, $middle_name, $email, $year_graduated, $last_year_attended, $status, $password, $gender) {
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT); // Hash the password for security
+        $sql = "INSERT INTO students (last_name, first_name, middle_name, year_graduated, last_year_attended, status, password, email, gender) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $this->mysqli->prepare($sql);
+        if (!$stmt) {
+            return false;
+        }
+        $stmt->bind_param("sssssssss", $last_name, $first_name, $middle_name, $year_graduated, $last_year_attended, $status, $hashedPassword, $email, $gender);
 
         return $stmt->execute();
     }
@@ -114,17 +126,7 @@ class class_model {
     
    
 
-    public function createUser($last_name, $first_name, $middle_name, $year_graduated, $last_year_attended, $status, $password) {
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT); // Hash the password for security
-        $sql = "INSERT INTO students (last_name, first_name, middle_name, year_graduated, last_year_attended, status, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $this->mysqli->prepare($sql);
-        if (!$stmt) {
-            return false;
-        }
-        $stmt->bind_param("sssssss", $last_name, $first_name, $middle_name, $year_graduated, $last_year_attended, $status, $hashedPassword);
-
-        return $stmt->execute();
-    }
+   
     
     public function createDocument($code, $name, $price, $is_available, $eta) {
         $sql = "INSERT INTO documents (code, name, price, is_available, eta) VALUES (?, ?, ?, ?, ?)";
@@ -215,25 +217,23 @@ class class_model {
                 } else {
                     return false;
                 }
-    
-        return false;
     }
     
     
 
-    public function loginUsers($student_id_or_last_name, $password) {
-        $sql = "SELECT * FROM students WHERE student_id = ? OR last_name = ?";
-        $stmt = $this->mysqli->prepare($sql);
-        $stmt->bind_param("ss", $student_id_or_last_name, $student_id_or_last_name);
+    public function loginUsers($input, $password) {
+        $stmt = $this->mysqli->prepare("SELECT * FROM students WHERE student_id = ? OR email = ? LIMIT 1");
+        $stmt->bind_param("ss", $input, $input);
         $stmt->execute();
         $result = $stmt->get_result();
-        $user = $result->fetch_assoc();
 
-        if ($user && password_verify($password, $user['password'])) {
-            return $user;
-        } else {
-            return false;
+        if ($row = $result->fetch_assoc()) {
+            if (password_verify($password, $row['password'])) {
+                return $row; // login success
+            }
         }
+
+        return false; // login failed
     }
 
     

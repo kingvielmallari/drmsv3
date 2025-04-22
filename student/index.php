@@ -75,21 +75,31 @@ if (!isset($_SESSION['sessionuser'])) {
 
 <div class="card mt-5 mx-auto shadow-lg" style="width: 80%; padding: 20px;">
     <div class="card-header bg-primary text-white text-start py-3 mt-5">
-        <h4 class="mb-0">Welcome PTC Student!, <? echo htmlspecialchars($SESSION['role']); ?><strong>
+        <h4 class="mb-0">
             <?php 
-                $firstName = $_SESSION['sessionuser']['first_name'] ?? $_SESSION['user_email'] ?? '';
-                $middleName = $_SESSION['sessionuser']['middle_name'] ?? '';
-                $lastName = $_SESSION['sessionuser']['last_name'] ?? '';
-                $program = $_SESSION['sessionuser']['program'] ?? '';
-                $year = $_SESSION['sessionuser']['year'] ?? '';
-                $section = $_SESSION['sessionuser']['section'] ?? '';
-                $status = $_SESSION['sessionuser']['status'] ?? '';
-                $userName = $_SESSION['user_name'] ?? 'Guest';
-                
-
-                echo htmlspecialchars(trim("$firstName $middleName $lastName - $program $year$section $status!") ?: $userName);
+          $status = $_SESSION['sessionuser']['status'] ?? '';
+          if ($status !== 'Graduated') {
+              echo 'Welcome PTC Student!';
+          } else {
+              echo 'Welcome PTC Alumni! ';
+          }
             ?>
-        </strong></h4>
+            <strong>
+            <?php 
+          $firstName = $_SESSION['sessionuser']['first_name'] ?? $_SESSION['user_email'] ?? '';
+          $middleName = $_SESSION['sessionuser']['middle_name'] ?? '';
+          $lastName = $_SESSION['sessionuser']['last_name'] ?? '';
+          $program = $_SESSION['sessionuser']['program'] ?? '';
+          $year = $_SESSION['sessionuser']['year'] ?? '';
+          $section = $_SESSION['sessionuser']['section'] ?? '';
+          $batch = $_SESSION['sessionuser']['year_graduated'] ?? '';
+          $userName = $_SESSION['user_name'] ?? 'Guest';
+          $status = $_SESSION['sessionuser']['status'] ?? '';
+
+          echo htmlspecialchars(trim("$firstName $middleName $lastName - $program $year$section $status $batch") ?: $userName);
+            ?> !
+            </strong>
+        </h4>
     </div>
     <div class="text-center mt-4">
     <a href="../controllers/LogoutStudent.php" class="btn btn-danger btn-lg px-5">Logout</a>

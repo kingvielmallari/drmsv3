@@ -5,6 +5,10 @@ document.querySelector("#userForm").addEventListener("submit", async (e) => {
     const submitButton = e.target.querySelector("button[type='submit']");
     const responseElement = document.querySelector("#response");
 
+    // Add the three inputs to FormData
+    formData.append("student_id", document.getElementById("student_id").value);
+
+
     // Change button content to loading spinner
     submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
     submitButton.disabled = true;
@@ -45,21 +49,26 @@ document.querySelector("#userForm").addEventListener("submit", async (e) => {
     } finally {
         // Reset button content and state if not redirecting
         if (!responseElement.classList.contains("text-success")) {
-            submitButton.innerHTML = "Submit";
+            submitButton.innerHTML = "Register";
             submitButton.disabled = false;
         }
     }
 });
 
 
-// Prevent form submission if passwords don't match
+// Prevent form submission if passwords don't match or password is less than 6 characters
 document.getElementById("floatingConfirmPassword").addEventListener("input", function() {
     let password = document.getElementById("password").value;
     let confirmPassword = this.value;
     let errorText = document.getElementById("passwordError");
     let registerButton = document.querySelector("button[type='submit']");
 
-    if (confirmPassword.length > 0) {
+    if (password.length < 6) {
+        this.style.boxShadow = "0 0 3px 2px rgba(255, 0, 0, 0.5)"; // Red border shadow
+        errorText.textContent = "Password must be at least 6 characters long!";
+        errorText.style.color = "red";
+        registerButton.disabled = true; // Disable the button
+    } else if (confirmPassword.length > 0) {
         if (confirmPassword === password) {
             this.style.boxShadow = "0 0 3px 2px rgba(0, 128, 0, 0.5)"; // Green border shadow
             errorText.textContent = ""; // Clear error text if passwords match
@@ -87,7 +96,11 @@ document.getElementById("userForm").addEventListener("submit", function(event) {
     let confirmPassword = document.getElementById("floatingConfirmPassword").value;
     let errorText = document.getElementById("passwordError");
 
-    if (confirmPassword !== password) {
+    if (password.length < 6) {
+        event.preventDefault(); // Stop form submission
+        errorText.textContent = "Password must be at least 6 characters long!";
+        errorText.style.color = "red"; // Set text color to red
+    } else if (confirmPassword !== password) {
         event.preventDefault(); // Stop form submission
         errorText.textContent = "Passwords do not match!";
         errorText.style.color = "red"; // Set text color to red
@@ -96,57 +109,32 @@ document.getElementById("userForm").addEventListener("submit", function(event) {
     }
 });
 
+const toggleIcon = document.getElementById('togglePassword');
+const passwordInput = document.getElementById('password');
 
-
-document.getElementById("floatingConfirmPassword").addEventListener("input", function() {
-    let password = document.getElementById("password").value;
-    let confirmPassword = this.value;
-    let errorText = document.getElementById("passwordError");
-
-    if (confirmPassword !== password) {
-        errorText.style.display = "block"; // Show error if passwords don't match
-    } else {
-        errorText.style.display = "none"; // Hide error if they match
-    }
-});
-
-// Toggle Password Visibility
-document.getElementById('togglePassword').addEventListener('touchstart', function () {
-    const passwordInput = document.getElementById('password');
-    passwordInput.setAttribute('type', 'text');
-    this.classList.add('bi-eye-slash');
-    this.classList.remove('bi-eye');
-});
-
-document.getElementById('togglePassword').addEventListener('touchend', function () {
-    const passwordInput = document.getElementById('password');
-    passwordInput.setAttribute('type', 'password');
-    this.classList.add('bi-eye');
-    this.classList.remove('bi-eye-slash');
-});
-
-document.getElementById('togglePassword').addEventListener('mousedown', function () {
-    const passwordInput = document.getElementById('password');
-    passwordInput.setAttribute('type', 'text');
-    this.classList.add('bi-eye-slash');
-    this.classList.remove('bi-eye');
-});
-
-document.getElementById('togglePassword').addEventListener('mouseup', function () {
-    const passwordInput = document.getElementById('password');
-    passwordInput.setAttribute('type', 'password');
-    this.classList.add('bi-eye');
-    this.classList.remove('bi-eye-slash');
-});
-
-document.getElementById('togglePassword').addEventListener('mouseleave', function () {
-    const passwordInput = document.getElementById('password');
-    passwordInput.setAttribute('type', 'password');
-    this.classList.add('bi-eye');
-    this.classList.remove('bi-eye-slash');
-});
-
-
+document.querySelectorAll('.toggle-password').forEach(toggleIcon => {
+    const targetId = toggleIcon.dataset.target;
+    const passwordInput = document.getElementById(targetId);
+  
+    const showPassword = () => {
+      passwordInput.setAttribute('type', 'text');
+      toggleIcon.classList.add('bi-eye-slash');
+      toggleIcon.classList.remove('bi-eye');
+    };
+  
+    const hidePassword = () => {
+      passwordInput.setAttribute('type', 'password');
+      toggleIcon.classList.add('bi-eye');
+      toggleIcon.classList.remove('bi-eye-slash');
+    };
+  
+    toggleIcon.addEventListener('touchstart', showPassword);
+    toggleIcon.addEventListener('touchend', hidePassword);
+    toggleIcon.addEventListener('mousedown', showPassword);
+    toggleIcon.addEventListener('mouseup', hidePassword);
+    toggleIcon.addEventListener('mouseleave', hidePassword);
+  });
+  
 // Change Theme
 document.getElementById('themeToggle').addEventListener('change', function() {
     if (this.checked) {

@@ -89,8 +89,10 @@ if ($student) {
 <p class="text-center text-muted">Make sure that your Student ID is registered in our school database to be able to create account.</p>
 <form id="resetForm">
     <div class="form-floating mb-3">
-        <input type="text" class="form-control text-uppercase" name="student_id" id="student_id" placeholder="floatingStudentID" required oninput="this.value = this.value.toUpperCase();" value="<?php echo htmlspecialchars($studentID); ?>" readonly disabled>
-        <label for="floatingStudentID">Student ID</label>
+      <input type="text" class="form-control" name="student_id" id="student_id" placeholder="floatingStudentID" required 
+      value="<?php echo $studentID ? strtoupper($studentID) : htmlspecialchars($email); ?>" 
+      readonly disabled>
+      <label for="floatingStudentID">Student ID or Email</label>
     </div>
     <div class="form-floating mb-3 position-relative">
         <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>

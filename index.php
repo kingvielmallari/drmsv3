@@ -86,7 +86,7 @@ $loginUrl = $client->createAuthUrl()
       <form id="userForm">
       <div class="form-floating mb-3">
         <input type="text" class="form-control text-uppercase" name="student_id" id="student_id" placeholder="Student ID" required oninput="this.value = this.value.toUpperCase();">
-      <label for="student_id" style="color: var(--text-color);">Student ID or Last Name</label>
+      <label for="student_id" style="color: var(--text-color);">Student ID or Email</label>
       </div>
       <div class="form-floating mb-3 position-relative">
       <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
@@ -209,7 +209,11 @@ $loginUrl = $client->createAuthUrl()
 <script src="./js/loginStudent.js"></script>
 
 
+<script>
 
+
+
+</script>
 
 </body>
 </html>

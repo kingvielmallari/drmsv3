@@ -1,23 +1,20 @@
 
 <?php
 
-// require_once './config/db.php'; // Update with your actual DB connection file
+require_once './config/db.php'; // Update with your actual DB connection file
 
-// session_start();
+session_start();
 
-// $token = $_GET['token'] ?? '';
-// $sessionToken = $_SESSION['token'] ?? '';
+$token = $_GET['token'] ?? '';
+$sessionToken = $_SESSION['token'] ?? '';
 
-// if (!$token || $token !== $sessionToken) {
-//     // Block unauthorized access
-//     header("Location: ./verify.php");
-//     exit;
-// }
+if (!$token || $token !== $sessionToken) {
+    // Block unauthorized access
+    header("Location: ./verify.php");
+    exit;
+}
 
-// // Optional: regenerate session token to prevent reuse
-// unset($_SESSION['token']);
-
-// // Continue with password creation form
+// Continue with password creation form
 ?>
 
 
@@ -79,7 +76,7 @@
       <p class="text-center text-muted mb-4">Make sure that your Student ID is registered in our school database to be able to create an account.</p>
       <form id="userForm">
         <div class="row g-3 mb-3">
-        <div class="col-md-6">
+          <div class="col-md-6">
             <div class="form-floating">
               <input type="text" class="form-control" name="first_name" id="first_name" placeholder="First Name" oninput="this.value = this.value.replace(/\b\w/g, char => char.toUpperCase())" required>
               <label for="first_name">First Name</label>
@@ -91,8 +88,7 @@
               <label for="middle_name">Middle Name</label>
             </div>
           </div>
-         
-          
+
         </div>
 
         <div class="row g-3 mb-3">
@@ -104,20 +100,41 @@
           </div>
           <div class="col-md-6">
             <div class="form-floating">
+            <input type="email" class="form-control" name="email" id="email" placeholder="Email Address" value="<?php echo $_SESSION['email'] ?? ''; ?>" disabled required>  
+            <label for="email">Email Address</label>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <div class="form-floating">
               <input type="number" class="form-control" name="year_graduated" id="year_graduated" placeholder="Year Graduated" min="1900" max="<?php echo date('Y'); ?>" maxlength="4" oninput="this.value = this.value.slice(0, 4)" required>
               <label for="year_graduated">Year Graduated</label>
             </div>
           </div>
-        </div>
-
-        <div class="row g-3 mb-3">
           <div class="col-md-6">
             <div class="form-floating">
               <input type="number" class="form-control" name="last_year_attended" id="last_year_attended" placeholder="Last Year Attended" min="1900" max="<?php echo date('Y'); ?>" maxlength="4" oninput="this.value = this.value.slice(0, 4)" required>
               <label for="last_year_attended">Last Year Attended</label>
             </div>
           </div>
-          <div class="col-md-6 position-relative">
+         
+        </div>
+        
+        <div class="row g-3 mb-3">
+           <div class="col-md-6 position-relative">
+            <div class="form-floating">
+              <select class="form-select" name="gender" id="gender" required>
+                <option value="" disabled selected>Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+              <label for="gender">Gender</label>
+            </div>
+          </div>
+           <div class="col-md-6 position-relative">
             <div class="form-floating">
               <select class="form-select" name="status" id="status" required>
                 <option value="" disabled selected>Select Status</option>
@@ -128,20 +145,21 @@
               <label for="status">Status</label>
             </div>
           </div>
-        </div>
+        </div> 
 
         <div class="row g-3 mb-3">
           <div class="col-md-6 position-relative">
             <div class="form-floating">
-              <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
-              <label for="password">New Password</label>
-              <i class="bi bi-eye-slash position-absolute top-50 end-0 translate-middle-y me-3" id="togglePassword" style="cursor: pointer;"></i>
+            <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
+          <label for="password">New Password</label>
+          <i class="bi bi-eye toggle-password" data-target="password" style="position: absolute; top: 50%; right: 10px; cursor: pointer;"></i>
             </div>
           </div>
           <div class="col-md-6">
             <div class="form-floating">
-              <input type="password" class="form-control" name="confirm_password" id="floatingConfirmPassword" placeholder="Confirm Password" required>
-              <label for="floatingConfirmPassword">Confirm Password</label>
+            <input type="password" class="form-control" name="confirm_password" id="floatingConfirmPassword" placeholder="Confirm Password" required>
+          <label for="floatingConfirmPassword">Confirm Password</label>
+          <i class="bi bi-eye toggle-password" data-target="floatingConfirmPassword" style="position: absolute; top: 50%; right: 10px; cursor: pointer;"></i>
             </div>
           </div>
         </div>
@@ -169,6 +187,7 @@ document.getElementById("userForm").addEventListener("submit", async function (e
 
     const form = e.target;
     const formData = new FormData(form);
+    formData.append("email", document.getElementById("email").value);
     const submitBtn = form.querySelector("button[type='submit']");
     const passwordError = document.getElementById("passwordError");
     const responseEl = document.getElementById("response");
@@ -188,7 +207,7 @@ document.getElementById("userForm").addEventListener("submit", async function (e
       responseEl.textContent = result;
       responseEl.classList.add("text-success");
 
-      // Simulate delay for better user experience
+      
       setTimeout(() => {
         setTimeout(() => {
           window.location.href = "index.php";
@@ -202,14 +221,20 @@ document.getElementById("userForm").addEventListener("submit", async function (e
     }
   });
 
-// Prevent form submission if passwords don't match
+
+// Prevent form submission if passwords don't match or password is less than 6 characters
 document.getElementById("floatingConfirmPassword").addEventListener("input", function() {
     let password = document.getElementById("password").value;
     let confirmPassword = this.value;
     let errorText = document.getElementById("passwordError");
     let registerButton = document.querySelector("button[type='submit']");
 
-    if (confirmPassword.length > 0) {
+    if (password.length < 6) {
+        this.style.boxShadow = "0 0 3px 2px rgba(255, 0, 0, 0.5)"; // Red border shadow
+        errorText.textContent = "Password must be at least 6 characters long!";
+        errorText.style.color = "red";
+        registerButton.disabled = true; // Disable the button
+    } else if (confirmPassword.length > 0) {
         if (confirmPassword === password) {
             this.style.boxShadow = "0 0 3px 2px rgba(0, 128, 0, 0.5)"; // Green border shadow
             errorText.textContent = ""; // Clear error text if passwords match
@@ -237,7 +262,11 @@ document.getElementById("userForm").addEventListener("submit", function(event) {
     let confirmPassword = document.getElementById("floatingConfirmPassword").value;
     let errorText = document.getElementById("passwordError");
 
-    if (confirmPassword !== password) {
+    if (password.length < 6) {
+        event.preventDefault(); // Stop form submission
+        errorText.textContent = "Password must be at least 6 characters long!";
+        errorText.style.color = "red"; // Set text color to red
+    } else if (confirmPassword !== password) {
         event.preventDefault(); // Stop form submission
         errorText.textContent = "Passwords do not match!";
         errorText.style.color = "red"; // Set text color to red
@@ -246,55 +275,31 @@ document.getElementById("userForm").addEventListener("submit", function(event) {
     }
 });
 
+const toggleIcon = document.getElementById('togglePassword');
+const passwordInput = document.getElementById('password');
 
-
-document.getElementById("floatingConfirmPassword").addEventListener("input", function() {
-    let password = document.getElementById("password").value;
-    let confirmPassword = this.value;
-    let errorText = document.getElementById("passwordError");
-
-    if (confirmPassword !== password) {
-        errorText.style.display = "block"; // Show error if passwords don't match
-    } else {
-        errorText.style.display = "none"; // Hide error if they match
-    }
-});
-
-// Toggle Password Visibility
-document.getElementById('togglePassword').addEventListener('touchstart', function () {
-    const passwordInput = document.getElementById('password');
-    passwordInput.setAttribute('type', 'text');
-    this.classList.add('bi-eye-slash');
-    this.classList.remove('bi-eye');
-});
-
-document.getElementById('togglePassword').addEventListener('touchend', function () {
-    const passwordInput = document.getElementById('password');
-    passwordInput.setAttribute('type', 'password');
-    this.classList.add('bi-eye');
-    this.classList.remove('bi-eye-slash');
-});
-
-document.getElementById('togglePassword').addEventListener('mousedown', function () {
-    const passwordInput = document.getElementById('password');
-    passwordInput.setAttribute('type', 'text');
-    this.classList.add('bi-eye-slash');
-    this.classList.remove('bi-eye');
-});
-
-document.getElementById('togglePassword').addEventListener('mouseup', function () {
-    const passwordInput = document.getElementById('password');
-    passwordInput.setAttribute('type', 'password');
-    this.classList.add('bi-eye');
-    this.classList.remove('bi-eye-slash');
-});
-
-document.getElementById('togglePassword').addEventListener('mouseleave', function () {
-    const passwordInput = document.getElementById('password');
-    passwordInput.setAttribute('type', 'password');
-    this.classList.add('bi-eye');
-    this.classList.remove('bi-eye-slash');
-});
+document.querySelectorAll('.toggle-password').forEach(toggleIcon => {
+    const targetId = toggleIcon.dataset.target;
+    const passwordInput = document.getElementById(targetId);
+  
+    const showPassword = () => {
+      passwordInput.setAttribute('type', 'text');
+      toggleIcon.classList.add('bi-eye-slash');
+      toggleIcon.classList.remove('bi-eye');
+    };
+  
+    const hidePassword = () => {
+      passwordInput.setAttribute('type', 'password');
+      toggleIcon.classList.add('bi-eye');
+      toggleIcon.classList.remove('bi-eye-slash');
+    };
+  
+    toggleIcon.addEventListener('touchstart', showPassword);
+    toggleIcon.addEventListener('touchend', hidePassword);
+    toggleIcon.addEventListener('mousedown', showPassword);
+    toggleIcon.addEventListener('mouseup', hidePassword);
+    toggleIcon.addEventListener('mouseleave', hidePassword);
+  });
 
 
 // Change Theme

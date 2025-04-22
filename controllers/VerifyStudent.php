@@ -23,12 +23,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_SESSION['email'] = $email;
     $_SESSION['token'] = bin2hex(random_bytes(32)); // Generate a secure random token
 
+    $db = new class_model();
+
+    // Search for user by email
+    $user = $db->findByEmail($email);
+
     if (strpos($email, "@paterostechnologicalcollege.edu.ph") !== false) {
-        $db = new class_model();
-
-        // Search for student by email
-        $user = $db->findByEmail($email);
-
         if ($user) {
             if ($user['password'] !== null) {
                 echo "Account already exists.";
@@ -36,6 +36,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } else {
             echo "This email is not registered as a student.";
+            exit;
+        }
+    } else {
+        if ($user) {
+            echo "Account already exists.";
             exit;
         }
     }

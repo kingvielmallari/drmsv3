@@ -12,11 +12,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
-    $student_id = trim($_POST['student_id']);
+
+    $input = trim($_POST['student_id']);
     $confirm_password = trim($_POST['confirm_password']);
+    // $email = trim($_POST['email']);
 
     // Update password
-    if ($cm->updateUserPassword($student_id, $confirm_password)) {
+    if ($cm->updateUserPassword($input, $confirm_password)) {
         // Delete token after password update
         if ($cm->deleteToken($token)) {
             echo "Password updated successfully!";

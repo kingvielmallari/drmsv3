@@ -5,6 +5,12 @@ require_once './config/db.php'; // Update with your actual DB connection file
 
 session_start();
 
+   $email = $_SESSION['email']; // Fetch email from session
+   
+   $cm = new class_model();
+
+   $studentId = $cm->getStudentIdByEmail($email); // Fetch student ID based on email
+      
 $token = $_GET['token'] ?? '';
 $sessionToken = $_SESSION['token'] ?? '';
 
@@ -14,10 +20,7 @@ if (!$token || $token !== $sessionToken) {
     exit;
 }
 
-// Optional: regenerate session token to prevent reuse
-unset($_SESSION['token']);
 
-// Continue with password creation form
 ?>
 
 
@@ -78,15 +81,7 @@ unset($_SESSION['token']);
       <h2 class="text-center mb-4">Create New DRMS Account</h2>
       <p class="text-center text-muted mb-4">Make sure that your Student ID is registered in our school database to be able to create an account.</p>
       <form id="userForm" class="p-4">
-        <?php
-       
-
-        $email = $_SESSION['email'] ?? ''; // Email should be stored in session after OTP verification
-
-        $cm = new class_model();
-
-        $studentId = $cm->getStudentIdByEmail($email); // Fetch student ID based on email
-        ?>
+        
 
         <div class="form-floating mb-3">
           <input type="text" class="form-control text-uppercase" name="student_id" id="student_id" placeholder="Student ID" value="<?php echo htmlspecialchars($studentId); ?>" readonly required disabled>
@@ -95,12 +90,15 @@ unset($_SESSION['token']);
         <div class="form-floating mb-3 position-relative">
           <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
           <label for="password">New Password</label>
-          <i class="bi bi-eye-slash position-absolute top-50 end-0 translate-middle-y me-3" id="togglePassword" style="cursor: pointer;"></i>
+          <i class="bi bi-eye toggle-password" data-target="password" style="position: absolute; top: 50%; right: 10px; cursor: pointer;"></i>
         </div>
-        <div class="form-floating mb-3">
+
+        <div class="form-floating mb-3 position-relative">
           <input type="password" class="form-control" name="confirm_password" id="floatingConfirmPassword" placeholder="Confirm Password" required>
           <label for="floatingConfirmPassword">Confirm Password</label>
+          <i class="bi bi-eye toggle-password" data-target="floatingConfirmPassword" style="position: absolute; top: 50%; right: 10px; cursor: pointer;"></i>
         </div>
+
         <p id="passwordError" class="text-danger text-center"></p>
 
         <div class="d-grid mb-3">

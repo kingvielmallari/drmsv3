@@ -53,7 +53,7 @@
             <p class="text-center text-muted">Enter your registered email address to reset your password.</p>
             <form id="forgotPasswordForm">
                 <div class="form-floating mb-3">
-                    <input type="email" class="form-control" name="email" id="email" placeholder="Email" required>
+                    <input type="text" class="form-control" name="email" id="email" placeholder="Email" required>
                     <label for="email">Email Address</label>
                 </div>
                 <div class="d-grid mb-3">
@@ -73,6 +73,21 @@
 
 
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const emailInput = document.getElementById("email");
+        const domain = "@paterostechnologicalcollege.edu.ph";
+
+        // Set default value with domain
+        emailInput.value = domain;
+
+        // Allow user to modify or delete the domain
+        emailInput.addEventListener("input", function () {
+            // Do nothing, allow user to freely edit the input
+        });
+    });
+</script>
+
+<script>    
     document.getElementById("forgotPasswordForm").addEventListener("submit", async function(e) {
         e.preventDefault();
 

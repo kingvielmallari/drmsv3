@@ -101,16 +101,17 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
                         <label for="addPrice">Document Price</label>
                     </div>
                     <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="addEta" placeholder="ETA" required>
+                        <label for="addEta">Processing Time</label>
+                    </div>
+                    <div class="form-floating mb-3">
                         <select class="form-select" id="addIsAvailable" required>
                             <option value="yes">Yes</option>
                             <option value="no">No</option>
                         </select>
                         <label for="addIsAvailable">Is Available?</label>
                     </div>
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="addEta" placeholder="ETA" required>
-                        <label for="addEta">Processing Time</label>
-                    </div>
+                    
                 </form>
             </div>
             <div class="modal-footer">
