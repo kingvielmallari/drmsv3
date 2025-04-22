@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 22, 2025 at 04:58 PM
+-- Generation Time: Apr 23, 2025 at 12:22 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -44,8 +44,7 @@ INSERT INTO `documents` (`id`, `code`, `name`, `price`, `is_available`, `eta`) V
 (45, 'COG', 'Certificate Of Grades', 50, 'yes', 1),
 (46, 'COR', 'Certificate Of Registration', 50, 'yes', 1),
 (47, 'TOR', 'Transcript Of Records', 200, 'yes', 14),
-(48, 'HD', 'Honorable Dismissal', 100, 'yes', 1),
-(49, 'GM', 'Good Moral', 80, 'yes', 1);
+(48, 'HD', 'Honorable Dismissal', 100, 'yes', 1);
 
 -- --------------------------------------------------------
 
@@ -78,13 +77,6 @@ CREATE TABLE `password_resets` (
   `expires_at` datetime NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `password_resets`
---
-
-INSERT INTO `password_resets` (`id`, `email`, `token`, `expires_at`, `created_at`) VALUES
-(6, 'klmallari@paterostechnologicalcollege.edu.ph', '832d44c1db3f82d364252fb6d250217394506d5d059d41c61918167d56faeab2', '2025-04-21 14:34:47', '2025-04-21 06:29:47');
 
 -- --------------------------------------------------------
 
@@ -157,8 +149,9 @@ CREATE TABLE `students` (
 --
 
 INSERT INTO `students` (`id`, `student_id`, `last_name`, `first_name`, `middle_name`, `email`, `gender`, `program`, `year`, `section`, `status`, `year_graduated`, `last_year_attended`, `password`) VALUES
-(7, '2021-3537', 'Mallari', 'King Viel', 'Labro', 'klmallari@paterostechnologicalcollege.edu.ph', 'Male', 'BSIT', '4', 'A', 'Regular', NULL, NULL, '$2y$10$P9nfawZ00C64Uxdo549fBuiCFPLx25GWFdTpm2HLAhSFpoBjE2Wtq'),
-(8, NULL, 'Parman', 'Bernadette', 'Mendoza', NULL, NULL, NULL, NULL, NULL, 'Graduated', '2022', '2022', '$2y$10$JragajIDzhXpuf.PX3guKeFMvnjI0kM5esl0jcwY4Ca.4AL3y0Fsu');
+(7, '2021-3537', 'Mallari', 'King Viel', 'Labro', 'klmallari@paterostechnologicalcollege.edu.ph', 'Male', 'BSIT', '4', 'A', 'Regular', NULL, NULL, '$2y$10$uWN2xzLtW1hTVhKmifSwneNUIgeY2LGjXgml4o.bfIQ5zu6rM05qO'),
+(23, NULL, 'Parman', 'Bernadette', 'Mendoza', 'mallariking0@gmail.com', 'Male', NULL, NULL, NULL, 'Graduated', '2025', '2025', '$2y$10$.KXfVGLLXuXjl1E1ZcLHa.H2poGiXYpSothOXiAolHOzqQy6IpDuS'),
+(24, NULL, 'PARMAN', 'BERNADETTE', 'MENDOZA', 'bhea.parman1@gmail.com', 'Female', NULL, NULL, NULL, 'Graduated', '2025', '2025', '$2y$10$Q825EhQElsFrDAKrfTYHse9XwCOqqf4uJYg48ivC7VuwW9KsFkZQi');
 
 --
 -- Indexes for dumped tables
@@ -220,7 +213,7 @@ ALTER TABLE `fees`
 -- AUTO_INCREMENT for table `password_resets`
 --
 ALTER TABLE `password_resets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `requests`
@@ -238,7 +231,7 @@ ALTER TABLE `staff`
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
