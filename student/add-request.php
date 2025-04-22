@@ -110,29 +110,27 @@ $cm = new class_model();
                     $docPrice = htmlspecialchars($row['price'] ?? 0);
                     $docEta = htmlspecialchars($row['eta'] ?? 0);
                     $needsExtraInputs = in_array($docName, ['Certificate Of Grades', 'Certificate Of Registration']);
+                    $isGraduated = ($_SESSION['sessionuser']['status'] ?? '') === 'Graduated';
+                    $isRestrictedDoc = $isGraduated && $needsExtraInputs;
                 ?>
                     <li class="list-group-item">
                         <div class="d-flex justify-content-between align-items-center">
                             <button type="button" 
-                                    class="btn btn-outline-success document-toggle w-75 text-start"
+                                    class="btn <?= $isRestrictedDoc ? 'btn-outline-danger' : 'btn-outline-success' ?> document-toggle w-100 text-start"
                                     data-doc-id="<?= $docId ?>"
                                     data-doc-name="<?= $docName ?>"
                                     data-doc-price="<?= $docPrice ?>"
-                                    data-doc-eta="<?= $docEta ?>">
+                                    data-doc-eta="<?= $docEta ?>"
+                                    <?= $isRestrictedDoc ? 'disabled' : '' ?>>
                                 <i class="fas fa-file-alt me-2"></i><?= $docName ?>
                             </button>
-                            <span class="badge bg-<?= $row['is_available'] === 'yes' ? 'success' : 'danger' ?> rounded-pill">
-                                <?= $row['is_available'] === 'yes' ? 'Available' : 'Not Available' ?>
+                            <span class="badge bg-<?= $isRestrictedDoc || $row['is_available'] !== 'yes' ? 'danger' : 'success' ?> rounded-pill">
+                                <?= $isRestrictedDoc ? 'Not Available' : ($row['is_available'] === 'yes' ? 'Available' : 'Not Available') ?>
                             </span>
-                            <script>
-                                if ('<?= $row['is_available'] ?>' === 'no') {
-                                    const button = document.querySelector('[data-doc-id="<?= $docId ?>"]');
-                                    button.disabled = true;
-                                    button.classList.remove('btn-outline-success');
-                                    button.classList.add('btn-outline-danger');
-                                }
-                            </script>
                         </div>
+                        <?php if ($isRestrictedDoc): ?>
+                            <small class="text-muted text-danger">Graduated students cannot request COG/COR. Instead, request TOR.</small>
+                        <?php endif; ?>
 
                         <?php if ($needsExtraInputs): ?>
                             <div class="mt-2 p-2 bg-light rounded" style="display: none;" id="inputs-<?= $docId ?>">
@@ -166,7 +164,6 @@ $cm = new class_model();
     <?php else: ?>
         <p class="text-muted text-center">No documents available for request.</p>
     <?php endif; ?>
-</div>
 
                     <!-- Step 2: Details -->
                     <div class="step" id="step2">

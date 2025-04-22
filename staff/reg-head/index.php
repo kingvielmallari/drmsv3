@@ -70,6 +70,9 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
 </header>
 
 <div class="card mt-5 mx-auto shadow-lg bg-succ" style="width: 80%; padding: 20px;">
+<div class="card-header bg-primary text-white text-start py-3 mt-5">
+        <h4 class="mb-0">Welcome Registrar Head!, <strong><?php echo htmlspecialchars($_SESSION['sessionuser']['name']); ?></strong></h4>
+    </div>
 <div class="card-body">
     <div class="text-center mt-4">
     <a href="../../controllers/LogoutStudent.php" class="btn btn-danger btn-lg px-5">Logout</a>
