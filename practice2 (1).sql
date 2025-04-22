@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 21, 2025 at 04:49 PM
+-- Generation Time: Apr 22, 2025 at 04:58 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -41,9 +41,11 @@ CREATE TABLE `documents` (
 --
 
 INSERT INTO `documents` (`id`, `code`, `name`, `price`, `is_available`, `eta`) VALUES
-(1, 'COG', 'Certificate of Grades', 150, 'no', 1),
-(2, 'COR', 'Certificate of Registration', 150, 'yes', 1),
-(3, 'TOR', 'Transcript of Records', 300, 'yes', 14);
+(45, 'COG', 'Certificate Of Grades', 50, 'yes', 1),
+(46, 'COR', 'Certificate Of Registration', 50, 'yes', 1),
+(47, 'TOR', 'Transcript Of Records', 200, 'yes', 14),
+(48, 'HD', 'Honorable Dismissal', 100, 'yes', 1),
+(49, 'GM', 'Good Moral', 80, 'yes', 1);
 
 -- --------------------------------------------------------
 
@@ -103,19 +105,6 @@ CREATE TABLE `requests` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `requests`
---
-
-INSERT INTO `requests` (`id`, `student_id`, `student_name`, `program_section`, `document_request`, `delivery_option`, `appointment_date`, `appointment_time`, `total_price`, `created_at`) VALUES
-(1, '23BSIT-0121', 'Jazmine Louise J. Abagat', 'BSIT - 2C (Regular)', 'Certificate of Grades (4th Year, 1st Sem)', 'pickup', '0000-00-00', '10:00:00', 180.00, '2025-04-14 01:56:35'),
-(2, '23BSIT-0121', 'Jazmine Louise J. Abagat', 'BSIT - 2C (Regular)', 'Certificate of Grades (4th Year, 2nd Sem)', 'pickup', '2025-04-23', '11:00:00', 180.00, '2025-04-14 02:03:12'),
-(3, '23BSIT-0121', 'Jazmine Louise J. Abagat', 'BSIT - 2C (Regular)', 'Certificate of Grades (2nd Year, 1st Sem), Certificate of Registration (4th Year, 1st Sem), Transcript of Records', 'pickup', '2025-04-16', '04:00:00', 630.00, '2025-04-14 02:10:53'),
-(5, '23BSIT-0121', 'Jazmine Louise J. Abagat', 'BSIT - 2C (Regular)', 'Certificate of Grades (4th Year, 2nd Sem)', 'pickup', '2025-04-17', '11:00:00', 180.00, '2025-04-15 00:40:24'),
-(6, '23BSIT-0121', 'Jazmine Louise J. Abagat', 'BSIT - 2C (Regular)', 'Transcript of Records', 'pickup', '2025-04-24', '11:00:00', 330.00, '2025-04-15 00:59:42'),
-(7, '23BSIT-0121', 'Jazmine Louise J. Abagat', 'BSIT - 2C (Regular)', 'Certificate of Registration (4th Year, 1st Sem)', 'pickup', '2025-04-22', '10:00:00', 180.00, '2025-04-15 01:01:43'),
-(8, '23BSIT-0121', 'Jazmine Louise J. Labagat', 'BSIT - 2C (Regular)', 'Transcript of Records', 'pickup', '2025-04-25', '09:00:00', 330.00, '2025-04-21 05:14:01');
-
 -- --------------------------------------------------------
 
 --
@@ -137,7 +126,7 @@ CREATE TABLE `staff` (
 INSERT INTO `staff` (`id`, `name`, `username`, `password`, `role`) VALUES
 (1, 'King Viel Mallari', 'mishead', 'king', 'mis_head'),
 (2, 'King Viel Mallari', 'misstaff', 'king', 'mis_staff'),
-(3, 'King Viel Mallari', 'reghead', 'king', 'reg_head'),
+(3, 'Melissa Patco', 'reghead', 'king', 'reg_head'),
 (4, 'King Viel Mallari', 'regstaff', 'king', 'reg_staff');
 
 -- --------------------------------------------------------
@@ -148,16 +137,18 @@ INSERT INTO `staff` (`id`, `name`, `username`, `password`, `role`) VALUES
 
 CREATE TABLE `students` (
   `id` int(11) NOT NULL,
-  `student_id` varchar(15) NOT NULL,
+  `student_id` varchar(15) DEFAULT NULL,
   `last_name` varchar(50) NOT NULL,
   `first_name` varchar(50) NOT NULL,
   `middle_name` varchar(50) DEFAULT NULL,
-  `email` varchar(100) NOT NULL,
-  `gender` enum('Male','Female','Other') NOT NULL,
-  `program` enum('BSIT','BSOA','CCS') NOT NULL,
-  `year` enum('1','2','3','4') NOT NULL,
-  `section` varchar(5) NOT NULL,
-  `status` enum('Regular','Irregular') NOT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `gender` enum('Male','Female','Other') DEFAULT NULL,
+  `program` enum('BSIT','BSOA','CCS') DEFAULT NULL,
+  `year` enum('1','2','3','4') DEFAULT NULL,
+  `section` varchar(5) DEFAULT NULL,
+  `status` enum('Regular','Irregular','Graduated') DEFAULT NULL,
+  `year_graduated` year(4) DEFAULT NULL,
+  `last_year_attended` year(4) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -165,10 +156,9 @@ CREATE TABLE `students` (
 -- Dumping data for table `students`
 --
 
-INSERT INTO `students` (`id`, `student_id`, `last_name`, `first_name`, `middle_name`, `email`, `gender`, `program`, `year`, `section`, `status`, `password`) VALUES
-(1, '23BSIT-0121', 'Labagat', 'Jazmine Louise', 'Joseph', 'jjabagat@paterostechnologicalcollege.edu.ph', 'Female', 'BSIT', '2', 'C', 'Regular', '$2y$10$X9lL/hIhG2yTT95/dw1Om.kfT4bTNqtyb5XOVZO.Y6pKTTS64FWRq'),
-(2, '25CCS-2025', 'Mallari', 'Viel King', 'Labro', 'klmallari@paterostechnologicalcollege.edu.ph', 'Male', 'BSIT', '4', 'A', 'Irregular', '$2y$10$X9lL/hIhG2yTT95/dw1Om.kfT4bTNqtyb5XOVZO.Y6pKTTS64FWRq'),
-(3, '25BSOA-2025', 'Parman', 'Bernadette Parman', 'Mendoza', 'mallariking0@gmail.com', 'Female', 'BSOA', '4', 'A', 'Regular', '$2y$10$X9lL/hIhG2yTT95/dw1Om.kfT4bTNqtyb5XOVZO.Y6pKTTS64FWRq');
+INSERT INTO `students` (`id`, `student_id`, `last_name`, `first_name`, `middle_name`, `email`, `gender`, `program`, `year`, `section`, `status`, `year_graduated`, `last_year_attended`, `password`) VALUES
+(7, '2021-3537', 'Mallari', 'King Viel', 'Labro', 'klmallari@paterostechnologicalcollege.edu.ph', 'Male', 'BSIT', '4', 'A', 'Regular', NULL, NULL, '$2y$10$P9nfawZ00C64Uxdo549fBuiCFPLx25GWFdTpm2HLAhSFpoBjE2Wtq'),
+(8, NULL, 'Parman', 'Bernadette', 'Mendoza', NULL, NULL, NULL, NULL, NULL, 'Graduated', '2022', '2022', '$2y$10$JragajIDzhXpuf.PX3guKeFMvnjI0kM5esl0jcwY4Ca.4AL3y0Fsu');
 
 --
 -- Indexes for dumped tables
@@ -218,7 +208,7 @@ ALTER TABLE `students`
 -- AUTO_INCREMENT for table `documents`
 --
 ALTER TABLE `documents`
-  MODIFY `id` int(15) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(15) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT for table `fees`
@@ -236,7 +226,7 @@ ALTER TABLE `password_resets`
 -- AUTO_INCREMENT for table `requests`
 --
 ALTER TABLE `requests`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `staff`
@@ -248,7 +238,7 @@ ALTER TABLE `staff`
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
