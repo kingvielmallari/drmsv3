@@ -112,6 +112,30 @@ class class_model {
         return $data;
     }
     
+   
+
+    public function createUser($last_name, $first_name, $middle_name, $year_graduated, $last_year_attended, $status, $password) {
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT); // Hash the password for security
+        $sql = "INSERT INTO students (last_name, first_name, middle_name, year_graduated, last_year_attended, status, password) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $this->mysqli->prepare($sql);
+        if (!$stmt) {
+            return false;
+        }
+        $stmt->bind_param("sssssss", $last_name, $first_name, $middle_name, $year_graduated, $last_year_attended, $status, $hashedPassword);
+
+        return $stmt->execute();
+    }
+    
+    public function createDocument($code, $name, $price, $is_available, $eta) {
+        $sql = "INSERT INTO documents (code, name, price, is_available, eta) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $this->mysqli->prepare($sql);
+        if (!$stmt) {
+            return false;
+        }
+        $stmt->bind_param("ssdss", $code, $name, $price, $is_available, $eta);
+        return $stmt->execute();
+    }
+    
 
     public function getStudentIdByEmail($email) {
         $stmt = $this->mysqli->prepare("SELECT student_id FROM students WHERE email = ?");
@@ -133,14 +157,16 @@ class class_model {
        return $stmt->execute();
     }
 
-    
-    public function deleteDocument($id) {
+    public function deleteDocument($deleteDocumentId) {
         $sql = "DELETE FROM documents WHERE id = ?";
         $stmt = $this->mysqli->prepare($sql);
-        $stmt->bind_param("i", $id);
-
-       return $stmt->execute();
+        if (!$stmt) {
+            return false;
+        }
+        $stmt->bind_param("i", $deleteDocumentId);
+        return $stmt->execute();
     }
+
 
     public function addRequest($studentId, $studentName, $programSection, $documentRequest, $deliveryOption, $appointmentDate, $appointmentTime, $totalPrice) {
         $sql = "INSERT INTO requests (student_id, student_name, program_section, document_request, delivery_option, appointment_date, appointment_time, total_price) 
@@ -195,10 +221,10 @@ class class_model {
     
     
 
-    public function loginUsers($student_id, $password) {
-        $sql = "SELECT * FROM students WHERE student_id = ?";
+    public function loginUsers($student_id_or_last_name, $password) {
+        $sql = "SELECT * FROM students WHERE student_id = ? OR last_name = ?";
         $stmt = $this->mysqli->prepare($sql);
-        $stmt->bind_param("s", $student_id);
+        $stmt->bind_param("ss", $student_id_or_last_name, $student_id_or_last_name);
         $stmt->execute();
         $result = $stmt->get_result();
         $user = $result->fetch_assoc();
@@ -246,6 +272,7 @@ class class_model {
 
         return $result->fetch_all(MYSQLI_ASSOC);
     }
+  
 
     
     public function getFees() {

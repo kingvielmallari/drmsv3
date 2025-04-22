@@ -9,7 +9,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $token = $_SESSION['token'] ?? '';
 
     if ($userOtp == $sessionOtp && $email === $sessionEmail) {
-        echo json_encode(['status' => 'success', 'token' => $token]);
+        if (strpos($sessionEmail, '@paterostechnologicalcollege.edu.ph') !== false) {
+            echo json_encode(['status' => 'ptc', 'token' => $token]);
+        } else {
+            echo json_encode(['status' => 'email', 'token' => $token]);
+        }
     } else {
         echo json_encode(['status' => 'error', 'message' => 'OTP is not correct']);
     }

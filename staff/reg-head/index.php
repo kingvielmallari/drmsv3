@@ -69,9 +69,6 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
   </nav>
 </header>
 
-
-
-
 <div class="card mt-5 mx-auto shadow-lg bg-succ" style="width: 80%; padding: 20px;">
 <div class="card-body">
     <div class="text-center mt-4">
@@ -79,6 +76,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
     </div>
 </div>
 </div>
+
+
 
 <div class="container vh-100 d-flex flex-column justify-content-center align-items-center">
 
@@ -94,7 +93,18 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
             </a>
         </div>
     </div>
-
+    <div class="row w-100">
+        <div class="col-md-6 mb-3 mb-md-0 d-flex justify-content-center">
+            <a href="documents.php" class="btn btn-lg btn-success w-75 py-4 shadow-sm">
+                <i class="documents.php"></i>Manage Documents
+            </a>
+        </div>
+        <div class="col-md-6 d-flex justify-content-center">
+            <a href="contact_support.php" class="btn btn-lg btn-danger w-75 py-4 shadow-sm">
+                <i class="fas fa-headset me-2"></i>New Feature...
+            </a>
+        </div>
+    </div>
 </div>
 
 

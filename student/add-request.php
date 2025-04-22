@@ -68,7 +68,7 @@ $cm = new class_model();
     </nav>
 </header>
 
-<div class="container mt-5 py-5" style="max-width: 1200px;">
+<div class="container mt-1 py-1" style="max-width: 1200px;">
     <div class="row justify-content-center align-items-center mt-5 g-10">
         <div class="col-md-8 mt-5">
             <div class="p-4 shadow-lg rounded" style="background-color: var(--bg-color);">
@@ -103,13 +103,13 @@ $cm = new class_model();
     <?php if (!empty($result)): ?>
         <div class="mb-3">
             <label for="document_selection" class="form-label fw-bold">Available Documents</label>
-            <ul id="document_selection" class="list-group" style="max-height: 300px; overflow-y: auto; border: 1px solid #ddd; border-radius: 5px;">
+            <ul id="document_selection" class="list-group">
                 <?php foreach ($result as $row): 
                     $docId = htmlspecialchars($row['id']);
                     $docName = htmlspecialchars($row['name']);
                     $docPrice = htmlspecialchars($row['price'] ?? 0);
                     $docEta = htmlspecialchars($row['eta'] ?? 0);
-                    $needsExtraInputs = in_array($docName, ['Certificate of Grades', 'Certificate of Registration']);
+                    $needsExtraInputs = in_array($docName, ['Certificate Of Grades', 'Certificate Of Registration']);
                 ?>
                     <li class="list-group-item">
                         <div class="d-flex justify-content-between align-items-center">
@@ -167,9 +167,6 @@ $cm = new class_model();
         <p class="text-muted text-center">No documents available for request.</p>
     <?php endif; ?>
 </div>
-
-
-
 
                     <!-- Step 2: Details -->
                     <div class="step" id="step2">
@@ -231,13 +228,16 @@ $cm = new class_model();
                             <label for="appointment_time" class="form-label">Pick a Time</label>
                             <select id="appointment_time" name="appointment_time" class="form-select" required>
                                 <option value="" disabled selected>Select a time</option>
-                                <option value="9:00 AM">9:00 AM</option>
+                                <option value="8:00 AM" disabled>8:00 AM</option>
+                                <option value="9:00 AM" disabled>9:00 AM</option>
                                 <option value="10:00 AM">10:00 AM</option>
                                 <option value="11:00 AM">11:00 AM</option>
                                 <option value="1:00 PM">1:00 PM</option>
                                 <option value="2:00 PM">2:00 PM</option>
                                 <option value="3:00 PM">3:00 PM</option>
                                 <option value="4:00 PM">4:00 PM</option>
+                                <option value="9:00 AM" disabled>5:00 AM</option>
+
                             </select>
                         </div>
                     </div>
@@ -251,7 +251,7 @@ $cm = new class_model();
                             <div class="summary-item">
                                 <div class="mb-2">
                                     Student ID: 
-                                    <strong id="summaryStudentId"><?php echo htmlspecialchars($_SESSION['sessionuser']['student_id'] ?? ''); ?></strong>
+                                    <strong id="summaryStudentId"><?php echo htmlspecialchars($_SESSION['sessionuser']['student_id'] ?? 'N/A'); ?></strong>
                                 </div>
                                 <div class="mb-2">
                                     Name: 
@@ -356,43 +356,6 @@ $cm = new class_model();
 
 
 
-// // Step 2: Table
-// function updateDocumentDetails() {
-//     const tableBody = document.getElementById('documentDetailsTable');
-//     tableBody.innerHTML = '';
-    
-//     let totalPrice = 0;
-    
-//     selectedDocuments.forEach(doc => {
-//         const releaseDate = new Date();
-//         releaseDate.setDate(releaseDate.getDate() + doc.eta);
-//         const formattedDate = releaseDate.toLocaleDateString('en-US', { 
-//             year: 'numeric', 
-//             month: 'long', 
-//             day: 'numeric' 
-//         });
-        
-//         const row = document.createElement('tr');
-//         row.innerHTML = `
-//             <td>
-//                 ${doc.name}
-
-               
-//             </td>
-//             <td>${doc.eta} day(s)</td>
-//             <td>${formattedDate}</td>
-//             <td>₱${(doc.price * (doc.copies || 1)).toFixed(2)}</td>
-//         `;
-//         tableBody.appendChild(row);
-        
-//         totalPrice += doc.price * (doc.copies || 1);
-//     });
-    
-
-// }
-
-
-
 // Add validation for special documents
 function validateStep(step) {
  
@@ -481,7 +444,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${doc.name}<br>${doc.year && doc.semester ? '(' + doc.year + ', ' + doc.semester + ')' : ''}</td>
-                <td>${doc.eta} day(s)</td>
+                <td>${doc.eta} Working day(s)</td>
                 <td>${formattedDate}</td>
                 <td>₱${doc.price.toFixed(2)}</td>
             `;

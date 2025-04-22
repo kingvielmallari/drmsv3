@@ -86,7 +86,7 @@ $loginUrl = $client->createAuthUrl()
       <form id="userForm">
       <div class="form-floating mb-3">
         <input type="text" class="form-control text-uppercase" name="student_id" id="student_id" placeholder="Student ID" required oninput="this.value = this.value.toUpperCase();">
-      <label for="student_id" style="color: var(--text-color);">Student ID</label>
+      <label for="student_id" style="color: var(--text-color);">Student ID or Last Name</label>
       </div>
       <div class="form-floating mb-3 position-relative">
       <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
@@ -108,7 +108,7 @@ $loginUrl = $client->createAuthUrl()
       <p style="color: var(--text-color);">or</p>
       <a href="<?= htmlspecialchars($loginUrl); ?>" class="btn btn-outline-secondary btn-md d-flex align-items-center justify-content-center">
     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style="width: 20px; height: 20px; margin-right: 10px;">
-    Login with Google
+    Login using Institutional Email
 </a>
       </div>
      

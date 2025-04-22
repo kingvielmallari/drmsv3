@@ -48,7 +48,7 @@
 
 <div class="container d-flex justify-content-center align-items-center flex-grow-1">
     <div class="row justify-content-center align-self-center w-100">
-        <div class="col-md-6">
+        <div id="ptcemail" class="col-md-6">
             <h2 class="text-center">Verify Student Email</h2>
             <p class="text-center text-muted">Enter your institutional email address to create account.</p>
             <form id="forgotPasswordForm">
@@ -61,9 +61,47 @@
                 </div>
             </form>
             <p id="response" class="text-center mt-3"></p>
+            <p class="text-center mt-3">
+                Don't active have a PTC account?
+                <a id="createPersonalAccountLink" class="text-decoration-underline" style="cursor: pointer;"> Create using personal email here.</a>
+            </p>
+        </div>
+        
+        <div id="personalemail" style="display: none;" class="col-md-6">
+            <h2 class="text-center">Enter Personal Email</h2>
+            <p class="text-center text-muted">Enter your personal email address to create account.</p>
+            <form id="forgotPasswordForm2">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" name="email2" id="email" placeholder="Email" required>
+                    <label for="email">Email Address</label>
+                </div>
+                <div class="d-grid mb-3">
+                    <button type="submit" class="btn btn-primary btn-block">Verify</button>
+                </div>
+            </form>
+            <p id="response" class="text-center mt-3"></p>
+            <p class="text-center mt-3">
+                Have an active PTC account?
+                <a id="createPTCAccountLink" class="text-decoration-underline" style="cursor: pointer;"> Create using PTC email here.</a>
+            </p>
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById("createPersonalAccountLink").addEventListener("click", function () {
+        document.getElementById("ptcemail").style.display = "none";
+        document.getElementById("personalemail").style.display = "block";
+    });
+
+    document.getElementById("createPTCAccountLink").addEventListener("click", function () {
+        document.getElementById("ptcemail").style.display = "block";
+        document.getElementById("personalemail").style.display = "none";
+    });
+</script>
+
+        
+   
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -98,10 +136,12 @@
 
 
 <script>
-    document.getElementById("forgotPasswordForm").addEventListener("submit", async function(e) {
+    document.querySelectorAll("#forgotPasswordForm, #forgotPasswordForm2").forEach(form => {
+        form.addEventListener("submit", async function(e) {
         e.preventDefault();
 
-        const email = document.getElementById("email").value;
+        const emailInput = e.target.querySelector("input[name='email'], input[name='email2']");
+        const email = emailInput ? emailInput.value : "";
         const formData = new FormData();
         formData.append("email", email);
 
@@ -124,7 +164,7 @@
                 responseElement.className = "text-center text-success";
 
                 // Change the DOM to require OTP input
-                const formContainer = document.querySelector("#forgotPasswordForm").parentElement;
+                const formContainer = e.target.parentElement;
                 formContainer.innerHTML = `
                     <h2 class="text-center">Enter OTP</h2>
                     <p class="text-center text-muted">A 4-digit OTP has been sent to your email. Please enter it below to verify.</p>
@@ -168,6 +208,9 @@
                     });
                 });
 
+        
+                
+
                 // Add event listener for OTP form submission
                 document.getElementById("otpForm").addEventListener("submit", async function(e) {
                     e.preventDefault();
@@ -192,10 +235,15 @@
 
                         const result = await otpRes.json();
 
-                        if (result.status === "success") {
+                        if (result.status === "ptc") {
                             otpSubmitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
                             setTimeout(() => {
                                 window.location.href = `./create.php?token=${result.token}`;
+                            }, 2000); // 2-second delay
+                        } else if (result.status === "email") {
+                            otpSubmitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+                            setTimeout(() => {
+                                window.location.href = `./create2.php?token=${result.token}`;
                             }, 2000); // 2-second delay
                         } else {
                             const otpResponseElement = document.getElementById("otpResponse");
@@ -231,6 +279,8 @@
             }
         }
     });
+}
+    );
 </script>
 <!-- <script src="./js/forgotPassword.js"></script> -->
 <script src="./vendor/bootstrapv5/js/bootstrap.bundle.min.js"></script>
