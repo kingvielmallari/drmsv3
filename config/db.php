@@ -96,35 +96,7 @@ class class_model {
     
         return $stmt->execute();
     }
-    public function fetchAllRequests() {
-        $sql = "SELECT 
-                    r.id,
-                    r.student_id,
-                    CONCAT(s.last_name, ', ', s.first_name, ' ', LEFT(s.middle_name, 1), '.') AS student_name,
-                    CONCAT(s.program, ' - ', s.year, s.section, ' (', s.status, ')') AS program_section,
-                    r.document_request,
-                    r.delivery_option,
-                    r.appointment_date,
-                    r.appointment_time,
-                    r.total_price
-                FROM 
-                    requests r
-                INNER JOIN 
-                    students s ON r.student_id = s.student_id
-                ORDER BY 
-                    r.appointment_date DESC";
-    
-        $result = $this->mysqli->query($sql);
-        $data = [];
-    
-        while ($row = $result->fetch_assoc()) {
-            $data[] = $row;
-        }
-    
-        return $data;
-    }
-    
-   
+ 
 
    
     
@@ -169,15 +141,25 @@ class class_model {
         return $stmt->execute();
     }
 
+    public function deleteRequest($deleteRequest) {
+        $sql = "DELETE FROM requests WHERE id = ?";
+        $stmt = $this->mysqli->prepare($sql);
+        if (!$stmt) {
+            return false;
+        }
+        $stmt->bind_param("i", $deleteRequest);
+        return $stmt->execute();
+    }
 
-    public function addRequest($requestId, $studentId, $studentName, $programSection, $documentsArray, $deliveryOption, $appointmentDate, $appointmentTime, $totalPrice) {
+
+    public function addRequest($requestId, $studentId, $studentName, $email, $programSection, $documentsArray, $deliveryOption, $appointmentDate, $appointmentTime, $totalPrice) {
         if (is_array($documentsArray)) {
             $documentsArray = implode(", ", $documentsArray); // Convert array to string if necessary
         }
-        $sql = "INSERT INTO requests (request_id, student_id, student_name, program_section, document_request, delivery_option, appointment_date, appointment_time, total_price) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO requests (request_id, student_id, student_name, email, program_section, document_request, delivery_option, appointment_date, appointment_time, total_price) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->mysqli->prepare($sql);
-        $stmt->bind_param("ssssssssd", $requestId, $studentId, $studentName, $programSection, $documentsArray, $deliveryOption, $appointmentDate, $appointmentTime, $totalPrice);
+        $stmt->bind_param("sssssssssd", $requestId, $studentId, $studentName, $email, $programSection, $documentsArray, $deliveryOption, $appointmentDate, $appointmentTime, $totalPrice);
 
         return $stmt->execute();
     }
@@ -239,10 +221,33 @@ class class_model {
         return false; // login failed
     }
 
-    public function getRequestRecords($student_id) {
-        $sql = "SELECT * FROM requests WHERE student_id = ? ORDER BY created_at DESC";
+    public function getRequestRecords($email) {
+        $sql = "SELECT * FROM requests WHERE email = ? ORDER BY created_at DESC";
         $stmt = $this->mysqli->prepare($sql);
-        $stmt->bind_param("s", $student_id);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+
+    public function getRequestRecordsStaff() {
+        $sql = "SELECT * FROM requests ORDER BY created_at DESC";
+        $result = $this->mysqli->query($sql);
+        return $result;
+    }
+
+
+
+    
+    public function getAllRequests() {
+        $sql = "SELECT * FROM requests ORDER BY created_at DESC";
+        $result = $this->mysqli->query($sql);
+        return $result;
+    }
+
+    public function getrequestdetails($id) {
+        $sql = "SELECT * FROM requests WHERE id = ?";
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("i", $id);
         $stmt->execute();
         return $stmt->get_result();
     }
@@ -278,6 +283,16 @@ class class_model {
     public function getDocuments() {
         $sql = "SELECT * FROM documents";
         $result = $this->mysqli->query($sql);
+
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function getRequest($student_id) {
+        $sql = "SELECT * FROM requests WHERE student_id = ?";
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("s", $student_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
         return $result->fetch_all(MYSQLI_ASSOC);
     }

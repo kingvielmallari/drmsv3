@@ -220,8 +220,8 @@ $cm = new class_model();
                             <label for="appointment_time" class="form-label">Pick a Time</label>
                             <select id="appointment_time" name="appointment_time" class="form-select" required>
                                 <option value="" disabled selected>Select a time</option>
-                                <option value="8:00 AM" disabled>8:00 AM (Full Slot)</option>
-                                <option value="9:00 AM" disabled>9:00 AM (Full Slot)</option>
+                                <option value="8:00 AM" disabled>8:00 AM</option>
+                                <option value="9:00 AM" disabled>9:00 AM</option>
                                 <option value="10:00 AM">10:00 AM</option>
                                 <option value="11:00 AM">11:00 AM</option>
                                 <option value="1:00 PM">1:00 PM</option>
@@ -651,14 +651,15 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.append('request_id', requestId);
             formData.append('student_id', document.getElementById('summaryStudentId').textContent.trim());
             formData.append('student_name', document.getElementById('summaryStudentName').textContent.trim());
+            formData.append('email', <?php echo json_encode($_SESSION['sessionuser']['email'] ?? 'N/A'); ?>);
             formData.append('program_section', document.getElementById('summaryProgramSection').textContent.trim());
 
             // Combine selected documents into a single string
             const documentDetails = selectedDocuments.map(doc => {
-            if (['Certificate Of Grades', 'Certificate Of Registration'].includes(doc.name)) {
-                return `${doc.name} (${doc.year || 'N/A'} ${doc.semester || 'N/A'})`;
-            }
-            return doc.name;
+                if (['Certificate Of Grades', 'Certificate Of Registration'].includes(doc.name)) {
+                    return `${doc.name} (${doc.year || 'N/A'} ${doc.semester || 'N/A'})`;
+                }
+                return doc.name;
             }).join(', ');
             formData.append('documents', documentDetails);
 

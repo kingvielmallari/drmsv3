@@ -1,6 +1,6 @@
 <?php
 
-require_once '../config/db.php';
+require_once '../../config/db.php';
 
 session_start();
 if (!isset($_SESSION['sessionuser'])) {
@@ -20,8 +20,8 @@ if (!isset($_SESSION['sessionuser'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Users List</title>
-    <link rel="stylesheet" href="../vendor/bootstrapv5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../assets/css/app.css">
+    <link rel="stylesheet" href="../../vendor/bootstrapv5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/app.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 </head>
@@ -30,8 +30,8 @@ if (!isset($_SESSION['sessionuser'])) {
 
   <nav class="navbar navbar-expand-lg navbar-light bg-success fixed-top">
   <div class="container-fluid ">
-    <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="/drmsv3/student/index.php"> 
-      <img src="../assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;" class="me-3">
+    <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="/drmsv3/staff/reg-staff/index.php"> 
+      <img src="../../assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;" class="me-3">
       <span style="font-size: 1.50rem; line-height: 60px;">Pateros Technological College</span>
     </a>
     <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,8 +39,8 @@ if (!isset($_SESSION['sessionuser'])) {
     </button>
 
     <div class="d-lg-none d-flex justify-content-center">
-      <a class="navbar-brand text-white d-flex align-items-center" href="/drmsv3/student/index.php">
-        <img src="../assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;">
+      <a class="navbar-brand text-white d-flex align-items-center" href="/drmsv3/staff/reg-staff/student/index.php">
+        <img src="../../assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;">
       </a>
     </div>
 
@@ -93,13 +93,13 @@ if (!isset($_SESSION['sessionuser'])) {
             </thead>
             <tbody>
                 <?php
-                require_once '../config/db.php';
+
 
                 $sessionUser = $_SESSION['sessionuser'];
 
                 $cm = new class_model();
 
-                $result = $cm->getRequestRecords($sessionUser['email']);
+                $result = $cm->getRequestRecordsStaff();
 
                 if ($result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {
@@ -245,7 +245,7 @@ if (!isset($_SESSION['sessionuser'])) {
 
 </script>
 
-<script src="../vendor/bootstrapv5/js/bootstrap.bundle.min.js"></script>
+<script src="../../vendor/bootstrapv5/js/bootstrap.bundle.min.js"></script>
 
 <!-- <script src="../js/dashboard.js"></script> -->
 

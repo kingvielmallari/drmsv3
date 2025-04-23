@@ -13,12 +13,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $appointmentDate = $_POST['appointment_date'] ?? '';
     $appointmentTime = $_POST['appointment_time'] ?? '';
     $totalPrice = $_POST['total_price'] ?? 0;
+    $email = $_POST['email'] ?? '';
 
     // Convert documents to an array
     $documentsArray = explode(',', $documents);
 
     // Save the request to the database
-    $result = $cm->addRequest($requestId, $studentId, $studentName, $programSection, $documentsArray, $deliveryOption, $appointmentDate, $appointmentTime, $totalPrice);
+    $result = $cm->addRequest($requestId, $studentId, $studentName, $email, $programSection, $documentsArray, $deliveryOption, $appointmentDate, $appointmentTime, $totalPrice);
 
     if ($result) {
         echo json_encode(["success" => true, "message" => "Request added successfully"]);

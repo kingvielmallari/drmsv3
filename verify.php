@@ -49,7 +49,7 @@
 <div class="container d-flex justify-content-center align-items-center flex-grow-1">
     <div class="row justify-content-center align-self-center w-100">
         <div id="ptcemail" class="col-md-6">
-            <h2 class="text-center">Verify Student Email</h2>
+            <h2 class="text-center">Verify PTC Student Email</h2>
             <p class="text-center text-muted">Enter your institutional email address to create account.</p>
             <form id="forgotPasswordForm">
                 <div class="form-floating mb-3">
