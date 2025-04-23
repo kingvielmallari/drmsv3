@@ -1,24 +1,18 @@
 <?php
 
-// require_once '../config/db.php';
-
-// // session_start();
-
-// // if (
-// //   !isset($_SESSION['sessionuser']) ||
-// //   !isset($_SESSION['role']) ||
-// //   $_SESSION['role'] !== 'mis-head'
-// // ) {
-// //   header('Location: ../index.php');
-// //   exit;
-// // }
-
+require_once '../../config/db.php';
 
 session_start();
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'mis_head') {
-    header("Location: ../../student/index.php");
-    exit();
+
+if (
+  !isset($_SESSION['sessionuser']) ||
+  !isset($_SESSION['role']) ||
+  $_SESSION['role'] !== 'mis_head'
+) {
+  header('Location: ../index.php');
+  exit;
 }
+
 
 
 
@@ -278,8 +272,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'mis_head') {
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-    let deleteStudentId = null;
-    let currentEditStudentId = null;
+    // let deleteStudentId = null;
+    // let currentEditStudentId = null;
 
     // Function to fetch and populate student data
     function fetchStudents() {
@@ -302,10 +296,10 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'mis_head') {
                         <td>${student.section}</td>
                         <td>${student.status}</td>
                         <td>
-                            <button class="btn btn-primary btn-sm edit-btn" data-id="${student.student_id}" data-bs-toggle="modal" data-bs-target="#editStudentModal">
+                            <button class="btn btn-primary btn-sm edit-btn" data-id="${student.id}" data-bs-toggle="modal" data-bs-target="#editStudentModal">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button class="btn btn-danger btn-sm delete-btn" data-id="${student.student_id}" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
+                            <button class="btn btn-danger btn-sm delete-btn" data-id="${student.id}" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </td>
@@ -333,7 +327,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'mis_head') {
 
     // Function to fetch single student data for editing
     function fetchStudentData(studentId) {
-        fetch(`../../controllers/FetchSpecificStudent.php?student_id=${studentId}`)
+        fetch(`../../controllers/FetchSpecificStudent.php?id=${studentId}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -424,7 +418,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'mis_head') {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: `student_id=${deleteStudentId}`
+                body: `id=${deleteStudentId}`
             })
             .then(response => response.json())
             .then(result => {

@@ -82,7 +82,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
 
 
 
-<div class="container vh-100 d-flex flex-column justify-content-center align-items-center">
+<div class="container mt-5 d-flex flex-column justify-content-center align-items-center">
 
     <div class="row w-100 mb-4">
         <div class="col-md-6 mb-3 mb-md-0 d-flex justify-content-center">

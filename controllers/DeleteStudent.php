@@ -3,8 +3,8 @@ require_once '../config/db.php'; // Include your DB connection
 
 $cm = new class_model(); 
 
-if (isset($_POST['student_id'])) {
-    $student_id = $_POST['student_id'];
+if (isset($_POST['id'])) {
+    $student_id = $_POST['id'];
 
     // Call the deleteStudent function
     $deleted = $cm->deleteStudent($student_id);

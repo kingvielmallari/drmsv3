@@ -41,6 +41,14 @@ class class_model {
         return $stmt->execute();
     }
 
+    public function getDocumentById($document_id){
+        $sql ="SELECT * FROM documents WHERE id = ?";
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("i", $document_id);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
+    }
+
     public function createUser($last_name, $first_name, $middle_name, $email, $year_graduated, $last_year_attended, $status, $password, $gender) {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT); // Hash the password for security
         $sql = "INSERT INTO students (last_name, first_name, middle_name, year_graduated, last_year_attended, status, password, email, gender) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -124,7 +132,7 @@ class class_model {
 
 
     public function deleteStudent($student_id) {
-        $sql = "DELETE FROM students WHERE student_id = ?";
+        $sql = "DELETE FROM students WHERE id = ?";
         $stmt = $this->mysqli->prepare($sql);
         $stmt->bind_param("s", $student_id);
 

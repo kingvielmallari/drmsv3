@@ -232,7 +232,11 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
                             <td>${data.code}</td>
                             <td>${data.name}</td>
                             <td>${data.price}</td>
-                            <td>${data.is_available}</td>
+                            <td>
+                                <span class="badge ${data.is_available === 'yes' ? 'bg-success' : 'bg-danger'}">
+                                    ${data.is_available === 'yes' ? 'Available' : 'Not Available'}
+                                </span>
+                            </td>
                             <td>${data.eta}</td>
                             <td>
                                 <button class="btn btn-primary btn-sm edit-btn" data-id="${data.id}" data-bs-toggle="modal" data-bs-target="#editDocumentModal">
@@ -335,7 +339,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
                 });
         }
 
-        // Save changes button event listener
+        // AJAX FOR SAVE EDIT MODAL
         document.getElementById('saveChangesBtn').addEventListener('click', () => {
             const documentData = {
                 id: document.getElementById('editDocumentId').value,
@@ -368,6 +372,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
             })
             .catch(error => console.error('Update error:', error));
         });
+
 
         // Confirm delete
         document.getElementById('confirmDeleteBtn').addEventListener('click', () => {

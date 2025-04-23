@@ -29,7 +29,7 @@ if (!isset($_SESSION['sessionuser'])) {
 <header class="text-white text-center">
 
   <nav class="navbar navbar-expand-lg navbar-light bg-success fixed-top">
-  <div class="container-fluid ">
+  <div class="container-fluid">
     <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="/drmsv3/student/index.php"> 
       <img src="../assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;" class="me-3">
       <span style="font-size: 1.50rem; line-height: 60px;">Pateros Technological College</span>
@@ -73,7 +73,7 @@ if (!isset($_SESSION['sessionuser'])) {
 </header>
 
 
-<div class="card mt-5 mx-auto shadow-lg" style="width: 80%; padding: 20px;">
+<div class="card mt-5 mx-auto shadow-lg " style="width: 80%; padding: 20px;">
     <div class="card-header bg-primary text-white text-start py-3 mt-5">
         <h4 class="mb-0">
             <?php 
@@ -108,7 +108,7 @@ if (!isset($_SESSION['sessionuser'])) {
 
 
 
-<div class="container vh-100 d-flex flex-column justify-content-center align-items-center">
+<div class="container mt-5 d-flex flex-column justify-content-center align-items-center">
 
     <div class="row w-100 mb-4">
         <div class="col-md-6 mb-3 mb-md-0 d-flex justify-content-center">
