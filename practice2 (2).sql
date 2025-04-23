@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 23, 2025 at 12:22 AM
+-- Generation Time: Apr 23, 2025 at 04:55 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -44,7 +44,8 @@ INSERT INTO `documents` (`id`, `code`, `name`, `price`, `is_available`, `eta`) V
 (45, 'COG', 'Certificate Of Grades', 50, 'yes', 1),
 (46, 'COR', 'Certificate Of Registration', 50, 'yes', 1),
 (47, 'TOR', 'Transcript Of Records', 200, 'yes', 14),
-(48, 'HD', 'Honorable Dismissal', 100, 'yes', 1);
+(48, 'HD', 'Honorable Dismissal', 100, 'no', 1),
+(50, 'GM', 'Good Moral', 80, 'yes', 1);
 
 -- --------------------------------------------------------
 
@@ -86,16 +87,29 @@ CREATE TABLE `password_resets` (
 
 CREATE TABLE `requests` (
   `id` int(11) NOT NULL,
+  `request_id` varchar(10) NOT NULL,
   `student_id` varchar(20) NOT NULL,
   `student_name` varchar(100) NOT NULL,
+  `email` varchar(255) NOT NULL,
   `program_section` varchar(50) NOT NULL,
   `document_request` varchar(150) NOT NULL,
-  `delivery_option` enum('pickup','delivery') DEFAULT 'pickup',
+  `delivery_option` enum('Cashier','Gcash') NOT NULL,
   `appointment_date` date NOT NULL,
   `appointment_time` time NOT NULL,
   `total_price` decimal(10,2) NOT NULL,
+  `status` enum('Received','Declined','Processing','Releasing','Released') NOT NULL DEFAULT 'Received',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `requests`
+--
+
+INSERT INTO `requests` (`id`, `request_id`, `student_id`, `student_name`, `email`, `program_section`, `document_request`, `delivery_option`, `appointment_date`, `appointment_time`, `total_price`, `status`, `created_at`) VALUES
+(52, 'PTC-560656', '2021-3537', 'King Viel L. Mallari', 'klmallari@paterostechnologicalcollege.edu.ph', 'BSIT - 4A (Regular)', 'Good Moral,  Certificate Of Grades (2nd Year 1st Sem)', 'Cashier', '2025-05-01', '01:00:00', 160.00, 'Received', '2025-04-23 08:34:06'),
+(53, 'PTC-660015', 'N/A', 'Bernadette M. Parman', 'mallariking0@gmail.com', '-  (Graduated)', 'Transcript Of Records,  Good Moral', 'Cashier', '2025-04-29', '02:00:00', 310.00, 'Received', '2025-04-23 08:35:49'),
+(54, 'PTC-272504', '2021-3537', 'King Viel L. Mallari', 'klmallari@paterostechnologicalcollege.edu.ph', 'BSIT - 4A (Regular)', 'Good Moral,  Transcript Of Records,  Certificate Of Registration (3rd Year 1st Sem)', 'Cashier', '2025-04-30', '01:00:00', 360.00, 'Received', '2025-04-23 08:47:37'),
+(56, 'PTC-801704', '2021-3537', 'King Viel L. Mallari', 'klmallari@paterostechnologicalcollege.edu.ph', 'BSIT - 4A (Regular)', 'Certificate Of Grades (3rd Year 1st Sem)', 'Cashier', '2025-04-30', '10:00:00', 80.00, 'Received', '2025-04-23 08:48:00');
 
 -- --------------------------------------------------------
 
@@ -150,8 +164,7 @@ CREATE TABLE `students` (
 
 INSERT INTO `students` (`id`, `student_id`, `last_name`, `first_name`, `middle_name`, `email`, `gender`, `program`, `year`, `section`, `status`, `year_graduated`, `last_year_attended`, `password`) VALUES
 (7, '2021-3537', 'Mallari', 'King Viel', 'Labro', 'klmallari@paterostechnologicalcollege.edu.ph', 'Male', 'BSIT', '4', 'A', 'Regular', NULL, NULL, '$2y$10$uWN2xzLtW1hTVhKmifSwneNUIgeY2LGjXgml4o.bfIQ5zu6rM05qO'),
-(23, NULL, 'Parman', 'Bernadette', 'Mendoza', 'mallariking0@gmail.com', 'Male', NULL, NULL, NULL, 'Graduated', '2025', '2025', '$2y$10$.KXfVGLLXuXjl1E1ZcLHa.H2poGiXYpSothOXiAolHOzqQy6IpDuS'),
-(24, NULL, 'PARMAN', 'BERNADETTE', 'MENDOZA', 'bhea.parman1@gmail.com', 'Female', NULL, NULL, NULL, 'Graduated', '2025', '2025', '$2y$10$Q825EhQElsFrDAKrfTYHse9XwCOqqf4uJYg48ivC7VuwW9KsFkZQi');
+(25, NULL, 'Parman', 'Bernadette', 'Mendoza', 'mallariking0@gmail.com', 'Male', NULL, NULL, NULL, 'Graduated', '2025', '2025', '$2y$10$r3mIw4okzTPufERL.chusOTVXtfU6JwZ11rdw0lefHChBuam3zQ46');
 
 --
 -- Indexes for dumped tables
@@ -201,7 +214,7 @@ ALTER TABLE `students`
 -- AUTO_INCREMENT for table `documents`
 --
 ALTER TABLE `documents`
-  MODIFY `id` int(15) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
+  MODIFY `id` int(15) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT for table `fees`
@@ -213,13 +226,13 @@ ALTER TABLE `fees`
 -- AUTO_INCREMENT for table `password_resets`
 --
 ALTER TABLE `password_resets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `requests`
 --
 ALTER TABLE `requests`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT for table `staff`
@@ -231,7 +244,7 @@ ALTER TABLE `staff`
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
