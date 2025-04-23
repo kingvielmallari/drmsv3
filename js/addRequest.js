@@ -1,102 +1,90 @@
-// show sem and year when cor/cog was clicked
-document.addEventListener('DOMContentLoaded', function () {
-  const buttons = document.querySelectorAll('.document-toggle');
-  buttons.forEach(button => {
-    button.addEventListener('click', function () {
-      const docId = this.getAttribute('data-doc-id');
-      const requiresYearSem = this.getAttribute('data-requires-year-sem') === 'true';
-      const hiddenInput = document.getElementById('doc_' + docId);
-      const yearSemInputs = document.getElementById('year_sem_' + docId);
+ // AJAX submission
+ document.getElementById('addRequestForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  if (!validateStep(currentStep)) return;
+  
+// Get all selected document names with additional inputs for COG and COR
+const selectedDocs = Array.from(document.querySelectorAll('.document-toggle.active')).map(button => {
+  const docName = button.getAttribute('data-doc-name');
+  const docId = button.getAttribute('data-doc-id');
+  const yearInput = document.getElementById(`year-${docId}`);
+  const semInput = document.getElementById(`sem-${docId}`);
+  
+  if (yearInput && semInput && yearInput.value && semInput.value) {
+    return `${docName} (${yearInput.value}, ${semInput.value})`;
+  }
+  return docName;
+}).join(', '); // Combine into a single string
 
-      if (this.classList.contains('btn-success')) {
-        this.classList.remove('btn-success', 'active');
-        this.classList.add('btn-outline-success');
-        hiddenInput.value = '';
-        if (requiresYearSem) {
-          yearSemInputs.style.display = 'none';
-        }
-      } else {
-        this.classList.remove('btn-outline-success');
-        this.classList.add('btn-success', 'active');
-        hiddenInput.value = docId;
-        if (requiresYearSem) {
-          yearSemInputs.style.display = 'block';
-        }
-      }
-    });
-  });
+  // Prepare form data
+  const formData = new FormData();
+  
+  // Add student info
+  formData.append('student_id', document.getElementById('summaryStudentId').textContent.trim());
+  formData.append('student_name', document.getElementById('summaryStudentName').textContent.trim());
+  formData.append('program_section', document.getElementById('summaryProgramSection').textContent.trim());
+  
+  // Add selected documents (single field for all docs)
+  formData.append('document_request', selectedDocs);
+  
+  // Add other form data
+  formData.append('delivery_option', document.getElementById('delivery_option').value);
+  formData.append('appointment_date', document.getElementById('appointment_date').value);
+  formData.append('appointment_time', document.getElementById('appointment_time').value);
+  
+  // Calculate total price
+  const totalPrice = selectedDocuments.reduce((sum, doc) => sum + doc.price, 0) + parseFloat(systemFee);
+
+  formData.append('total_price', totalPrice.toFixed(2));
+
+  
+  
+  // Submit via AJAX
+  fetch('../controllers/AddRequest.php', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      alert('Request submitted successfully!');
+      // Redirect or show success message
+      window.location.href = 'request-success.php?request_id=' + data.request_id;
+    } else {
+      alert('Error: ' + (data.message || 'Failed to submit request'));
+    }
+  })
+.catch(error => {
+  console.error('Error:', error);
+  alert('An error occurred while submitting your request.');
+});
 });
 
-// back and next function
-document.addEventListener('DOMContentLoaded', function () {
-  const steps = document.querySelectorAll('.step');
-  const stepCircles = document.querySelectorAll('.circle');
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
-  let currentStep = 0;
 
-  function updateStepper(stepIndex) {
-    stepCircles.forEach((circle, index) => {
-      if (index <= stepIndex) {
-        circle.classList.add('active');
-      } else {
-        circle.classList.remove('active');
-      }
-    });
+// Change Theme
+document.getElementById('themeToggle').addEventListener('change', function() {
+  if (this.checked) {
+      document.documentElement.setAttribute('data-bs-theme', 'dark');
+      document.cookie = "theme=dark; path=/; SameSite=Strict";
+  } else {
+      document.documentElement.removeAttribute('data-bs-theme');
+      document.cookie = "theme=light; path=/; SameSite=Strict";
   }
-
-  function showStep(stepIndex) {
-    steps.forEach((step, index) => {
-      step.style.display = index === stepIndex ? 'block' : 'none';
-    });
-
-    // Update button visibility and behavior
-    if (stepIndex === 0) {
-      prevBtn.style.display = 'inline-block';
-      prevBtn.textContent = 'Cancel';
-      prevBtn.onclick = function () {
-        window.location.href = '/drmsv3/dashboard.php';
-      };
-    } else {
-      prevBtn.style.display = 'inline-block';
-      prevBtn.textContent = 'Back';
-      prevBtn.onclick = function () {
-        currentStep--;
-        showStep(currentStep);
-        updateStepper(currentStep);
-      };
-    }
-
-    nextBtn.textContent = stepIndex === steps.length - 1 ? 'Finish' : 'Next';
-    nextBtn.onclick = function () {
-      if (currentStep < steps.length - 1) {
-        currentStep++;
-        showStep(currentStep);
-        updateStepper(currentStep);
-      }
-    };
-
-    updateStepper(stepIndex);
-  }
-
-  prevBtn.onclick = function () {
-    if (currentStep > 0) {
-      currentStep--;
-      showStep(currentStep);
-      updateStepper(currentStep);
-    } else {
-      window.location.href = '/drmsv3/dashboard.php';
-    }
-  };
-
-  nextBtn.onclick = function () {
-    if (currentStep < steps.length - 1) {
-      currentStep++;
-      showStep(currentStep);
-      updateStepper(currentStep);
-    }
-  };
-
-  showStep(currentStep);
 });
 
+
+// Load Theme from Cookie
+window.addEventListener('load', function() {
+  const theme = document.cookie.split(';').find((item) => item.trim().startsWith('theme='));
+  if (theme) {
+      const themeValue = theme.split('=')[1];
+      if (themeValue === 'dark') {
+          document.documentElement.setAttribute('data-bs-theme', 'dark');
+          document.getElementById('themeToggle').checked = true;
+      } else {
+          document.documentElement.removeAttribute('data-bs-theme');
+          document.getElementById('themeToggle').checked = false;
+      }
+  }
+});

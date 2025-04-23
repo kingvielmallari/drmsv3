@@ -180,7 +180,19 @@ if (!$token || $token !== $sessionToken) {
         &copy; <?php echo date('Y'); ?> PTC. All rights reserved.
     </footer>
 
+    
+
 <script>
+
+['first_name', 'middle_name', 'last_name'].forEach(id => {
+  document.getElementById(id).addEventListener('input', function (e) {
+    const formatted = e.target.value
+      .toLowerCase()
+      .replace(/(^|\s)\S/g, char => char.toUpperCase()); // Capitalize first letter of each word
+    e.target.value = formatted;
+  });
+});
+
 
 document.getElementById("userForm").addEventListener("submit", async function (e) {
     e.preventDefault();

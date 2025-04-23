@@ -134,3 +134,48 @@ body {
     padding-bottom: 15px;
     border-bottom: 1px solid #dee2e6;
 }
+
+/* Custom styles */
+.circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #dee2e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 5px;
+    font-weight: bold;
+}
+
+.circle.active {
+    background-color: #198754;
+    color: white;
+}
+
+.line {
+    flex: 1;
+    height: 2px;
+    background-color: #dee2e6;
+    margin: 20px 10px 0;
+}
+
+.step {
+    display: none;
+}
+
+.step.active {
+    display: block;
+}
+
+.document-toggle {
+    transition: all 0.3s ease;
+}
+
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+

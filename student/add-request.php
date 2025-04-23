@@ -18,12 +18,8 @@ $cm = new class_model();
     <title>Document Request</title>
     <link rel="stylesheet" href="../vendor/bootstrapv5/css/bootstrap.min.css">
     <link rel="stylesheet" href="../assets/css/app.css">
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"> -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <style>
-        /* Custom styles */
-      
-    </style>
+
 </head>
 <body>
 <header class="text-white text-center">
@@ -98,72 +94,73 @@ $cm = new class_model();
                 <form id="addRequestForm">
                     <!-- Step 1: Documents -->
                     <div class="step active" id="step1">
-    <h4 class="mb-4">Step 1: Select Documents</h4>
-    <?php $result = $cm->getDocuments(); ?>
-    <?php if (!empty($result)): ?>
-        <div class="mb-3">
-            <label for="document_selection" class="form-label fw-bold">Available Documents</label>
-            <ul id="document_selection" class="list-group">
-                <?php foreach ($result as $row): 
-                    $docId = htmlspecialchars($row['id']);
-                    $docName = htmlspecialchars($row['name']);
-                    $docPrice = htmlspecialchars($row['price'] ?? 0);
-                    $docEta = htmlspecialchars($row['eta'] ?? 0);
-                    $needsExtraInputs = in_array($docName, ['Certificate Of Grades', 'Certificate Of Registration']);
-                    $isGraduated = ($_SESSION['sessionuser']['status'] ?? '') === 'Graduated';
-                    $isRestrictedDoc = $isGraduated && $needsExtraInputs;
-                ?>
-                    <li class="list-group-item">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <button type="button" 
-                                    class="btn <?= $isRestrictedDoc ? 'btn-outline-danger' : 'btn-outline-success' ?> document-toggle w-100 text-start"
-                                    data-doc-id="<?= $docId ?>"
-                                    data-doc-name="<?= $docName ?>"
-                                    data-doc-price="<?= $docPrice ?>"
-                                    data-doc-eta="<?= $docEta ?>"
-                                    <?= $isRestrictedDoc ? 'disabled' : '' ?>>
-                                <i class="fas fa-file-alt me-2"></i><?= $docName ?>
-                            </button>
-                            <span class="badge bg-<?= $isRestrictedDoc || $row['is_available'] !== 'yes' ? 'danger' : 'success' ?> rounded-pill">
-                                <?= $isRestrictedDoc ? 'Not Available' : ($row['is_available'] === 'yes' ? 'Available' : 'Not Available') ?>
-                            </span>
-                        </div>
-                        <?php if ($isRestrictedDoc): ?>
-                            <small class="text-muted text-danger">Graduated students cannot request COG/COR. Instead, request TOR.</small>
-                        <?php endif; ?>
+                        <h4 class="mb-4">Step 1: Select Documents</h4>
+                        <?php $result = $cm->getDocuments(); ?>
+                        <?php if (!empty($result)): ?>
+                            <div class="mb-3">
+                                <label for="document_selection" class="form-label fw-bold">Available Documents</label>
+                                <ul id="document_selection" class="list-group">
+                                    <?php foreach ($result as $row): 
+                                        $docId = htmlspecialchars($row['id']);
+                                        $docName = htmlspecialchars($row['name']);
+                                        $docPrice = htmlspecialchars($row['price'] ?? 0);
+                                        $docEta = htmlspecialchars($row['eta'] ?? 0);
+                                        $needsExtraInputs = in_array($docName, ['Certificate Of Grades', 'Certificate Of Registration']);
+                                        $isGraduated = ($_SESSION['sessionuser']['status'] ?? '') === 'Graduated';
+                                        $isRestrictedDoc = $isGraduated && $needsExtraInputs;
+                                        $isAvailable = $row['is_available'] === 'yes';
+                                    ?>
+                                        <li class="list-group-item">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <button type="button" 
+                                                        class="btn <?= !$isAvailable || $isRestrictedDoc ? 'btn-outline-danger' : 'btn-outline-success' ?> document-toggle w-100 text-start"
+                                                        data-doc-id="<?= $docId ?>"
+                                                        data-doc-name="<?= $docName ?>"
+                                                        data-doc-price="<?= $docPrice ?>"
+                                                        data-doc-eta="<?= $docEta ?>"
+                                                        <?= !$isAvailable || $isRestrictedDoc ? 'disabled' : '' ?>>
+                                                    <i class="fas fa-file-alt me-2"></i><?= $docName ?>
+                                                </button>
+                                                <span class="badge bg-<?= !$isAvailable || $isRestrictedDoc ? 'danger' : 'success' ?> rounded-pill ms-3">
+                                                    <?= !$isAvailable ? 'Not Available' : ($isRestrictedDoc ? 'Not Available' : 'Available') ?>
+                                                </span>
+                                            </div>
+                                            <?php if ($isRestrictedDoc): ?>
+                                                <small class="text-muted text-danger">Graduated students cannot request COG/COR. Instead, request TOR.</small>
+                                            <?php endif; ?>
 
-                        <?php if ($needsExtraInputs): ?>
-                            <div class="mt-2 p-2 bg-light rounded" style="display: none;" id="inputs-<?= $docId ?>">
-                                <div class="d-flex gap-2 align-items-center">
-                                    <div class="form-floating" style="max-width: 120px;">
-                                        <select class="form-select year-input" id="year-<?= $docId ?>" style="height: 35px; font-size: 0.85rem;">
-                                            <option value="" disabled selected>Year</option>
-                                            <option value="4th Year">4th Year</option>
-                                            <option value="3rd Year">3rd Year</option>
-                                            <option value="2nd Year">2nd Year</option>
-                                            <option value="1st Year">1st Year</option>
-                                        </select>
-                                        <label for="year-<?= $docId ?>" style="font-size: 0.75rem;">Year</label>
-                                    </div>
-                                    <div class="form-floating" style="max-width: 120px;">
-                                        <select class="form-select sem-input" id="sem-<?= $docId ?>" style="height: 35px; font-size: 0.85rem;">
-                                            <option value="" disabled selected>Sem</option>
-                                            <option value="1st Sem">1st Sem</option>
-                                            <option value="2nd Sem">2nd Sem</option>
-                                        </select>
-                                        <label for="sem-<?= $docId ?>" style="font-size: 0.75rem;">Sem</label>
-                                    </div>
-                                    <button type="button" class="btn btn-sm btn-success add-more justify-content-end" data-doc-id="<?= $docId ?>" style="height: 35px;">+ </button>
-                                </div>
+                                            <?php if ($needsExtraInputs): ?>
+                                                <div class="mt-2 p-2 bg-light rounded" style="display: none;" id="inputs-<?= $docId ?>">
+                                                    <div class="d-flex gap-2 align-items-center">
+                                                        <div class="form-floating" style="max-width: 120px;">
+                                                            <select class="form-select year-input" id="year-<?= $docId ?>" style="height: 35px; font-size: 0.85rem;">
+                                                                <option value="" disabled selected>Year</option>
+                                                                <option value="4th Year">4th Year</option>
+                                                                <option value="3rd Year">3rd Year</option>
+                                                                <option value="2nd Year">2nd Year</option>
+                                                                <option value="1st Year">1st Year</option>
+                                                            </select>
+                                                            <label for="year-<?= $docId ?>" style="font-size: 0.75rem;">Year</label>
+                                                        </div>
+                                                        <div class="form-floating" style="max-width: 120px;">
+                                                            <select class="form-select sem-input" id="sem-<?= $docId ?>" style="height: 35px; font-size: 0.85rem;">
+                                                                <option value="" disabled selected>Sem</option>
+                                                                <option value="1st Sem">1st Sem</option>
+                                                                <option value="2nd Sem">2nd Sem</option>
+                                                            </select>
+                                                            <label for="sem-<?= $docId ?>" style="font-size: 0.75rem;">Sem</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            <?php endif; ?>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
                             </div>
+                        <?php else: ?>
+                            <p class="text-muted text-center">No documents available for request.</p>
                         <?php endif; ?>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
-    <?php else: ?>
-        <p class="text-muted text-center">No documents available for request.</p>
-    <?php endif; ?>
+                    </div>
 
                     <!-- Step 2: Details -->
                     <div class="step" id="step2">
@@ -202,38 +199,36 @@ $cm = new class_model();
 
                         <div class="form-floating mb-3">
                             <select class="form-select" name="delivery_option" id="delivery_option" required>
-                                <option value="" disabled selected>Select Delivery Option</option>
-                                <option value="pickup">Pick Up</option>
-                                <option value="delivery" disabled>Delivery (Not available at the moment)</option>
+                                <option value="" disabled selected>Select Payment Option</option>
+                                <option value="Cashier">Cashier</option>
+                                <option value="GCash" disabled>Gcash (Not available at the moment)</option>
                             </select>
-                            <label for="delivery_option">Receive Option</label>
+                            <label for="delivery_option">Payment Option</label>
                         </div>
                     </div>
 
-
                     <!-- Step 3: Appointment -->
                     <div class="step" id="step3">
-                        <h4 class="mb-4">Step 3: Schedule</h4>
+                        <h4 class="mb-4">Step 3: Appointment for Payment</h4>
                         <div class="mb-3">
                             <label for="appointment_date" class="form-label">Select Date</label>
-                            <input type="text" id="pretty_date" placeholder="Select a date">
-                            <input type="hidden" name="appointment_date" id="appointment_date" placeholder="Pick a date" readonly required>
-                            <!-- <input type="text" id="appointment_date" name="appointment_date" class="form-control" placeholder="Pick a date" readonly required> -->
+                            <input type="text" id="pretty_date" class="form-control" placeholder="Select a date">
+                            <input type="hidden" name="appointment_date" id="appointment_date">
                         </div>
 
                         <div class="mb-3">
                             <label for="appointment_time" class="form-label">Pick a Time</label>
                             <select id="appointment_time" name="appointment_time" class="form-select" required>
                                 <option value="" disabled selected>Select a time</option>
-                                <option value="8:00 AM" disabled>8:00 AM</option>
-                                <option value="9:00 AM" disabled>9:00 AM</option>
+                                <option value="8:00 AM" disabled>8:00 AM (Full Slot)</option>
+                                <option value="9:00 AM" disabled>9:00 AM (Full Slot)</option>
                                 <option value="10:00 AM">10:00 AM</option>
                                 <option value="11:00 AM">11:00 AM</option>
                                 <option value="1:00 PM">1:00 PM</option>
                                 <option value="2:00 PM">2:00 PM</option>
                                 <option value="3:00 PM">3:00 PM</option>
                                 <option value="4:00 PM">4:00 PM</option>
-                                <option value="9:00 AM" disabled>5:00 AM</option>
+                                <option value="5:00 PM" disabled>5:00 PM</option>
 
                             </select>
                         </div>
@@ -259,8 +254,6 @@ $cm = new class_model();
                                         $userName = $_SESSION['user_name'] ?? 'Guest';
                                         echo htmlspecialchars(trim("$firstName $middleName. $lastName") ?: $userName);
                                         ?></strong>
-                                        
-                                    </strong>
                                 </div>
                                 <div class="mb-2">
                                     Program & Section: 
@@ -271,39 +264,31 @@ $cm = new class_model();
                                         $status = $_SESSION['sessionuser']['status'] ?? '';
                                         echo htmlspecialchars(trim("$program - $year$section ($status)"));
                                         ?></strong>
-                                        
-                                    </strong>
                                 </div>
                                 
                                 <div class="mb-2">
-                                Requested Documents: 
+                                    Requested Documents: 
                                     <strong id="summaryDocumentsList"></strong>
-                                    </strong>
                                 </div>
                                 <div class="mb-2">
-                                Appointment: 
+                                    Appointment for Payment: 
                                     <strong id="summaryAppointment"></strong>
-                                    </strong>
                                 </div>
                                 <div class="mb-2">
-                                Delivery Option: 
+                                    Payment Option: 
                                     <strong id="summaryDeliveryOption"></strong>
-                                    </strong>
                                 </div>
                                 <div class="mb-2">
-                                Total Price: 
+                                    Total Price: 
                                     <strong id="summaryTotalPrice"></strong>
-                                    </strong>
                                 </div>
                             </div>
-
-                            
                         </div>
 
                         <div class="form-check mb-3">
                             <input class="form-check-input" type="checkbox" id="termsCheckbox" required>
                             <label class="form-check-label" for="termsCheckbox">
-                                I agree to the terms and conditions
+                            I agree that the details provided are correct.
                             </label>
                         </div>
 
@@ -330,52 +315,6 @@ $cm = new class_model();
 <script src="../vendor/bootstrapv5/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
- 
-
-// show year and sem
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.document-toggle').forEach(button => {
-            button.addEventListener('click', function() {
-                const docId = this.getAttribute('data-doc-id');
-                const inputsContainer = document.getElementById('inputs-' + docId);
-
-                if (this.classList.contains('active')) {
-                    // Hide inputs when deselected
-                    if (inputsContainer) inputsContainer.style.display = 'none';
-                } else {
-                    // Show inputs when selected
-                    if (inputsContainer) inputsContainer.style.display = 'block';
-                }
-            });
-        });
-    });
-
-
-
-
-// Add validation for special documents
-function validateStep(step) {
- 
-    
-    if (step === 0) {
-        const hasInvalidSpecialDoc = selectedDocuments.some(doc => {
-            if (!doc.uniqueKey) return false;
-            const duplicateCount = selectedDocuments.filter(d => 
-                d.uniqueKey === doc.uniqueKey
-            ).length;
-            return duplicateCount > 1 || !doc.year || !doc.semester;
-        });
-        
-        if (hasInvalidSpecialDoc) {
-            showToast('Please ensure unique year/semester combinations for COG/COR');
-            return false;
-        }
-    }
-    
-    // ... rest of validation code ...
-}
-
-
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize variables
     let currentStep = 0;
@@ -388,7 +327,7 @@ document.addEventListener('DOMContentLoaded', function() {
     flatpickr("#pretty_date", {
         altInput: true,
         altFormat: "F j, Y",
-        dateFormat: "Y-m-d", // This is what gets saved to #appointment_date
+        dateFormat: "Y-m-d",
         minDate: "today",
         disable: [
             function(date) {
@@ -397,31 +336,12 @@ document.addEventListener('DOMContentLoaded', function() {
         ],
         onChange: function(selectedDates, dateStr, instance) {
             document.getElementById("appointment_date").value = dateStr;
-        },
-        onDayCreate: function(dObj, dStr, fp, dayElem) {
-            // Highlight weekends in red
-            if (dayElem.dateObj.getDay() === 0 || dayElem.dateObj.getDay() === 6) {
-                dayElem.style.color = "red";
-            }
-            // Apply low opacity to past weekends
-            if (dayElem.dateObj.getDay() === 0 || dayElem.dateObj.getDay() === 6) {
-                if (dayElem.dateObj < new Date().setHours(0, 0, 0, 0)) {
-                    dayElem.style.opacity = "0.1";
-                }
-            }
-            // Highlight the current day with a gray shade
-            const today = new Date();
-            if (
-                dayElem.dateObj.getDate() === today.getDate() &&
-                dayElem.dateObj.getMonth() === today.getMonth() &&
-                dayElem.dateObj.getFullYear() === today.getFullYear()
-            ) {
-                dayElem.style.backgroundColor = "#d3d3d3"; // Gray shade
-                dayElem.style.borderRadius = "50%"; // Make it circular
-            }
+            updateTimeSlots(dateStr);
         }
     });
+    
   
+    
     // Update document details table
     function updateDocumentDetails() {
         const tableBody = document.getElementById('documentDetailsTable');
@@ -440,7 +360,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>${doc.name}<br>${doc.year && doc.semester ? '(' + doc.year + ', ' + doc.semester + ')' : ''}</td>
+                <td>${doc.name}${doc.year && doc.semester ? ' (' + doc.year + ', ' + doc.semester + ')' : ''}</td>
                 <td>${doc.eta} Working day(s)</td>
                 <td>${formattedDate}</td>
                 <td>₱${doc.price.toFixed(2)}</td>
@@ -453,9 +373,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Update total price
         const totalWithFee = totalPrice + parseFloat(systemFee);
         document.getElementById('total_price_display').textContent = `₱${totalWithFee.toFixed(2)}`;
-        
-        // Update summary
-        updateSummary();
     }
     
     // Update summary section
@@ -463,7 +380,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Update selected documents
         const docsList = document.getElementById('summaryDocumentsList');
         docsList.textContent = selectedDocuments.map(doc => 
-            `${doc.name}${doc.year && doc.semester ? ' (' + doc.year + ', ' + doc.semester + ')' : ''}`
+            `${doc.name}${doc.year && doc.semester ? ' (' + doc.year + ' ' + doc.semester + ')' : ''}`
         ).join(', ');
         
         // Update delivery option
@@ -475,8 +392,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const appointmentDate = document.getElementById('appointment_date').value;
         const appointmentTime = document.getElementById('appointment_time').value;
         if (appointmentDate && appointmentTime) {
-            const timeText = appointmentTime;
-            
             const dateObj = new Date(appointmentDate);
             const formattedDate = dateObj.toLocaleDateString('en-US', { 
                 weekday: 'long', 
@@ -486,7 +401,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             document.getElementById('summaryAppointment').textContent = 
-                `${formattedDate} at ${timeText}`;
+                `${formattedDate} at ${appointmentTime}`;
         }
         
         // Update total price
@@ -495,8 +410,69 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('summaryTotalPrice').textContent = `₱${totalWithFee.toFixed(2)}`;
     }
     
-
-
+    // Document selection functionality
+    document.querySelectorAll('.document-toggle').forEach(button => {
+        button.addEventListener('click', function() {
+            const docId = this.getAttribute('data-doc-id');
+            const docName = this.getAttribute('data-doc-name');
+            const docPrice = parseFloat(this.getAttribute('data-doc-price'));
+            const docEta = parseInt(this.getAttribute('data-doc-eta'));
+            
+            if (this.classList.contains('active')) {
+                // Remove document
+                this.classList.remove('active', 'btn-success');
+                this.classList.add('btn-outline-success');
+                selectedDocuments = selectedDocuments.filter(doc => doc.id !== docId);
+                
+                // Hide additional inputs if present
+                const inputsContainer = document.getElementById('inputs-' + docId);
+                if (inputsContainer) inputsContainer.style.display = 'none';
+            } else {
+                // Add document
+                this.classList.add('active', 'btn-success');
+                this.classList.remove('btn-outline-success');
+                
+                // Get year and semester if they exist
+                const yearInput = document.getElementById('year-' + docId);
+                const semInput = document.getElementById('sem-' + docId);
+                
+                selectedDocuments.push({
+                    id: docId,
+                    name: docName,
+                    price: docPrice,
+                    eta: docEta,
+                    year: yearInput ? yearInput.value : null,
+                    semester: semInput ? semInput.value : null
+                });
+                
+                // Show additional inputs if present
+                const inputsContainer = document.getElementById('inputs-' + docId);
+                if (inputsContainer) inputsContainer.style.display = 'block';
+                
+                // Add event listeners for year/semester changes
+                if (yearInput && semInput) {
+                    yearInput.addEventListener('change', function() {
+                        const docIndex = selectedDocuments.findIndex(doc => doc.id === docId);
+                        if (docIndex !== -1) {
+                            selectedDocuments[docIndex].year = this.value;
+                            updateDocumentDetails();
+                        }
+                    });
+                    
+                    semInput.addEventListener('change', function() {
+                        const docIndex = selectedDocuments.findIndex(doc => doc.id === docId);
+                        if (docIndex !== -1) {
+                            selectedDocuments[docIndex].semester = this.value;
+                            updateDocumentDetails();
+                        }
+                    });
+                }
+            }
+            
+            updateDocumentDetails();
+        });
+    });
+    
     // Stepper navigation
     document.getElementById('nextBtn').addEventListener('click', function() {
         // Validate current step before proceeding
@@ -512,34 +488,13 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById(`step-circle-${currentStep}`).classList.add('active');
         
         // Update navigation buttons
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        if (currentStep === 0) {
-            prevBtn.textContent = 'Cancel';
-            prevBtn.className = 'btn btn-danger';
-            prevBtn.href = '/drmsv3/student';
-        } else {
-            prevBtn.textContent = 'Back';
-            prevBtn.className = 'btn btn-secondary';
-            prevBtn.href = 'javascript:void(0)';
-        }
-        
-        if (currentStep === totalSteps - 1) {
-            nextBtn.textContent = 'Dashbsoard'; // Change button label to 'Dashboard'
-            nextBtn.href = '/drmsv3/student'; // Redirect to dashboard
-            nextBtn.style.display = 'inline-block'; // Ensure the button is visible
-        } else {
-            nextBtn.textContent = 'Next';
-            nextBtn.style.display = 'inline-block'; // Ensure the next button is visible for other steps
-        }
+        updateNavigationButtons();
         
         // If we're on the summary step, update it
         if (currentStep === 3) {
             updateSummary();
         }
     });
-
-
     
     document.getElementById('prevBtn').addEventListener('click', function() {
         if (currentStep === 0) {
@@ -558,153 +513,34 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById(`step-circle-${currentStep}`).classList.add('active');
         
         // Update navigation buttons
+        updateNavigationButtons();
+    });
+    
+    function updateNavigationButtons() {
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
+        
         if (currentStep === 0) {
             prevBtn.textContent = 'Cancel';
             prevBtn.className = 'btn btn-danger';
-            prevBtn.href = '/drmsv3/student';
         } else {
             prevBtn.textContent = 'Back';
             prevBtn.className = 'btn btn-secondary';
-            prevBtn.href = 'javascript:void(0)';
         }
         
-        nextBtn.style.display = 'inline-block'; // Ensure the next button is visible when navigating back
-        nextBtn.textContent = 'Next';
-    });
-
-
-    
-    // AJAX submission
-    document.getElementById('addRequestForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      
-      if (!validateStep(currentStep)) return;
-      
-    // Get all selected document names with additional inputs for COG and COR
-    const selectedDocs = Array.from(document.querySelectorAll('.document-toggle.active')).map(button => {
-      const docName = button.getAttribute('data-doc-name');
-      const docId = button.getAttribute('data-doc-id');
-      const yearInput = document.getElementById(`year-${docId}`);
-      const semInput = document.getElementById(`sem-${docId}`);
-      
-      if (yearInput && semInput && yearInput.value && semInput.value) {
-        return `${docName} (${yearInput.value}, ${semInput.value})`;
-      }
-      return docName;
-    }).join(', '); // Combine into a single string
-
-      // Prepare form data
-      const formData = new FormData();
-      
-      // Add student info
-      formData.append('student_id', document.getElementById('summaryStudentId').textContent.trim());
-      formData.append('student_name', document.getElementById('summaryStudentName').textContent.trim());
-      formData.append('program_section', document.getElementById('summaryProgramSection').textContent.trim());
-      
-      // Add selected documents (single field for all docs)
-      formData.append('document_request', selectedDocs);
-      
-      // Add other form data
-      formData.append('delivery_option', document.getElementById('delivery_option').value);
-      formData.append('appointment_date', document.getElementById('appointment_date').value);
-      formData.append('appointment_time', document.getElementById('appointment_time').value);
-      
-      // Calculate total price
-      const totalPrice = selectedDocuments.reduce((sum, doc) => sum + doc.price, 0) + parseFloat(systemFee);
-
-      formData.append('total_price', totalPrice.toFixed(2));
-
-      
-      
-      // Submit via AJAX
-      fetch('../controllers/AddRequest.php', {
-        method: 'POST',
-        body: formData
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          alert('Request submitted successfully!');
-          // Redirect or show success message
-          window.location.href = 'request-success.php?request_id=' + data.request_id;
+        if (currentStep === totalSteps - 1) {
+            nextBtn.style.display = 'none';
         } else {
-          alert('Error: ' + (data.message || 'Failed to submit request'));
+            nextBtn.style.display = 'inline-block';
+            nextBtn.textContent = 'Next';
         }
-      })
-    .catch(error => {
-      console.error('Error:', error);
-      alert('An error occurred while submitting your request.');
-    });
-    });
-
+    }
     
-      // Activate button functionality
-  document.querySelectorAll('.document-toggle').forEach(button => {
-        button.addEventListener('click', function() {
-            const docId = this.getAttribute('data-doc-id');
-            const docName = this.getAttribute('data-doc-name');
-            const docPrice = parseFloat(this.getAttribute('data-doc-price'));
-            const docEta = parseInt(this.getAttribute('data-doc-eta'));
-            
-            if (this.classList.contains('active')) {
-                // Remove document
-                this.classList.remove('active', 'btn-success', 'text-white', 'bg-success');
-                this.classList.add('btn-outline-success', 'text-success', 'bg-white');
-                selectedDocuments = selectedDocuments.filter(doc => doc.id !== docId);
-                
-                // Hide additional inputs if present
-                const inputsContainer = document.getElementById('inputs-' + docId);
-                if (inputsContainer) inputsContainer.style.display = 'none';
-            } else {
-                // Add document
-                this.classList.add('active', 'btn-success', 'text-white', 'bg-success');
-                this.classList.remove('btn-outline-success', 'text-success', 'bg-white');
-                selectedDocuments.push({
-                    id: docId,
-                    name: docName,
-                    price: docPrice,
-                    eta: docEta,
-                    year: document.getElementById(`year-${docId}`)?.value || null,
-                    semester: document.getElementById(`sem-${docId}`)?.value || null
-                });
-
-                // Update year and semester inputs dynamically
-                const yearInput = document.getElementById(`year-${docId}`);
-                const semInput = document.getElementById(`sem-${docId}`);
-                if (yearInput && semInput) {
-                    yearInput.addEventListener('change', function () {
-                        const docIndex = selectedDocuments.findIndex(doc => doc.id === docId);
-                        if (docIndex !== -1) {
-                            selectedDocuments[docIndex].year = this.value || null;
-                        }
-                        updateDocumentDetails(); // Ensure table updates dynamically
-                    });
-                    semInput.addEventListener('change', function () {
-                        const docIndex = selectedDocuments.findIndex(doc => doc.id === docId);
-                        if (docIndex !== -1) {
-                            selectedDocuments[docIndex].semester = this.value || null;
-                        }
-                        updateDocumentDetails(); // Ensure table updates dynamically
-                    });
-                }
-                
-                // Show additional inputs if present
-                const inputsContainer = document.getElementById('inputs-' + docId);
-                if (inputsContainer) inputsContainer.style.display = 'block';
-            }
-            
-            updateDocumentDetails();
-        });
-    });
-
     // Step validation
     function validateStep(step) {
         const showToast = (message) => {
-            const toastContainer = document.getElementById('toastContainer');
             const toast = document.createElement('div');
-            toast.className = 'toast align-items-center text-bg-danger border-0';
+            toast.className = 'toast align-items-center text-white bg-danger border-0';
             toast.setAttribute('role', 'alert');
             toast.setAttribute('aria-live', 'assertive');
             toast.setAttribute('aria-atomic', 'true');
@@ -716,10 +552,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
             `;
+            
+            const toastContainer = document.getElementById('toastContainer');
             toastContainer.appendChild(toast);
-            const bsToast = new bootstrap.Toast(toast, { delay: 3000 }); // Set delay to 3 seconds
+            
+            const bsToast = new bootstrap.Toast(toast);
             bsToast.show();
-            toast.addEventListener('hidden.bs.toast', () => {
+            
+            // Remove toast after it's hidden
+            toast.addEventListener('hidden.bs.toast', function() {
                 toast.remove();
             });
         };
@@ -730,21 +571,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     showToast('Please select at least one document');
                     return false;
                 }
-
+                
                 // Validate inputs for Certificate of Grades or Registration
                 for (const doc of selectedDocuments) {
-                    if (['Certificate of Grades', 'Certificate of Registration'].includes(doc.name)) {
-                        const yearInput = document.getElementById(`year-${doc.id}`);
-                        const semInput = document.getElementById(`sem-${doc.id}`);
-
+                    if (['Certificate Of Grades', 'Certificate Of Registration'].includes(doc.name)) {
+                        const yearInput = document.getElementById('year-' + doc.id);
+                        const semInput = document.getElementById('sem-' + doc.id);
+                        
                         if (!yearInput || !semInput || !yearInput.value || !semInput.value) {
                             showToast(`Please select both Year and Semester for ${doc.name}`);
                             return false;
                         }
-
-                        // Update the document object with year and semester values
-                        doc.year = yearInput.value;
-                        doc.semester = semInput.value;
                     }
                 }
                 return true;
@@ -778,40 +615,146 @@ document.addEventListener('DOMContentLoaded', function() {
                 return true;
         }
     }
-   
-});
+    
+    // Form submission
+    document.getElementById('addRequestForm').addEventListener('submit', function(e) {
+        e.preventDefault();
 
-// Change Theme
-document.getElementById('themeToggle').addEventListener('change', function() {
-    if (this.checked) {
-        document.documentElement.setAttribute('data-bs-theme', 'dark');
-        document.cookie = "theme=dark; path=/; SameSite=Strict";
-    } else {
-        document.documentElement.removeAttribute('data-bs-theme');
-        document.cookie = "theme=light; path=/; SameSite=Strict";
-    }
-});
+        if (!validateStep(currentStep)) return;
+
+        // Generate Request ID
+        const requestId = 'PTC-' + Math.floor(100000 + Math.random() * 900000);
+
+        // Populate modal with summary details
+        const modalBody = document.getElementById('modalBody');
+        modalBody.innerHTML = `
+            <p><strong>Request ID:</strong> ${requestId}</p>
+            <p><strong>Student ID:</strong> ${document.getElementById('summaryStudentId').textContent.trim()}</p>
+            <p><strong>Name:</strong> ${document.getElementById('summaryStudentName').textContent.trim()}</p>
+            <p><strong>Program & Section:</strong> ${document.getElementById('summaryProgramSection').textContent.trim()}</p>
+            <p><strong>Requested Documents:</strong> ${document.getElementById('summaryDocumentsList').textContent.trim()}</p>
+            <p><strong>Appointment for Payment:</strong> ${document.getElementById('summaryAppointment').textContent.trim()}</p>
+            <p><strong>Payment Option:</strong> ${document.getElementById('summaryDeliveryOption').textContent.trim()}</p>
+            <p><strong>Total Price:</strong> ${document.getElementById('summaryTotalPrice').textContent.trim()}</p>
+        `;
+
+        // Show modal
+        const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+        confirmationModal.show();
+
+        // Handle confirm button click
+        document.getElementById('confirmSubmit').onclick = function() {
+            // Prepare form data
+            const formData = new FormData();
+
+            // Add student info
+            formData.append('request_id', requestId);
+            formData.append('student_id', document.getElementById('summaryStudentId').textContent.trim());
+            formData.append('student_name', document.getElementById('summaryStudentName').textContent.trim());
+            formData.append('program_section', document.getElementById('summaryProgramSection').textContent.trim());
+
+            // Combine selected documents into a single string
+            const documentDetails = selectedDocuments.map(doc => {
+            if (['Certificate Of Grades', 'Certificate Of Registration'].includes(doc.name)) {
+                return `${doc.name} (${doc.year || 'N/A'} ${doc.semester || 'N/A'})`;
+            }
+            return doc.name;
+            }).join(', ');
+            formData.append('documents', documentDetails);
+
+            // Add other form data
+            formData.append('delivery_option', document.getElementById('delivery_option').value);
+            formData.append('appointment_date', document.getElementById('appointment_date').value);
+            formData.append('appointment_time', document.getElementById('appointment_time').value);
+
+            // Calculate total price
+            const totalPrice = selectedDocuments.reduce((sum, doc) => sum + doc.price, 0) + parseFloat(systemFee);
+            formData.append('total_price', totalPrice.toFixed(2));
+
+            // Submit via AJAX
+            fetch('../controllers/AddRequest.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Close modal
+                    confirmationModal.hide();
+
+                    // Change button to loading state
+                    const submitButton = document.querySelector('button[type="submit"]');
+                    submitButton.innerHTML = `
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...
+                    `;
+                    submitButton.disabled = true;
+
+                    // Add success message
+                    const successMessage = document.createElement('p');
+                    successMessage.className = 'text-success mt-3 text-center';
+                    successMessage.textContent = 'Request Submitted Successfully';
+                    submitButton.parentNode.appendChild(successMessage);
+
+                    // Redirect after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = 'track-request.php';
+                    }, 3000);
+                } else {
+                    showToast('Error: ' + (data.message || 'Failed to submit request'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('An error occurred while submitting your request.');
+            });
+        };
+    });
 
 
-// Load Theme from Cookie
-window.addEventListener('load', function() {
+    // Theme toggle
+    document.getElementById('themeToggle').addEventListener('change', function() {
+        if (this.checked) {
+            document.documentElement.setAttribute('data-bs-theme', 'dark');
+            document.cookie = "theme=dark; path=/; SameSite=Strict";
+        } else {
+            document.documentElement.removeAttribute('data-bs-theme');
+            document.cookie = "theme=light; path=/; SameSite=Strict";
+        }
+    });
+    
+    // Load theme from cookie
     const theme = document.cookie.split(';').find((item) => item.trim().startsWith('theme='));
     if (theme) {
         const themeValue = theme.split('=')[1];
         if (themeValue === 'dark') {
             document.documentElement.setAttribute('data-bs-theme', 'dark');
             document.getElementById('themeToggle').checked = true;
-        } else {
-            document.documentElement.removeAttribute('data-bs-theme');
-            document.getElementById('themeToggle').checked = false;
         }
     }
 });
-
-
 </script>
+
 <!-- Toast Container -->
-<div id="toastContainer" class="position-fixed" style="top: 12%; left: 50%; transform: translateX(-50%); z-index: 1055;"></div>
+<div id="toastContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 9999"></div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Confirm Your Request</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Summary details will be populated here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmSubmit">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

@@ -117,7 +117,7 @@ if (!isset($_SESSION['sessionuser'])) {
             </a>
         </div>
         <div class="col-md-6 d-flex justify-content-center">
-            <a href="track_request.php" class="btn btn-lg btn-secondary w-75 py-4 shadow-sm">
+            <a href="track-request.php" class="btn btn-lg btn-secondary w-75 py-4 shadow-sm">
                 <i class="fas fa-search me-2"></i>Track Request
             </a>
         </div>

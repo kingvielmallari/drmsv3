@@ -170,11 +170,14 @@ class class_model {
     }
 
 
-    public function addRequest($studentId, $studentName, $programSection, $documentRequest, $deliveryOption, $appointmentDate, $appointmentTime, $totalPrice) {
-        $sql = "INSERT INTO requests (student_id, student_name, program_section, document_request, delivery_option, appointment_date, appointment_time, total_price) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    public function addRequest($requestId, $studentId, $studentName, $programSection, $documentsArray, $deliveryOption, $appointmentDate, $appointmentTime, $totalPrice) {
+        if (is_array($documentsArray)) {
+            $documentsArray = implode(", ", $documentsArray); // Convert array to string if necessary
+        }
+        $sql = "INSERT INTO requests (request_id, student_id, student_name, program_section, document_request, delivery_option, appointment_date, appointment_time, total_price) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->mysqli->prepare($sql);
-        $stmt->bind_param("sssssssd", $studentId, $studentName, $programSection, $documentRequest, $deliveryOption, $appointmentDate, $appointmentTime, $totalPrice);
+        $stmt->bind_param("ssssssssd", $requestId, $studentId, $studentName, $programSection, $documentsArray, $deliveryOption, $appointmentDate, $appointmentTime, $totalPrice);
 
         return $stmt->execute();
     }
@@ -236,7 +239,13 @@ class class_model {
         return false; // login failed
     }
 
-    
+    public function getRequestRecords($student_id) {
+        $sql = "SELECT * FROM requests WHERE student_id = ? ORDER BY created_at DESC";
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("s", $student_id);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
 
     public function addStudent($student_id, $last_name, $first_name, $middle_name, $email, $contact) {
         $sql = "INSERT INTO students (student_id, last_name, first_name, middle_name, email, contact) VALUES (?, ?, ?, ?, ?, ?)";
