@@ -3,10 +3,16 @@
 require_once '../../config/db.php';
 
 session_start();
-if (!isset($_SESSION['sessionuser'])) {
-    header('Location: ./index.php');
-    exit;
+
+if (
+  !isset($_SESSION['sessionuser']) ||
+  !isset($_SESSION['role']) ||
+  $_SESSION['role'] !== 'reg_staff'
+) {
+  header('Location: ../index.php');
+  exit;
 }
+
 
 
 ?>
@@ -82,7 +88,7 @@ if (!isset($_SESSION['sessionuser'])) {
                     <th>Student ID</th>
                     <th>Document Request</th>
                     <th>Date Requested</th>
-                    <th>Appointment Payment</th>
+                    <th>Appointment for Payment</th>
                     <th>Date Releasing</th>
                     <th>Processing Officer</th>
                     <th>Total Price</th>
@@ -91,62 +97,15 @@ if (!isset($_SESSION['sessionuser'])) {
 
                 </tr>
             </thead>
-            <tbody>
-                <?php
-
-
-                $sessionUser = $_SESSION['sessionuser'];
-
-                $cm = new class_model();
-
-                $result = $cm->getRequestRecordsStaff();
-
-                if ($result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
-                        echo "<tr>";
-                        echo "<td>" . htmlspecialchars($row['request_id']) . "</td>";
-                        echo "<td>" . htmlspecialchars($row['student_id']) . "</td>";
-                        echo "<td class='text-center'>" . implode(' ', array_map(function ($document) {
-                            return '<span class="badge bg-success me-1">' . htmlspecialchars($document) . '</span>';
-                        }, explode(',', $row['document_request']))) . "</td>";
-                        echo "<td>" . (!empty($row['created_at']) ? date('F d, Y', strtotime($row['created_at'])) : 'N/A') . "</td>";
-                        echo "<td>" . (!empty($row['appointment_date']) && !empty($row['appointment_time']) ? date('F d, Y', strtotime($row['appointment_date'])) . ' - ' . date('g:i A', strtotime($row['appointment_time'])) : 'N/A') . "</td>";
-                        echo "<td>" . (!empty($row['date_releasing']) ? htmlspecialchars($row['date_releasing']) : 'N/A') . "</td>";
-                        echo "<td>" . (!empty($row['processing_officer']) ? htmlspecialchars($row['processing_officer']) : 'N/A') . "</td>";
-                        echo "<td>" . htmlspecialchars($row['total_price']) . "</td>";
-                        echo "<td>" . (function ($status) {
-                            switch ($status) {
-                                case 'Received': return '<span class="badge bg-warning">' . htmlspecialchars($status) . '</span>';
-                                case 'Declined': return '<span class="badge bg-danger">' . htmlspecialchars($status) . '</span>';
-                                case 'Processing': return '<span class="badge bg-primary">' . htmlspecialchars($status) . '</span>';
-                                case 'Releasing': return '<span class="badge bg-secondary">' . htmlspecialchars($status) . '</span>';
-                                case 'Released': return '<span class="badge bg-success">' . htmlspecialchars($status) . '</span>';
-                                default: return htmlspecialchars($status);
-                            }
-                        })($row['status']) . "</td>";
-                        echo "<td>
-                          <div class='d-flex flex-column flex-md-row justify-content-center align-items-center'>
-                          <button class='btn btn-warning btn-sm me-md-2 mb-2 mb-md-0' title='Edit' data-bs-toggle='modal' data-bs-target='#editModal' data-id='" . $row['id'] . "'>
-                            <i class='fas fa-edit'></i>
-                          </button>
-                          <button class='btn btn-danger btn-sm' title='Delete' data-bs-toggle='modal' data-bs-target='#deleteModal' data-id='" . $row['id'] . "'>
-                            <i class='fas fa-trash-alt'></i>
-                          </button>
-                          </div>
-                        </td>";
-                        echo "</tr>";
-                    }
-                } else {
-                    echo "<tr><td colspan='10' class='text-center'>No records found</td></tr>";
-                }
-
-                ?>
+            <tbody id="requestTableBody">
+              
             </tbody>
         </table>
     </div>
 </div>
+
 <!-- Delete Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -154,7 +113,7 @@ if (!isset($_SESSION['sessionuser'])) {
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <!-- Content will be dynamically populated -->
+        Are you sure you want to delete this request?
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -183,65 +142,129 @@ if (!isset($_SESSION['sessionuser'])) {
   </div>
 </div>
 
+<script>
+
+  document.addEventListener('DOMContentLoaded', () => {
+    fetchRequests();
+  });
+
+  function fetchRequests() {
+    fetch('../../controllers/FetchAllRequest.php')
+      .then(response => response.json())
+      .then(data => {
+        const tableBody = document.getElementById('requestTableBody');
+        tableBody.innerHTML = ''; // Clear existing rows
+
+        data.forEach(request => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+                <td class="text-center">${request.request_id}</td>
+                <td class="text-center">${request.student_id ? request.student_id : (request.student_name ? request.student_name : 'N/A')}</td>
+              <td class="text-center">${request.document_request.split(',').map(doc => `<span class="badge bg-success">${doc.trim()}</span>`).join(' ')}</td>
+              <td>${request.created_at ? new Date(request.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'N/A'}</td>
+              <td>${request.appointment_date && request.appointment_time ? new Date(`${request.appointment_date}T${request.appointment_time}`).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) : 'N/A'}</td>
+              <td>${request.date_releasing ? request.date_releasing : 'N/A'}</td>
+              <td>${request.processing_officer ? request.processing_officer : 'N/A'}</td>
+              <td>${request.total_price}</td>
+              <td class="text-center">
+                <span class="badge 
+                  ${request.status === 'Received' ? 'bg-primary' : 
+                  request.status === 'Declined' ? 'bg-danger' : 
+                  request.status === 'Processing' ? 'bg-warning text-dark' : 
+                  request.status === 'Releasing' ? 'bg-info text-dark' : 
+                  request.status === 'Released' ? 'bg-success' : 
+                  request.status === 'Expired' ? 'bg-secondary' : 
+                  'bg-light text-dark'}">
+                  ${request.status}
+                </span>
+              </td>
+              <td>
+                <div class='d-flex flex-column flex-md-row justify-content-center align-items-center'>
+                  <button class="btn btn-primary btn-sm me-md-2 mb-2 mb-md-0 edit-btn" data-id="${request.id}" data-bs-toggle="modal" data-bs-target="#editStudentModal">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn btn-danger btn-sm me-md-2 mb-2 mb-md-0 delete-btn" data-id="${request.id}" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </div>
+              </td>`;
+          tableBody.appendChild(row);
+        });
+
+        // Add event listener to edit buttons
+        document.querySelectorAll('.edit-btn').forEach(button => {
+          button.addEventListener('click', () => {
+            currentEditStudentId = button.getAttribute('data-id');
+            fetchStudentData(currentEditStudentId);
+          });
+        });
+
+        // Add event listener to delete buttons
+        document.querySelectorAll('.delete-btn').forEach(button => {
+          button.addEventListener('click', () => {
+            deleteStudentId = button.getAttribute('data-id');
+          });
+        });
+      })
+      .catch(error => console.error('Error fetching students:', error));
+  }
+
+  setInterval(fetchRequests, 2500);
+
+
+
+
+
+
+</script>
+
+
+
+
+
 
 
  
 <script>
 
-  // Edit button click event
-  document.querySelectorAll('[data-bs-target="#editModal"]').forEach(function (editButton) {
-    editButton.addEventListener('click', function () {
-      const requestId = this.getAttribute('data-id');
-      const editModal = document.querySelector('#editModal');
-      // Populate modal with data (you can fetch data via AJAX if needed)
-      editModal.querySelector('.modal-body').innerHTML = `<p>Editing request ID: ${requestId}</p>`;
+  // // Edit button click event
+  // document.querySelectorAll('[data-bs-target="#editModal"]').forEach(function (editButton) {
+  //   editButton.addEventListener('click', function () {
+  //     const requestId = this.getAttribute('data-id');
+  //     const editModal = document.querySelector('#editModal');
+  //     // Populate modal with data (you can fetch data via AJAX if needed)
+  //     editModal.querySelector('.modal-body').innerHTML = `<p>Editing request ID: ${requestId}</p>`;
+  //   });
+  // });
+
+
+  // Confirm delete
+  document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
+        if (deleteStudentId) {
+            fetch('../../controllers/DeleteRequest.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `id=${deleteStudentId}`
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    // Refresh the table
+                    fetchRequests();
+                    // Hide the modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal'));
+                    modal.hide();
+                } else {
+                    alert(result.message || 'Failed to delete request.');
+                }
+            })
+            .catch(error => console.error('Delete error:', error));
+        } else {
+            alert('Request ID not provided');
+        }
     });
-  });
-
-  // Delete button click event
-  let deleteDocumentId = null; // Define the variable to store the request ID
-  document.querySelectorAll('[data-bs-target="#deleteModal"]').forEach(function (deleteButton) {
-    deleteButton.addEventListener('click', function () {
-      deleteDocumentId = this.getAttribute('data-id'); // Assign the request ID to the variable
-      const deleteModal = document.querySelector('#deleteModal');
-      // Populate modal with data (you can fetch data via AJAX if needed)
-      deleteModal.querySelector('.modal-body').innerHTML = `<p>Are you sure you want to delete request?</p>`;
-    });
-  });
-
-    // Confirm delete
-    document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
-      if (deleteDocumentId) {
-        fetch('../controllers/DeleteRequest.php', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          body: `id=${deleteDocumentId}`
-        })
-        .then(response => response.json())
-        .then(result => {
-          if (result.success) {
-            // Refresh the table
-            // fetchRequests();
-            // Hide the modal
-            location.reload(); // Refresh the page to ensure the table updates correctly
-            const modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
-            modal.hide();
-          } else {
-            alert(result.message || 'Failed to delete document.');
-          }
-        })
-        .catch(error => {
-          console.error('Delete error:', error);
-          alert('An error occurred while deleting the document.');
-        });
-      } else {
-        alert('Document ID not provided');
-      }
-    });
-
-
 
 </script>
 

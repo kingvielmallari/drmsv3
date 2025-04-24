@@ -67,6 +67,15 @@ class class_model {
 
         return $result->fetch_all(MYSQLI_ASSOC);
     }
+
+    public function getAllRequests() {
+        $sql = "SELECT * FROM requests ORDER BY id ASC";
+        $result = $this->mysqli->query($sql);
+
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    
     
     public function getStudentByEmail($email) {
         $sql = "SELECT * FROM students WHERE email = ?";
@@ -245,12 +254,7 @@ class class_model {
 
 
 
-    
-    public function getAllRequests() {
-        $sql = "SELECT * FROM requests ORDER BY created_at DESC";
-        $result = $this->mysqli->query($sql);
-        return $result;
-    }
+   
 
     public function getrequestdetails($id) {
         $sql = "SELECT * FROM requests WHERE id = ?";

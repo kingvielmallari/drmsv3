@@ -134,13 +134,13 @@ $cm = new class_model();
                                                     <div class="d-flex gap-2 align-items-center">
                                                         <div class="form-floating" style="max-width: 120px;">
                                                             <select class="form-select year-input" id="year-<?= $docId ?>" style="height: 35px; font-size: 0.85rem;">
-                                                                <option value="" disabled selected>Year</option>
+                                                                <option value="" disabled selected>Year Level</option>
                                                                 <option value="4th Year">4th Year</option>
                                                                 <option value="3rd Year">3rd Year</option>
                                                                 <option value="2nd Year">2nd Year</option>
                                                                 <option value="1st Year">1st Year</option>
                                                             </select>
-                                                            <label for="year-<?= $docId ?>" style="font-size: 0.75rem;">Year</label>
+                                                            <label for="year-<?= $docId ?>" style="font-size: 0.75rem;">Year Level</label>
                                                         </div>
                                                         <div class="form-floating" style="max-width: 120px;">
                                                             <select class="form-select sem-input" id="sem-<?= $docId ?>" style="height: 35px; font-size: 0.85rem;">
@@ -148,7 +148,7 @@ $cm = new class_model();
                                                                 <option value="1st Sem">1st Sem</option>
                                                                 <option value="2nd Sem">2nd Sem</option>
                                                             </select>
-                                                            <label for="sem-<?= $docId ?>" style="font-size: 0.75rem;">Sem</label>
+                                                            <label for="sem-<?= $docId ?>" style="font-size: 0.75rem;">Semester</label>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -243,7 +243,7 @@ $cm = new class_model();
                             <div class="summary-item">
                                 <div class="mb-2">
                                     Student ID: 
-                                    <strong id="summaryStudentId"><?php echo htmlspecialchars($_SESSION['sessionuser']['student_id'] ?? 'N/A'); ?></strong>
+                                    <strong id="summaryStudentId"><?php echo htmlspecialchars($_SESSION['sessionuser']['student_id']); ?></strong>
                                 </div>
                                 <div class="mb-2">
                                     Name: 
@@ -579,7 +579,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         const semInput = document.getElementById('sem-' + doc.id);
                         
                         if (!yearInput || !semInput || !yearInput.value || !semInput.value) {
-                            showToast(`Please select both Year and Semester for ${doc.name}`);
+                            showToast(`Please select both Year Level and Semester for ${doc.name}`);
                             return false;
                         }
                     }

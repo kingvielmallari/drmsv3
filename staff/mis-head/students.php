@@ -296,12 +296,14 @@ if (
                         <td>${student.section}</td>
                         <td>${student.status}</td>
                         <td>
-                            <button class="btn btn-primary btn-sm edit-btn" data-id="${student.id}" data-bs-toggle="modal" data-bs-target="#editStudentModal">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="btn btn-danger btn-sm delete-btn" data-id="${student.id}" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
+                            <div class='d-flex justify-content-center align-items-center gap-2'>
+                                <button class="btn btn-primary btn-sm edit-btn" data-id="${student.id}" data-bs-toggle="modal" data-bs-target="#editStudentModal">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-danger btn-sm delete-btn" data-id="${student.id}" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
                         </td>
                     `;
                     tableBody.appendChild(row);

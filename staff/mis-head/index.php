@@ -1,24 +1,18 @@
 <?php
 
-// require_once '../config/db.php';
-
-// // session_start();
-
-// // if (
-// //   !isset($_SESSION['sessionuser']) ||
-// //   !isset($_SESSION['role']) ||
-// //   $_SESSION['role'] !== 'mis-head'
-// // ) {
-// //   header('Location: ../index.php');
-// //   exit;
-// // }
-
+require_once '../../config/db.php';
 
 session_start();
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'mis_head') {
-    header("Location: ../../index.php");
-    exit();
+
+if (
+  !isset($_SESSION['sessionuser']) ||
+  !isset($_SESSION['role']) ||
+  $_SESSION['role'] !== 'mis_head'
+) {
+  header('Location: ../index.php');
+  exit;
 }
+
 
 
 
@@ -84,9 +78,10 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'mis_head') {
 </header>
 
 
-
-
 <div class="card mt-5 mx-auto shadow-lg bg-succ" style="width: 80%; padding: 20px;">
+<div class="card-header bg-primary text-white text-start py-3 mt-5">
+        <h4 class="mb-0">Welcome MIS Head, <strong><?php echo htmlspecialchars($_SESSION['sessionuser']['name']); ?> !</strong></h4>
+    </div>
 <div class="card-body">
     <div class="text-center mt-4">
     <a href="../../controllers/LogoutStudent.php" class="btn btn-danger btn-lg px-5">Logout</a>
@@ -94,7 +89,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'mis_head') {
 </div>
 </div>
 
-<div class="container vh-100 d-flex flex-column justify-content-center align-items-center">
+
+<div class="container mt-5 d-flex flex-column justify-content-center align-items-center">
 
     <div class="row w-100 mb-4">
         <div class="col-md-6 mb-3 mb-md-0 d-flex justify-content-center">
