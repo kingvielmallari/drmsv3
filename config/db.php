@@ -20,6 +20,17 @@ class class_model {
 
     }
 
+    public function updateRequest($request_id, $date_releasing, $processing_officer, $status) {
+        $sql = "UPDATE requests SET date_releasing = ?, processing_officer = ?, status = ? WHERE request_id = ?";
+        $stmt = $this->mysqli->prepare($sql);
+        if (!$stmt) {
+            return false;
+        }
+        $stmt->bind_param("ssss", $date_releasing, $processing_officer, $status, $request_id);
+
+        return $stmt->execute();
+    }
+
     public function getUserByEmail($email) {
         $stmt = $this->mysqli->prepare("SELECT * FROM students WHERE email = ?");
         $stmt->bind_param("s", $email);
@@ -91,6 +102,30 @@ class class_model {
         $sql = "SELECT * FROM students WHERE student_id = ?";
         $stmt = $this->mysqli->prepare($sql);
         $stmt->bind_param("s", $student_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        if ($result->num_rows > 0) {
+            return $result->fetch_assoc();
+        }
+    
+        return null;
+    }
+
+    public function doesRequestIdExist($requestId) {
+        $query = "SELECT COUNT(*) as count FROM requests WHERE request_id = ?";
+        $stmt = $this->mysqli->prepare($query);
+        $stmt->bind_param("s", $requestId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        return $row['count'] > 0;
+    }
+
+    public function getSpecificRequest($student_id) {
+        $sql = "SELECT * FROM requests WHERE id = ?";
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("i", $student_id);
         $stmt->execute();
         $result = $stmt->get_result();
     

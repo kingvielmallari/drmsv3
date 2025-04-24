@@ -47,14 +47,21 @@ if ($student) {
 <header class="text-white text-center">
 
   <nav class="navbar navbar-expand-lg navbar-light bg-success fixed-top">
-  <div class="container-fluid">
-    <a class="navbar-brand text-white d-flex align-items-center" href="index.php">
+  <div class="container-fluid ">
+    <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="index.php"> 
       <img src="./assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;" class="me-3">
       <span style="font-size: 1.50rem; line-height: 60px;">Pateros Technological College</span>
     </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
+    <div class="d-lg-none d-flex justify-content-center">
+      <a class="navbar-brand text-white d-flex align-items-center" href="index.php">
+        <img src="./assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;">
+      </a>
+    </div>
+
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto align-items-center">
         <li class="nav-item">
@@ -64,7 +71,7 @@ if ($student) {
           <a class="nav-link text-white" href="#" style="font-size: 1.1rem;">About</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-white" href="#" style="font-size: 1.1rem;">Contact</a>
+          <a class="nav-link text-white" href="#" style="font-size: 1.1rem;">Contasct</a>
         </li>
         <li class="nav-item">
           <div class="form-check form-switch d-flex align-items-center">
@@ -76,6 +83,8 @@ if ($student) {
         </li>
       </ul>
     </div>
+
+    
   </div>
   </nav>
 
@@ -85,8 +94,8 @@ if ($student) {
 <div class="container d-flex justify-content-center align-items-center flex-grow-1">
 <div class="row justify-content-center align-self-center w-100">
 <div class="col-md-6">
-<h2 class="text-center">Create New DRMS Account</h2>
-<p class="text-center text-muted">Make sure that your Student ID is registered in our school database to be able to create account.</p>
+<h2 class="text-center">Reset Password</h2>
+<p class="text-center text-muted">Enter your password to reset your DRMS account.</p>
 <form id="resetForm">
     <div class="form-floating mb-3">
       <input type="text" class="form-control" name="student_id" id="student_id" placeholder="floatingStudentID" required 

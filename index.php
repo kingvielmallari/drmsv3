@@ -4,6 +4,12 @@
 
 require_once 'config/config.php';
 
+
+session_start();
+
+$error = $_SESSION['error'] ?? '';
+unset($_SESSION['error']); // Clear the error after displaying
+
 // Redirect to Google OAuth
 $loginUrl = $client->createAuthUrl()
 
@@ -94,7 +100,23 @@ $loginUrl = $client->createAuthUrl()
       <i class="bi bi-eye-slash position-absolute top-50 end-0 translate-middle-y me-3" id="togglePassword" style="cursor: pointer; color: var(--text-color);"></i>
       </div>
       <div>
-      <p id="response" class="text-danger text-center"></p>
+
+
+      <p class="text-danger text-center" id="errorMessage"><?= htmlspecialchars($error) ?></p>     
+
+      <script>
+        // Hide the error message after 3 seconds
+        setTimeout(() => {
+          const errorMessage = document.getElementById('errorMessage');
+          if (errorMessage) {
+        errorMessage.style.display = 'none';
+          }
+        }, 5000);
+
+
+      </script>
+      <p id="response" class="text-danger text-center"></p>     
+   
       </div>
   
       <div class="d-grid mb-2">

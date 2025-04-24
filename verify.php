@@ -12,38 +12,49 @@
 <body class="d-flex flex-column min-vh-100">
 
 <header class="text-white text-center">
-    <nav class="navbar navbar-expand-lg navbar-light bg-success fixed-top">
-        <div class="container-fluid">
-            <a class="navbar-brand text-white d-flex align-items-center" href="index.php">
-                <img src="./assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;" class="me-3">
-                <span style="font-size: 1.50rem; line-height: 60px;">Pateros Technological College</span>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link active text-white" aria-current="page" href="#" style="font-size: 1.1rem;">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="#" style="font-size: 1.1rem;">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="#" style="font-size: 1.1rem;">Contact</a>
-                    </li>
-                    <li class="nav-item">
-                        <div class="form-check form-switch d-flex align-items-center">
-                            <input class="form-check-input me-2" type="checkbox" id="themeToggle">
-                            <label class="form-check-label text-white" for="themeToggle" style="font-size: 1.1rem;">
-                                <i class="bi bi-moon-fill"></i>
-                            </label>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-success fixed-top">
+  <div class="container-fluid ">
+    <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="index.php"> 
+      <img src="./assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;" class="me-3">
+      <span style="font-size: 1.50rem; line-height: 60px;">Pateros Technological College</span>
+    </a>
+    <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="d-lg-none d-flex justify-content-center">
+      <a class="navbar-brand text-white d-flex align-items-center" href="index.php">
+        <img src="./assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;">
+      </a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-center">
+        <li class="nav-item">
+          <a class="nav-link active text-white" aria-current="page" href="#" style="font-size: 1.1rem;">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="#" style="font-size: 1.1rem;">About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="#" style="font-size: 1.1rem;">Contasct</a>
+        </li>
+        <li class="nav-item">
+          <div class="form-check form-switch d-flex align-items-center">
+            <input class="form-check-input me-2" type="checkbox" id="themeToggle">
+            <label class="form-check-label text-white" for="themeToggle" style="font-size: 1.1rem;">
+              <i class="bi bi-moon-fill"></i>
+            </label>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    
+  </div>
+  </nav>
+
 </header>
 
 <div class="container d-flex justify-content-center align-items-center flex-grow-1">
@@ -170,10 +181,10 @@
                     <p class="text-center text-muted">A 4-digit OTP has been sent to your email. Please enter it below to verify.</p>
                     <form id="otpForm" class="text-center">
                         <div class="d-flex justify-content-center mb-3">
-                            <input type="text" class="form-control text-center mx-1" name="otp1" id="otp1" maxlength="1" style="width: 50px;" required>
-                            <input type="text" class="form-control text-center mx-1" name="otp2" id="otp2" maxlength="1" style="width: 50px;" required>
-                            <input type="text" class="form-control text-center mx-1" name="otp3" id="otp3" maxlength="1" style="width: 50px;" required>
-                            <input type="text" class="form-control text-center mx-1" name="otp4" id="otp4" maxlength="1" style="width: 50px;" required>
+                            <input type="text" class="form-control text-center mx-1" name="otp1" id="otp1" maxlength="1" style="width: 50px;" inputmode="numeric" required>
+                            <input type="text" class="form-control text-center mx-1" name="otp2" id="otp2" maxlength="1" style="width: 50px;" inputmode="numeric" required>
+                            <input type="text" class="form-control text-center mx-1" name="otp3" id="otp3" maxlength="1" style="width: 50px;" inputmode="numeric" required>
+                            <input type="text" class="form-control text-center mx-1" name="otp4" id="otp4" maxlength="1" style="width: 50px;" inputmode="numeric" required>
                         </div>
                         <div class="d-grid mb-3">
                             <button type="submit" class="btn btn-primary btn-block">Verify OTP</button>

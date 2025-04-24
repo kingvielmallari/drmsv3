@@ -25,7 +25,7 @@ $cm = new class_model();
 <header class="text-white text-center">
     <nav class="navbar ">
         <nav class="container-fluid bg-success navbar-expand-lg navbar-light fixed-top">
-            <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="index.php"> 
+            <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="/drmsv3/student/index.php"> 
                 <img src="../assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;" class="me-3">
                 <span style="font-size: 1.50rem; line-height: 60px;">Pateros Technological College</span>
             </a>
@@ -34,7 +34,7 @@ $cm = new class_model();
             </button>
 
             <div class="d-lg-none d-flex justify-content-center">
-                <a class="navbar-brand text-white d-flex align-items-center" href="/index.php">
+                <a class="navbar-brand text-white d-flex align-items-center" href="/drmsv3/student/index.php">
                     <img src="../assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;">
                 </a>
             </div>
@@ -65,7 +65,7 @@ $cm = new class_model();
 </header>
 
 <div class="container mt-1 py-1" style="max-width: 1200px;">
-    <div class="row justify-content-center align-items-center mt-5 g-10">
+    <div class="row justify-content-center align-items-center mt-1 g-10">
         <div class="col-md-8 mt-5">
             <div class="p-4 shadow-lg rounded" style="background-color: var(--bg-color);">
                 <!-- Stepper -->
@@ -410,68 +410,85 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('summaryTotalPrice').textContent = `₱${totalWithFee.toFixed(2)}`;
     }
     
+    
     // Document selection functionality
-    document.querySelectorAll('.document-toggle').forEach(button => {
-        button.addEventListener('click', function() {
-            const docId = this.getAttribute('data-doc-id');
-            const docName = this.getAttribute('data-doc-name');
-            const docPrice = parseFloat(this.getAttribute('data-doc-price'));
-            const docEta = parseInt(this.getAttribute('data-doc-eta'));
+ // Replace the document selection functionality with this:
+
+// Document selection functionality - works for both touch and click
+document.querySelectorAll('.document-toggle').forEach(button => {
+    // Handle both touch and click events
+    const handleDocumentToggle = (e) => {
+        // Prevent default for touch events to avoid delay
+        if (e.type === 'touchstart') {
+            e.preventDefault();
+        }
+        
+        const docId = button.getAttribute('data-doc-id');
+        const docName = button.getAttribute('data-doc-name');
+        const docPrice = parseFloat(button.getAttribute('data-doc-price'));
+        const docEta = parseInt(button.getAttribute('data-doc-eta'));
+        
+        // Check if button is disabled (for mobile touch)
+        if (button.disabled) return;
+        
+        if (button.classList.contains('active')) {
+            // Remove document
+            button.classList.remove('active', 'btn-success');
+            button.classList.add('btn-outline-success');
+            selectedDocuments = selectedDocuments.filter(doc => doc.id !== docId);
             
-            if (this.classList.contains('active')) {
-                // Remove document
-                this.classList.remove('active', 'btn-success');
-                this.classList.add('btn-outline-success');
-                selectedDocuments = selectedDocuments.filter(doc => doc.id !== docId);
-                
-                // Hide additional inputs if present
-                const inputsContainer = document.getElementById('inputs-' + docId);
-                if (inputsContainer) inputsContainer.style.display = 'none';
-            } else {
-                // Add document
-                this.classList.add('active', 'btn-success');
-                this.classList.remove('btn-outline-success');
-                
-                // Get year and semester if they exist
-                const yearInput = document.getElementById('year-' + docId);
-                const semInput = document.getElementById('sem-' + docId);
-                
-                selectedDocuments.push({
-                    id: docId,
-                    name: docName,
-                    price: docPrice,
-                    eta: docEta,
-                    year: yearInput ? yearInput.value : null,
-                    semester: semInput ? semInput.value : null
+            // Hide additional inputs if present
+            const inputsContainer = document.getElementById('inputs-' + docId);
+            if (inputsContainer) inputsContainer.style.display = 'none';
+        } else {
+            // Add document
+            button.classList.add('active', 'btn-success');
+            button.classList.remove('btn-outline-success');
+            
+            // Get year and semester if they exist
+            const yearInput = document.getElementById('year-' + docId);
+            const semInput = document.getElementById('sem-' + docId);
+            
+            selectedDocuments.push({
+                id: docId,
+                name: docName,
+                price: docPrice,
+                eta: docEta,
+                year: yearInput ? yearInput.value : null,
+                semester: semInput ? semInput.value : null
+            });
+            
+            // Show additional inputs if present
+            const inputsContainer = document.getElementById('inputs-' + docId);
+            if (inputsContainer) inputsContainer.style.display = 'block';
+            
+            // Add event listeners for year/semester changes
+            if (yearInput && semInput) {
+                yearInput.addEventListener('change', function() {
+                    const docIndex = selectedDocuments.findIndex(doc => doc.id === docId);
+                    if (docIndex !== -1) {
+                        selectedDocuments[docIndex].year = this.value;
+                        updateDocumentDetails();
+                    }
                 });
                 
-                // Show additional inputs if present
-                const inputsContainer = document.getElementById('inputs-' + docId);
-                if (inputsContainer) inputsContainer.style.display = 'block';
-                
-                // Add event listeners for year/semester changes
-                if (yearInput && semInput) {
-                    yearInput.addEventListener('change', function() {
-                        const docIndex = selectedDocuments.findIndex(doc => doc.id === docId);
-                        if (docIndex !== -1) {
-                            selectedDocuments[docIndex].year = this.value;
-                            updateDocumentDetails();
-                        }
-                    });
-                    
-                    semInput.addEventListener('change', function() {
-                        const docIndex = selectedDocuments.findIndex(doc => doc.id === docId);
-                        if (docIndex !== -1) {
-                            selectedDocuments[docIndex].semester = this.value;
-                            updateDocumentDetails();
-                        }
-                    });
-                }
+                semInput.addEventListener('change', function() {
+                    const docIndex = selectedDocuments.findIndex(doc => doc.id === docId);
+                    if (docIndex !== -1) {
+                        selectedDocuments[docIndex].semester = this.value;
+                        updateDocumentDetails();
+                    }
+                });
             }
-            
-            updateDocumentDetails();
-        });
-    });
+        }
+        
+        updateDocumentDetails();
+    };
+
+    // Add both event listeners
+    button.addEventListener('click', handleDocumentToggle);
+    button.addEventListener('touchstart', handleDocumentToggle);
+});
     
     // Stepper navigation
     document.getElementById('nextBtn').addEventListener('click', function() {
@@ -622,21 +639,40 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (!validateStep(currentStep)) return;
 
-        // Generate Request ID
-        const requestId = 'PTC-' + Math.floor(100000 + Math.random() * 900000);
+        
+        let requestId = '';
+        const generateRequestId = async () => {
+            const randomId = 'PTC-' + Math.floor(100000 + Math.random() * 900000);
+            const response = await fetch('../controllers/CheckRequestId.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ request_id: randomId })
+            });
+            const data = await response.json();
+            if (data.exists) {
+            // If ID exists, generate a new one
+            return generateRequestId();
+            }
+            return randomId;
+        };
 
-        // Populate modal with summary details
-        const modalBody = document.getElementById('modalBody');
-        modalBody.innerHTML = `
-            <p><strong>Request ID:</strong> ${requestId}</p>
-            <p><strong>Student ID:</strong> ${document.getElementById('summaryStudentId').textContent.trim()}</p>
-            <p><strong>Name:</strong> ${document.getElementById('summaryStudentName').textContent.trim()}</p>
-            <p><strong>Program & Section:</strong> ${document.getElementById('summaryProgramSection').textContent.trim()}</p>
-            <p><strong>Requested Documents:</strong> ${document.getElementById('summaryDocumentsList').textContent.trim()}</p>
-            <p><strong>Appointment for Payment:</strong> ${document.getElementById('summaryAppointment').textContent.trim()}</p>
-            <p><strong>Payment Option:</strong> ${document.getElementById('summaryDeliveryOption').textContent.trim()}</p>
-            <p><strong>Total Price:</strong> ${document.getElementById('summaryTotalPrice').textContent.trim()}</p>
-        `;
+        // Wait for a unique ID to be generated and then populate modal
+        (async () => {
+            requestId = await generateRequestId();
+
+            // Populate modal with summary details
+            const modalBody = document.getElementById('modalBody');
+            modalBody.innerHTML = `
+                <p><strong>Request ID:</strong> ${requestId}</p>
+                <p><strong>Student ID:</strong> ${document.getElementById('summaryStudentId').textContent.trim()}</p>
+                <p><strong>Name:</strong> ${document.getElementById('summaryStudentName').textContent.trim()}</p>
+                <p><strong>Program & Section:</strong> ${document.getElementById('summaryProgramSection').textContent.trim()}</p>
+                <p><strong>Requested Documents:</strong> ${document.getElementById('summaryDocumentsList').textContent.trim()}</p>
+                <p><strong>Appointment for Payment:</strong> ${document.getElementById('summaryAppointment').textContent.trim()}</p>
+                <p><strong>Payment Option:</strong> ${document.getElementById('summaryDeliveryOption').textContent.trim()}</p>
+                <p><strong>Total Price:</strong> ${document.getElementById('summaryTotalPrice').textContent.trim()}</p>
+            `;
+        })();
 
         // Show modal
         const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));

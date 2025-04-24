@@ -125,18 +125,72 @@ if (
 
 <!-- Edit Modal -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg"> <!-- Increased width by adding modal-lg class -->
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="editModalLabel">Edit Request</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <!-- Content will be dynamically populated -->
+        <form id="editRequestForm">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="editRequestId" class="form-label">Request ID</label>
+              <input type="text" class="form-control" id="editRequestId" readonly disabled>
+            </div>
+            <div class="col-md-6">
+              <label for="editStudentId" class="form-label">Student ID</label>
+              <input type="text" class="form-control" id="editStudentId" readonly disabled>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="editDocumentRequest" class="form-label">Document Request</label>
+              <input type="text" class="form-control" id="editDocumentRequest" readonly disabled>
+            </div>
+            <div class="col-md-6">
+              <label for="editDateRequested" class="form-label">Date Requested</label>
+              <input type="text" class="form-control" id="editDateRequested" readonly disabled>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="editAppointmentDate" class="form-label">Appointment for Payment</label>
+              <input type="text" class="form-control" id="editAppointmentDate" readonly disabled>
+            </div>
+            <div class="col-md-6">
+              <label for="editProcessingOfficer" class="form-label">Processing Officer</label>
+              <input type="text" class="form-control" id="editProcessingOfficer" value="<?php echo $_SESSION['sessionuser']['name']; ?>" readonly disabled>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="editTotalPrice" class="form-label">Total Price</label>
+              <input type="number" step="0.01" class="form-control" id="editTotalPrice" disabled readonly>
+            </div>
+            <div class="col-md-6">
+              <label for="editDateReleasing" class="form-label">Date Releasing</label>
+              <input type="date" class="form-control" id="editDateReleasing">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-12">
+              <label for="editStatus" class="form-label">Status</label>
+              <select class="form-select" id="editStatus">
+                <option value="Received">Received</option>
+                <option value="Processing">Processing</option>
+                <option value="Releasing">Releasing</option>
+                <option value="Released">Released</option>
+                <option value="Declined">Declined</option>
+                <option value="Expired">Expired</option>
+              </select>
+            </div>
+          </div>
+        </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save Changes</button>
+        <button type="button" id="saveChangesBtn" class="btn btn-primary">Save Changes</button>
       </div>
     </div>
   </div>
@@ -163,7 +217,7 @@ if (
               <td class="text-center">${request.document_request.split(',').map(doc => `<span class="badge bg-success">${doc.trim()}</span>`).join(' ')}</td>
               <td>${request.created_at ? new Date(request.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'N/A'}</td>
               <td>${request.appointment_date && request.appointment_time ? new Date(`${request.appointment_date}T${request.appointment_time}`).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) : 'N/A'}</td>
-              <td>${request.date_releasing ? request.date_releasing : 'N/A'}</td>
+                <td>${request.date_releasing ? new Date(request.date_releasing).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'N/A'}</td>
               <td>${request.processing_officer ? request.processing_officer : 'N/A'}</td>
               <td>${request.total_price}</td>
               <td class="text-center">
@@ -180,7 +234,7 @@ if (
               </td>
               <td>
                 <div class='d-flex flex-column flex-md-row justify-content-center align-items-center'>
-                  <button class="btn btn-primary btn-sm me-md-2 mb-2 mb-md-0 edit-btn" data-id="${request.id}" data-bs-toggle="modal" data-bs-target="#editStudentModal">
+                  <button class="btn btn-primary btn-sm me-md-2 mb-2 mb-md-0 edit-btn" data-id="${request.id}" data-bs-toggle="modal" data-bs-target="#editModal">
                     <i class="fas fa-edit"></i>
                   </button>
                   <button class="btn btn-danger btn-sm me-md-2 mb-2 mb-md-0 delete-btn" data-id="${request.id}" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
@@ -195,7 +249,7 @@ if (
         document.querySelectorAll('.edit-btn').forEach(button => {
           button.addEventListener('click', () => {
             currentEditStudentId = button.getAttribute('data-id');
-            fetchStudentData(currentEditStudentId);
+            fetchRequestData(currentEditStudentId);
           });
         });
 
@@ -214,6 +268,80 @@ if (
 
 
 
+</script>
+
+<script>
+  function fetchRequestData(requestId) {
+    fetch(`../../controllers/FetchSpecificRequest.php?id=${requestId}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(request => {
+        if (request && request.request_id) {
+          document.getElementById('editRequestId').value = request.request_id;
+          document.getElementById('editStudentId').value = request.student_id || request.student_name;
+          document.getElementById('editDocumentRequest').value = request.document_request || '';
+          document.getElementById('editDateRequested').value = request.created_at
+            ? new Date(request.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+            : 'N/A';
+          document.getElementById('editAppointmentDate').value = request.appointment_date && request.appointment_time
+            ? new Date(`${request.appointment_date}T${request.appointment_time}`).toLocaleString('en-US', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true,
+              })
+            : '';
+            document.getElementById('editDateReleasing').value = request.date_releasing || '';
+          document.getElementById('editProcessingOfficer').value = request.processing_officer || "<?php echo $_SESSION['sessionuser']['name']; ?>";
+          document.getElementById('editStatus').value = request.status || '';
+          document.getElementById('editTotalPrice').value = request.total_price || '';
+        } else {
+          alert('Failed to fetch request data. Please try again.');
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching request data:', error);
+        alert('An error occurred while fetching request data.');
+      });
+  }
+
+  // Save changes button event listener
+  document.getElementById('saveChangesBtn').addEventListener('click', () => {
+    const requestData = {
+      request_id: document.getElementById('editRequestId').value,
+      date_releasing: document.getElementById('editDateReleasing').value,
+      processing_officer: document.getElementById('editProcessingOfficer').value,
+      status: document.getElementById('editStatus').value,
+    };
+
+    fetch('../../controllers/UpdateRequest.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestData),
+    })
+      .then(response => response.json())
+      .then(result => {
+        if (result.success) {
+          // Refresh the table
+          fetchRequests();
+          // Hide the modal
+          const modal = bootstrap.Modal.getInstance(document.getElementById('editModal'));
+          modal.hide();
+          alert('Request updated successfully!');
+        } else {
+          alert(result.message || 'Failed to update request.');
+        }
+      })
+      .catch(error => console.error('Update error:', error));
+  });
 
 
 </script>
@@ -221,22 +349,8 @@ if (
 
 
 
-
-
-
  
 <script>
-
-  // // Edit button click event
-  // document.querySelectorAll('[data-bs-target="#editModal"]').forEach(function (editButton) {
-  //   editButton.addEventListener('click', function () {
-  //     const requestId = this.getAttribute('data-id');
-  //     const editModal = document.querySelector('#editModal');
-  //     // Populate modal with data (you can fetch data via AJAX if needed)
-  //     editModal.querySelector('.modal-body').innerHTML = `<p>Editing request ID: ${requestId}</p>`;
-  //   });
-  // });
-
 
   // Confirm delete
   document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
@@ -270,7 +384,7 @@ if (
 
 <script src="../../vendor/bootstrapv5/js/bootstrap.bundle.min.js"></script>
 
-<!-- <script src="../js/dashboard.js"></script> -->
+
 
 </body>
 </html
