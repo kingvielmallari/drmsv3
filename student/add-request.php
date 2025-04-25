@@ -107,26 +107,31 @@ $cm = new class_model();
                                         $docEta = htmlspecialchars($row['eta'] ?? 0);
                                         $needsExtraInputs = in_array($docName, ['Certificate Of Grades', 'Certificate Of Registration']);
                                         $isGraduated = ($_SESSION['sessionuser']['status'] ?? '') === 'Graduated';
+                                        $isRegularOrIrregular = in_array($_SESSION['sessionuser']['status'] ?? '', ['Regular', 'Irregular']);
                                         $isRestrictedDoc = $isGraduated && $needsExtraInputs;
+                                        $isTORRestricted = $isRegularOrIrregular && $docName === 'Transcript Of Records';
                                         $isAvailable = $row['is_available'] === 'yes';
                                     ?>
                                         <li class="list-group-item">
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <button type="button" 
-                                                        class="btn <?= !$isAvailable || $isRestrictedDoc ? 'btn-outline-danger' : 'btn-outline-success' ?> document-toggle w-100 text-start"
+                                                        class="btn <?= !$isAvailable || $isRestrictedDoc || $isTORRestricted ? 'btn-outline-danger' : 'btn-outline-success' ?> document-toggle w-100 text-start"
                                                         data-doc-id="<?= $docId ?>"
                                                         data-doc-name="<?= $docName ?>"
                                                         data-doc-price="<?= $docPrice ?>"
                                                         data-doc-eta="<?= $docEta ?>"
-                                                        <?= !$isAvailable || $isRestrictedDoc ? 'disabled' : '' ?>>
+                                                        <?= !$isAvailable || $isRestrictedDoc || $isTORRestricted ? 'disabled' : '' ?>>
                                                     <i class="fas fa-file-alt me-2"></i><?= $docName ?>
                                                 </button>
-                                                <span class="badge bg-<?= !$isAvailable || $isRestrictedDoc ? 'danger' : 'success' ?> rounded-pill ms-3">
-                                                    <?= !$isAvailable ? 'Not Available' : ($isRestrictedDoc ? 'Not Available' : 'Available') ?>
+                                                <span class="badge bg-<?= !$isAvailable || $isRestrictedDoc || $isTORRestricted ? 'danger' : 'success' ?> rounded-pill ms-3">
+                                                    <?= !$isAvailable ? 'Not Available' : ($isRestrictedDoc || $isTORRestricted ? 'Not Available' : 'Available') ?>
                                                 </span>
                                             </div>
                                             <?php if ($isRestrictedDoc): ?>
                                                 <small class="text-muted text-danger">Graduated students cannot request COG/COR. Instead, request TOR.</small>
+                                            <?php endif; ?>
+                                            <?php if ($isTORRestricted): ?>
+                                                <small class="text-muted text-danger" id="tor-restricted-message-<?= $docId ?>">Regular/ Irregular students cannot request TOR.</small>
                                             <?php endif; ?>
 
                                             <?php if ($needsExtraInputs): ?>
@@ -157,10 +162,34 @@ $cm = new class_model();
                                     <?php endforeach; ?>
                                 </ul>
                             </div>
+                            <div class="mb-3">
+                                <label for="other_certification" class="form-label fw-bold">Certifications:</label>
+                                <select class="form-select" id="other_certification" name="other_certification">
+                                    <option value="" disabled selected>Select an option</option>
+                                    <option value="CTCCOG">Certified True Copy of Grades (CTC - COG)</option>
+                                    <option value="CTCCOR">Certified True Copy of Registration (CTC - COR)</option>                                    
+                                    <option value="Others">Others (Specify below)</option>
+                                </select>
+                                <div class="mt-2">
+                                    <input type="text" class="form-control" id="other_certification_text" name="other_certification_text" placeholder="Specify other certification" style="display: none;">
+                                </div>
+                            </div>
                         <?php else: ?>
                             <p class="text-muted text-center">No documents available for request.</p>
                         <?php endif; ?>
                     </div>
+
+<script>
+    document.getElementById('other_certification').addEventListener('change', function() {
+        const otherTextInput = document.getElementById('other_certification_text');
+        if (this.value === 'Others') {
+            otherTextInput.style.display = 'block';
+        } else {
+            otherTextInput.style.display = 'none';
+            otherTextInput.value = ''; // Clear the input if not needed
+        }
+    });
+</script>
 
                     <!-- Step 2: Details -->
                     <div class="step" id="step2">
@@ -440,6 +469,10 @@ document.querySelectorAll('.document-toggle').forEach(button => {
             // Hide additional inputs if present
             const inputsContainer = document.getElementById('inputs-' + docId);
             if (inputsContainer) inputsContainer.style.display = 'none';
+            
+            // Remove specific requirement message if present
+            const requirementMessage = document.getElementById('requirement-message-' + docId);
+            if (requirementMessage) requirementMessage.remove();
         } else {
             // Add document
             button.classList.add('active', 'btn-success');
@@ -480,16 +513,32 @@ document.querySelectorAll('.document-toggle').forEach(button => {
                     }
                 });
             }
+            
+            // Show specific requirement message if applicable
+            let requirementMessageText = '';
+            if (docName === 'Certificate Of Grades' || docName === 'Certificate Of Registration') {
+                requirementMessageText = 'With Signature and Sealed';
+
+            } else if (docName === 'Transcript Of Records') {
+                requirementMessageText = 'Please bring 2x2 ID picture as a requirement before payment';
+            }
+            
+            if (requirementMessageText) {
+                const requirementMessage = document.createElement('small');
+                requirementMessage.id = 'requirement-message-' + docId;
+                requirementMessage.className = 'text-danger d-block mt-2';
+                requirementMessage.textContent = requirementMessageText;
+                button.parentNode.parentNode.appendChild(requirementMessage);
+            }
         }
         
         updateDocumentDetails();
     };
-
+    
     // Add both event listeners
     button.addEventListener('click', handleDocumentToggle);
     button.addEventListener('touchstart', handleDocumentToggle);
 });
-    
     // Stepper navigation
     document.getElementById('nextBtn').addEventListener('click', function() {
         // Validate current step before proceeding
@@ -768,10 +817,10 @@ document.querySelectorAll('.document-toggle').forEach(button => {
             document.getElementById('themeToggle').checked = true;
         }
     }
+
 });
 </script>
 
-<!-- Toast Container -->
 <div id="toastContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 9999"></div>
 
 <!-- Confirmation Modal -->
