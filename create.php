@@ -88,7 +88,7 @@ if (!$token || $token !== $sessionToken) {
   <div class="row justify-content-center align-self-center w-100">
     <div class="col-md-6">
       <h2 class="text-center mb-4">Create New DRMS Account</h2>
-      <p class="text-center text-muted mb-4">Make sure that your Student ID is registered in our school database to be able to create an account.</p>
+      <p class="text-center text-muted mb-2">Set up your DRMS account by creating a new password.</p>
       <form id="userForm" class="p-4">
         
 

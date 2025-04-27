@@ -95,7 +95,7 @@ if ($student) {
 <div class="row justify-content-center align-self-center w-100">
 <div class="col-md-6">
 <h2 class="text-center">Reset Password</h2>
-<p class="text-center text-muted">Enter your password to reset your DRMS account.</p>
+<p class="text-center text-muted">Enter your new password to reset your DRMS account.</p>
 <form id="resetForm">
     <div class="form-floating mb-3">
       <input type="text" class="form-control" name="student_id" id="student_id" placeholder="floatingStudentID" required 

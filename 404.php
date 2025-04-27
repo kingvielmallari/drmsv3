@@ -7,8 +7,8 @@ http_response_code(404);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>404 - Page Not Found</title>
-    <link rel="stylesheet" href="/drmsv3/vendor/bootstrapv5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/drmsv3/assets/css/app.css">
+    <link rel="stylesheet" href="./vendor/bootstrapv5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./assets/css/app.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body class="d-flex flex-column min-vh-100">
@@ -60,6 +60,6 @@ http_response_code(404);
     &copy; <?php echo date('Y'); ?> PTC. All rights reserved.
 </footer>
 
-<script src="/drmsv3/vendor/bootstrapv5/js/bootstrap.bundle.min.js"></script>
+<script src="./vendor/bootstrapv5/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

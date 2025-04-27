@@ -98,7 +98,7 @@ $cm = new class_model();
                         <?php $result = $cm->getDocuments(); ?>
                         <?php if (!empty($result)): ?>
                             <div class="mb-3">
-                                <label for="document_selection" class="form-label fw-bold">Available Documents</label>
+                                <label for="document_selection" class="form-label fw-bold">Official Documents</label>
                                 <ul id="document_selection" class="list-group">
                                     <?php foreach ($result as $row): 
                                         $docId = htmlspecialchars($row['id']);
@@ -177,6 +177,8 @@ $cm = new class_model();
                         <?php else: ?>
                             <p class="text-muted text-center">No documents available for request.</p>
                         <?php endif; ?>
+
+                      
                     </div>
 
 <script>
@@ -224,6 +226,8 @@ $cm = new class_model();
                                     </tr>
                                 </tfoot>
                             </table>
+                            <small class="text-muted text-danger">Note: The estimated release date may vary depending on the number of working days and the processing officer.</small>
+
                         </div>
 
                         <div class="form-floating mb-3">
@@ -272,7 +276,7 @@ $cm = new class_model();
                             <div class="summary-item">
                                 <div class="mb-2">
                                     Student ID: 
-                                    <strong id="summaryStudentId"><?php echo htmlspecialchars($_SESSION['sessionuser']['student_id']); ?></strong>
+                                    <strong id="summaryStudentId"><?php echo htmlspecialchars($_SESSION['sessionuser']['student_id'] ?? 'N/A'); ?></strong>
                                 </div>
                                 <div class="mb-2">
                                     Name: 
@@ -287,8 +291,8 @@ $cm = new class_model();
                                 <div class="mb-2">
                                     Program & Section: 
                                     <strong id="summaryProgramSection"><?php 
-                                        $program = $_SESSION['sessionuser']['program'] ?? '';
-                                        $year = $_SESSION['sessionuser']['year'] ?? '';
+                                        $program = $_SESSION['sessionuser']['program'] ?? $_SESSION['sessionuser']['year_graduated'];
+                                        $year = $_SESSION['sessionuser']['year'] ??  '' ;
                                         $section = $_SESSION['sessionuser']['section'] ?? '';
                                         $status = $_SESSION['sessionuser']['status'] ?? '';
                                         echo htmlspecialchars(trim("$program - $year$section ($status)"));
@@ -539,6 +543,10 @@ document.querySelectorAll('.document-toggle').forEach(button => {
     button.addEventListener('click', handleDocumentToggle);
     button.addEventListener('touchstart', handleDocumentToggle);
 });
+
+
+
+
     // Stepper navigation
     document.getElementById('nextBtn').addEventListener('click', function() {
         // Validate current step before proceeding
@@ -734,7 +742,8 @@ document.querySelectorAll('.document-toggle').forEach(button => {
 
             // Add student info
             formData.append('request_id', requestId);
-            formData.append('student_id', document.getElementById('summaryStudentId').textContent.trim());
+            const studentId = document.getElementById('summaryStudentId').textContent.trim();
+            formData.append('student_id', studentId === 'N/A' ? '' : studentId);
             formData.append('student_name', document.getElementById('summaryStudentName').textContent.trim());
             formData.append('email', <?php echo json_encode($_SESSION['sessionuser']['email'] ?? 'N/A'); ?>);
             formData.append('program_section', document.getElementById('summaryProgramSection').textContent.trim());

@@ -69,10 +69,10 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
   </nav>
 </header>
 
-<div class="container m-5 p-5"></div>
+<div class="container m-2 p-5"></div>
 
 <!-- Add Document Button -->
-<div class="container mt-3 align-items-center d-flex justify-content-end">
+<div class="container mt-1 align-items-center d-flex justify-content-end">
     <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addDocumentModal">
         <i class="fas fa-plus"></i> Add Document
     </button>
@@ -127,9 +127,41 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
 
 
 
+<div class="container mt-1 pt-3 mb-5">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+            <th colspan="6" class="text-center">Official Documents</th>
+            </tr>
+            <tr>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Is Available</th>
+                <th>ETA</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="documentsTableBody">
+            <!-- Data will be injected here using Fetch API -->
+        </tbody>
+    </table>
+</div>
+
+
+
+<div class="container mt-5 align-items-center d-flex justify-content-end">
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addDocumentModal">
+        <i class="fas fa-plus"></i> Add Document
+    </button>
+</div>
+
 <div class="container mt-1 pt-3">
     <table class="table table-bordered">
         <thead>
+            <tr>
+            <th colspan="6" class="text-center">Certifications</th>
+            </tr>
             <tr>
                 <th>Code</th>
                 <th>Name</th>

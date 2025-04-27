@@ -276,7 +276,7 @@
                     }
                 });
             } else {
-                responseElement.className = text.includes("not a student") ? "text-center text-danger" : "text-center text-muted";
+                responseElement.className = text.includes("not a student") ? "text-center text-danger" : "text-center text-danger";
                 setTimeout(() => {
                     responseElement.textContent = "";
                 }, 2500);
