@@ -27,7 +27,14 @@ if (!isset($_SESSION['sessionuser'])) {
 </head>
 <body>
 <header class="text-white text-center">
-
+<script>
+(function() {
+    var match = document.cookie.match(/(?:^|;\s*)theme=(dark|light)/);
+    if (match && match[1] === 'dark') {
+        document.documentElement.setAttribute('data-bs-theme', 'dark');
+    }
+})();
+</script>
   <nav class="navbar navbar-expand-lg navbar-light bg-success fixed-top">
   <div class="container-fluid">
     <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="/drmsv3/student/index.php"> 

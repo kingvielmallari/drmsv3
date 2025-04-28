@@ -1,12 +1,12 @@
 RewriteEngine On
-RewriteBase /
-RewriteCond %{REQUEST_URI} ^/drmsv3/
-RewriteRule ^drmsv3/(.*)$ /$1 [L,R=301]
+RewriteBase /drmsv3/
 
+# Redirect old /drmsv3/ URLs without drmsv3 in path (optional, can remove if not needed)
+# RewriteCond %{REQUEST_URI} ^/drmsv3/
+# RewriteRule ^drmsv3/(.*)$ /drmsv3/$1 [L,R=301]
+
+# Custom 404 page
 ErrorDocument 404 /drmsv3/404.php
+
+# Specific redirect (optional test redirect)
 Redirect 302 /drmsv3/test-htaccess /drmsv3/404.php
-
-
-
-
-

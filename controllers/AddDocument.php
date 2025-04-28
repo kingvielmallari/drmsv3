@@ -17,9 +17,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $price = trim($data['price']);
     $is_available = trim($data['is_available']);
     $eta = trim($data['eta']);
+    $type = trim($data['type']);    
 
     try {
-        if ($cm->createDocument($code, $name, $price, $is_available, $eta)) {
+        if ($cm->createDocument($type, $code, $name, $price, $is_available, $eta)) {
             echo json_encode(['success' => true]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Failed to add document.']);

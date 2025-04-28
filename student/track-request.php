@@ -98,7 +98,7 @@ if (!isset($_SESSION['sessionuser'])) {
   <div class="alert alert-info mt-4 shadow-sm rounded">
     <h5 class="fw-bold">Status:</h5>
     <ul class="mb-0">
-      <li><span class="badge bg-primary">Received:</span> The request has been received and is awaiting processing.</li>
+      <li><span class="badge bg-primary">Received:</span> The request has been received and is awaiting for payment.</li>
       <li><span class="badge bg-warning text-dark">Processing:</span> The request is currently being processed by the officer.</li>
       <li><span class="badge bg-info text-dark">Releasing:</span> The document is being prepared for release.</li>
       <li><span class="badge bg-success">Released:</span> The document has been successfully released to the student.</li>

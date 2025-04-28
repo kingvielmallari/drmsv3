@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 27, 2025 at 11:29 PM
+-- Generation Time: Apr 28, 2025 at 04:54 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -34,19 +34,22 @@ CREATE TABLE `documents` (
   `price` int(15) NOT NULL,
   `is_available` enum('yes','no') NOT NULL DEFAULT 'yes',
   `eta` int(15) NOT NULL,
-  `document_type` enum('official','certification') NOT NULL
+  `doc_type` enum('Official','Certification') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `documents`
 --
 
-INSERT INTO `documents` (`id`, `code`, `name`, `price`, `is_available`, `eta`, `document_type`) VALUES
-(45, 'COG', 'Certificate Of Grades', 50, 'yes', 1, 'official'),
-(46, 'COR', 'Certificate Of Registration', 50, 'yes', 1, 'official'),
-(47, 'TOR', 'Transcript Of Records', 200, 'yes', 14, 'official'),
-(48, 'HD', 'Honorable Dismissal', 100, 'yes', 1, 'official'),
-(50, 'GM', 'Good Moral', 80, 'yes', 1, 'official');
+INSERT INTO `documents` (`id`, `code`, `name`, `price`, `is_available`, `eta`, `doc_type`) VALUES
+(45, 'COG', 'Certificate Of Grades', 50, 'yes', 1, 'Official'),
+(46, 'COR', 'Certificate Of Registration', 50, 'yes', 1, 'Official'),
+(47, 'TOR', 'Transcript Of Records', 200, 'yes', 14, 'Official'),
+(48, 'HD', 'Honorable Dismissal', 100, 'yes', 1, 'Official'),
+(50, 'GM', 'Good Moral', 80, 'yes', 1, 'Official'),
+(58, 'CTC', 'CTC - Certificate Of Registration', 50, 'yes', 1, 'Certification'),
+(59, 'CTC', 'CTC - Certificate Of Grades', 50, 'yes', 1, 'Certification'),
+(60, 'F13', 'Form 137', 50, 'yes', 1, 'Certification');
 
 -- --------------------------------------------------------
 
@@ -64,7 +67,7 @@ CREATE TABLE `fees` (
 --
 
 INSERT INTO `fees` (`id`, `amount`) VALUES
-(1, 5);
+(1, 10);
 
 -- --------------------------------------------------------
 
@@ -109,8 +112,9 @@ CREATE TABLE `requests` (
 --
 
 INSERT INTO `requests` (`id`, `request_id`, `student_id`, `student_name`, `email`, `program_section`, `document_request`, `delivery_option`, `appointment_date`, `appointment_time`, `total_price`, `date_releasing`, `processing_officer`, `status`, `created_at`) VALUES
-(83, 'PTC-794270', '2021-3537', 'King Viel L. Mallari', 'klmallari@paterostechnologicalcollege.edu.ph', 'BSIT - 4A (Regular)', 'Certificate Of Grades (4th Year 2nd Sem)', 'Cashier', '2025-05-08', '03:00:00', 55.00, NULL, NULL, 'Received', '2025-04-27 15:01:26'),
-(84, 'PTC-969637', '2021-3537', 'King Viel L. Mallari', 'klmallari@paterostechnologicalcollege.edu.ph', 'BSIT - 4A (Regular)', 'Good Moral', 'Cashier', '2025-04-29', '04:00:00', 85.00, NULL, NULL, 'Received', '2025-04-27 15:05:39');
+(91, 'PTC-493748', '', 'Bernadette M. Parman', 'mallariking0@gmail.com', '2025 -  (Graduated)', 'Transcript Of Records', 'Cashier', '2025-05-08', '04:00:00', 210.00, NULL, NULL, 'Received', '2025-04-28 01:19:24'),
+(92, 'PTC-358595', '', 'Bernadette M. Parman', 'mallariking0@gmail.com', '2025 -  (Graduated)', 'Good Moral', 'Cashier', '2025-05-08', '04:00:00', 90.00, NULL, NULL, 'Received', '2025-04-28 01:19:50'),
+(96, 'PTC-419312', '2021-3537', 'King Viel L. Mallari', 'klmallari@paterostechnologicalcollege.edu.ph', 'BSIT - 4A (Regular)', 'Form 137', 'Cashier', '2025-04-30', '10:00:00', 60.00, NULL, NULL, 'Received', '2025-04-28 08:19:22');
 
 -- --------------------------------------------------------
 
@@ -164,7 +168,7 @@ CREATE TABLE `students` (
 --
 
 INSERT INTO `students` (`id`, `student_id`, `last_name`, `first_name`, `middle_name`, `email`, `gender`, `program`, `year`, `section`, `status`, `year_graduated`, `last_year_attended`, `password`) VALUES
-(26, '2021-3537', 'Mallari', 'King Viel', 'Labro', 'klmallari@paterostechnologicalcollege.edu.ph', 'Male', 'BSIT', '4', 'A', 'Regular', NULL, NULL, '$2y$10$1SkpmX6KYUtc2xGDHeM/zukebMuDrowG3uXSK6fxLOEOZb1ClvHc6'),
+(26, '2021-3537', 'Mallari', 'King Viel', 'Labro', 'klmallari@paterostechnologicalcollege.edu.ph', 'Male', 'BSIT', '4', 'A', 'Regular', NULL, NULL, '$2y$10$FXVR7yIXGiXRkw6zS45rGOnfWkBAmPculkX0yMWq2j9P/PGOgpKXy'),
 (28, NULL, 'Parman', 'Bernadette', 'Mendoza', 'mallariking0@gmail.com', 'Male', NULL, NULL, NULL, 'Graduated', '2025', '2025', '$2y$10$.3yIg.GCVgFBhBGP.1vJ0uwiaZn0qaMHGU2OKqlwEtRWQWaq8qjTe'),
 (29, '2021-3080', 'Perez', 'Sean Ray', 'Dapon', 'sdperez@paterostechnologicalcollege.edu.ph', 'Male', 'BSIT', '4', 'A', 'Regular', NULL, NULL, '$2y$10$oAnLpksodlbvZ0CnJwQksObPTt5ztJysXYf2tonsSSPF946997FKi');
 
@@ -216,7 +220,7 @@ ALTER TABLE `students`
 -- AUTO_INCREMENT for table `documents`
 --
 ALTER TABLE `documents`
-  MODIFY `id` int(15) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `id` int(15) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
 -- AUTO_INCREMENT for table `fees`
@@ -228,13 +232,13 @@ ALTER TABLE `fees`
 -- AUTO_INCREMENT for table `password_resets`
 --
 ALTER TABLE `password_resets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `requests`
 --
 ALTER TABLE `requests`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
 
 --
 -- AUTO_INCREMENT for table `staff`

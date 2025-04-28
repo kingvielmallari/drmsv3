@@ -28,7 +28,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
 
   <nav class="navbar navbar-expand-lg navbar-light bg-success fixed-top">
   <div class="container-fluid ">
-    <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="/drmsv3/student-dashboard.php"> 
+    <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="index.php"> 
       <img src="../../assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;" class="me-3">
       <span style="font-size: 1.50rem; line-height: 60px;">Pateros Technological College</span>
     </a>
@@ -37,7 +37,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
     </button>
 
     <div class="d-lg-none d-flex justify-content-center">
-      <a class="navbar-brand text-white d-flex align-items-center" href="/drmsv3/student-dashboard.php">
+      <a class="navbar-brand text-white d-flex align-items-center" href="index.php">
         <img src="../../assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;">
       </a>
     </div>
@@ -88,6 +88,13 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
             </div>
             <div class="modal-body">
                 <form id="addDocumentForm">
+                <div class="form-floating mb-3">
+                        <select class="form-select" id="addDocumentType" required>
+                            <option value="Official">Official</option>
+                            <option value="Certification">Certification</option>
+                        </select>
+                        <label for="addDocumentType">Document Type</label>
+                    </div>
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="addCode" maxlength="3" placeholder="Code" required>
                         <label for="addCode">Document Code</label>
@@ -111,7 +118,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
                         </select>
                         <label for="addIsAvailable">Is Available?</label>
                     </div>
-                    
+                  
                 </form>
             </div>
             <div class="modal-footer">
@@ -134,6 +141,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
             <th colspan="6" class="text-center">Official Documents</th>
             </tr>
             <tr>
+                <th>Type</th>
                 <th>Code</th>
                 <th>Name</th>
                 <th>Price</th>
@@ -150,32 +158,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
 
 
 
-<div class="container mt-5 align-items-center d-flex justify-content-end">
-    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addDocumentModal">
-        <i class="fas fa-plus"></i> Add Document
-    </button>
-</div>
 
-<div class="container mt-1 pt-3">
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-            <th colspan="6" class="text-center">Certifications</th>
-            </tr>
-            <tr>
-                <th>Code</th>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Is Available</th>
-                <th>ETA</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody id="documentsTableBody">
-            <!-- Data will be injected here using Fetch API -->
-        </tbody>
-    </table>
-</div>
 
 <!-- Delete Confirmation Modal -->
 <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
@@ -207,6 +190,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
             <div class="modal-body">
                 <form id="editDocumentForm">
                     <input type="hidden" id="editDocumentId">
+
+                
                     
                     <div class="mb-3">
                         <label for="editCode" class="form-label">Code</label>
@@ -246,7 +231,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
+
         let deleteDocumentId = null;
         let currentEditDocumentId = null;
 
@@ -261,6 +246,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
                     documents.forEach(data => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
+                            <td>${data.doc_type}</td>
                             <td>${data.code}</td>
                             <td>${data.name}</td>
                             <td>${data.price}</td>
@@ -300,54 +286,56 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
                 .catch(error => console.error('Error fetching documents:', error));
         }
 
+
         document.getElementById('addDocumentBtn').addEventListener('click', () => {
-    const documentData = {
-        code: document.getElementById('addCode').value.trim(),
-        name: document.getElementById('addName').value.trim(),
-        price: document.getElementById('addPrice').value.replace(/₱/g, '').trim(),
-        is_available: document.getElementById('addIsAvailable').value,
-        eta: document.getElementById('addEta').value.trim()
-    };
+            const documentData = {
+                type: document.getElementById('addDocumentType').value,
+                code: document.getElementById('addCode').value.trim(),
+                name: document.getElementById('addName').value.trim(),
+                price: document.getElementById('addPrice').value.replace(/₱/g, '').trim(),
+                is_available: document.getElementById('addIsAvailable').value,
+                eta: document.getElementById('addEta').value.trim()
+            };
 
-    // Validate inputs
-    if (!documentData.code || !documentData.name || !documentData.price || !documentData.eta) {
-        alert('Please fill in all required fields!');
-        return;
-    }
+            // Validate inputs
+            if (!documentData.type || !documentData.code || !documentData.name || !documentData.price || !documentData.eta) {
+                alert('Please fill in all required fields!');
+                return;
+            }
 
-    fetch('../../controllers/AddDocument.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(documentData)
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(result => {
-        if (result.success) {
-            // Refresh the table
-            fetchDocuments();
-            // Reset form
-            document.getElementById('addDocumentForm').reset();
-            // Hide modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('addDocumentModal'));
-            modal.hide();
-            // Show success message
-            alert('Document added successfully!');
-        } else {
-            alert(result.message || 'Failed to add document.');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred. Please try again.');
-    });
-});
+            fetch('../../controllers/AddDocument.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(documentData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(result => {
+                if (result.success) {
+                    // Refresh the table
+                    fetchDocuments();
+                    // Reset form
+                    document.getElementById('addDocumentForm').reset();
+                    // Hide modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addDocumentModal'));
+                    modal.hide();
+                    // Show success message
+                    alert('Document added successfully!');
+                } else {
+                    alert(result.message || 'Failed to add document.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
+        });
 
         // Function to fetch single document data for editing
         function fetchDocumentData(documentId) {
@@ -440,7 +428,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
 
         // Initial fetch of documents
         fetchDocuments();
-    });
+   
 </script>
 
 <script>

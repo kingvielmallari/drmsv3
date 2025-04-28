@@ -163,13 +163,13 @@ class class_model {
 
    
     
-    public function createDocument($code, $name, $price, $is_available, $eta) {
-        $sql = "INSERT INTO documents (code, name, price, is_available, eta) VALUES (?, ?, ?, ?, ?)";
+    public function createDocument($type, $code, $name, $price, $is_available, $eta) {
+        $sql = "INSERT INTO documents (doc_type, code, name, price, is_available, eta) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $this->mysqli->prepare($sql);
         if (!$stmt) {
             return false;
         }
-        $stmt->bind_param("ssdss", $code, $name, $price, $is_available, $eta);
+        $stmt->bind_param("sssdss", $type, $code, $name, $price, $is_available, $eta);
         return $stmt->execute();
     }
     
@@ -339,7 +339,14 @@ class class_model {
     }
 
     public function getDocuments() {
-        $sql = "SELECT * FROM documents";
+        $sql = "SELECT * FROM documents WHERE doc_type = 'Official' OR doc_type = 'Certification'";
+        $result = $this->mysqli->query($sql);
+
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function getDocuments2() {
+        $sql = "SELECT * FROM documents WHERE doc_type = 'Official'";
         $result = $this->mysqli->query($sql);
 
         return $result->fetch_all(MYSQLI_ASSOC);
@@ -354,7 +361,13 @@ class class_model {
 
         return $result->fetch_all(MYSQLI_ASSOC);
     }
-  
+    
+    public function getCertifications() {
+        $sql = "SELECT * FROM documents WHERE doc_type = 'Certification'";
+        $result = $this->mysqli->query($sql);
+
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
 
     
     public function getFees() {
