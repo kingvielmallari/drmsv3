@@ -80,8 +80,19 @@ class class_model {
     }
 
     public function getAllRequests() {
-        $sql = "SELECT * FROM requests ORDER BY id ASC";
+        $sql = "SELECT * FROM requests ORDER BY id DESC";
         $result = $this->mysqli->query($sql);
+
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    
+    public function getStudentReq($email) {
+        $sql = "SELECT * FROM requests WHERE email = ? ORDER BY id DESC";
+        $stmt = $this->mysqli->prepare($sql);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
         return $result->fetch_all(MYSQLI_ASSOC);
     }

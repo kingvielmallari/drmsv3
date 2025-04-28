@@ -41,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($student) {
         $_SESSION['sessionuser'] = $student;
-        $_SESSION['role'] = 'Student';
+        $_SESSION['role'] = 'student';
         echo json_encode(["success" => true, "message" => "Student login successful", "redirect" => "./student/index.php"]);
         exit();
     }

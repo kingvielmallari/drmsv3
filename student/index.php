@@ -124,12 +124,12 @@ if (!isset($_SESSION['sessionuser'])) {
     </div>
     <div class="row w-100">
         <div class="col-md-6 mb-3 mb-md-0 d-flex justify-content-center">
-            <a href="contact_information.php" class="btn btn-lg btn-success w-75 py-4 shadow-sm">
-                <i class="fas fa-address-book me-2"></i>Contact Information
+            <a href="contact.php" class="btn btn-lg btn-success w-75 py-4 shadow-sm">
+                <i class="fas fa-address-book me-2"></i>Student Information
             </a>
         </div>
         <div class="col-md-6 d-flex justify-content-center">
-            <a href="contact_support.php" class="btn btn-lg btn-danger w-75 py-4 shadow-sm">
+            <a href="support.php" class="btn btn-lg btn-danger w-75 py-4 shadow-sm">
                 <i class="fas fa-headset me-2"></i>Contact Support
             </a>
         </div>

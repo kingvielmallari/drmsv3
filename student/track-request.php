@@ -30,7 +30,7 @@ if (!isset($_SESSION['sessionuser'])) {
 
   <nav class="navbar navbar-expand-lg navbar-light bg-success fixed-top">
   <div class="container-fluid ">
-    <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="/drmsv3/staff/reg-staff/index.php"> 
+    <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="index.php"> 
       <img src="../assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;" class="me-3">
       <span style="font-size: 1.50rem; line-height: 60px;">Pateros Technological College</span>
     </a>
@@ -39,7 +39,7 @@ if (!isset($_SESSION['sessionuser'])) {
     </button>
 
     <div class="d-lg-none d-flex justify-content-center">
-      <a class="navbar-brand text-white d-flex align-items-center" href="/drmsv3/staff/reg-staff/student/index.php">
+      <a class="navbar-brand text-white d-flex align-items-center" href="index.php">
         <img src="../assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;">
       </a>
     </div>
@@ -187,65 +187,65 @@ if (!isset($_SESSION['sessionuser'])) {
   });
 
   function fetchRequests() {
-    fetch('../controllers/FetchAllRequest.php')
+    fetch(`../controllers/FetchStudentRequest.php?email=<?php echo $_SESSION['sessionuser']['email']; ?>`)
       .then(response => response.json())
       .then(data => {
-        const tableBody = document.getElementById('requestTableBody');
-        tableBody.innerHTML = ''; // Clear existing rows
+      const tableBody = document.getElementById('requestTableBody');
+      tableBody.innerHTML = ''; // Clear existing rows
 
-        data.forEach(request => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-                <td class="text-center">${request.request_id}</td>
-                <td class="text-center">${request.student_id ? request.student_id : (request.student_name ? request.student_name : 'N/A')}</td>
-              <td class="text-center">${request.document_request.split(',').map(doc => `<span class="badge bg-success">${doc.trim()}</span>`).join(' ')}</td>
-              <td>${request.created_at ? new Date(request.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'N/A'}</td>
-                <td>${request.appointment_date && request.appointment_time ? new Date(`${request.appointment_date}T${request.appointment_time}`).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) + ` (${new Date(`${request.appointment_date}T${request.appointment_time}`).toLocaleDateString('en-US', { weekday: 'long' })})` : 'N/A'}</td>
-                <td>${request.date_releasing ? new Date(request.date_releasing).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) + ` (${new Date(request.date_releasing).toLocaleDateString('en-US', { weekday: 'long' })})` : 'N/A'}</td>
-              <td>${request.processing_officer ? request.processing_officer : 'N/A'}</td>
-              <td>${request.total_price}</td>
-              <td class="text-center">
-                <span class="badge 
-                  ${request.status === 'Received' ? 'bg-primary' : 
-                  request.status === 'Declined' ? 'bg-danger' : 
-                  request.status === 'Processing' ? 'bg-warning text-dark' : 
-                  request.status === 'Releasing' ? 'bg-info text-dark' : 
-                  request.status === 'Released' ? 'bg-success' : 
-                  request.status === 'Expired' ? 'bg-secondary' : 
-                  'bg-light text-dark'}">
-                  ${request.status}
-                </span>
-              </td>
-              <td>
-                <div class='d-flex flex-column flex-md-row justify-content-center align-items-center'>
-                  <button class="btn btn-primary btn-sm me-md-2 mb-2 mb-md-0 edit-btn" data-id="${request.id}" data-bs-toggle="modal" data-bs-target="#editModal">
-                    <i class="fas fa-edit"></i>
-                  </button>
-                  <button class="btn btn-danger btn-sm me-md-2 mb-2 mb-md-0 delete-btn" data-id="${request.id}" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
-                    <i class="fas fa-trash-alt"></i>
-                  </button>
-                </div>
-              </td>`;
-          tableBody.appendChild(row);
-        });
+      data.forEach(request => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td class="text-center">${request.request_id}</td>
+          <td class="text-center">${request.student_id ? request.student_id : (request.student_name ? request.student_name : 'N/A')}</td>
+          <td class="text-center">${request.document_request.split(',').map(doc => `<span class="badge bg-success">${doc.trim()}</span>`).join(' ')}</td>
+          <td>${request.created_at ? new Date(request.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'N/A'}</td>
+          <td>${request.appointment_date && request.appointment_time ? new Date(`${request.appointment_date}T${request.appointment_time}`).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) + ` (${new Date(`${request.appointment_date}T${request.appointment_time}`).toLocaleDateString('en-US', { weekday: 'long' })})` : 'N/A'}</td>
+          <td>${request.date_releasing ? new Date(request.date_releasing).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) + ` (${new Date(request.date_releasing).toLocaleDateString('en-US', { weekday: 'long' })})` : 'N/A'}</td>
+          <td>${request.processing_officer ? request.processing_officer : 'N/A'}</td>
+          <td>${request.total_price}</td>
+          <td class="text-center">
+          <span class="badge 
+            ${request.status === 'Received' ? 'bg-primary' : 
+            request.status === 'Declined' ? 'bg-danger' : 
+            request.status === 'Processing' ? 'bg-warning text-dark' : 
+            request.status === 'Releasing' ? 'bg-info text-dark' : 
+            request.status === 'Released' ? 'bg-success' : 
+            request.status === 'Expired' ? 'bg-secondary' : 
+            'bg-light text-dark'}">
+            ${request.status}
+          </span>
+          </td>
+          <td>
+          <div class='d-flex flex-column flex-md-row justify-content-center align-items-center'>
+            <button class="btn btn-primary btn-sm me-md-2 mb-2 mb-md-0 edit-btn" data-id="${request.id}" data-bs-toggle="modal" data-bs-target="#editModal">
+            <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn btn-danger btn-sm me-md-2 mb-2 mb-md-0 delete-btn" data-id="${request.id}" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
+            <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+          </td>`;
+        tableBody.appendChild(row);
+      });
 
-        // Add event listener to edit buttons
-        document.querySelectorAll('.edit-btn').forEach(button => {
-          button.addEventListener('click', () => {
-            currentEditStudentId = button.getAttribute('data-id');
-            fetchRequestData(currentEditStudentId);
-          });
+      // Add event listener to edit buttons
+      document.querySelectorAll('.edit-btn').forEach(button => {
+        button.addEventListener('click', () => {
+        currentEditStudentId = button.getAttribute('data-id');
+        fetchRequestData(currentEditStudentId);
         });
+      });
 
-        // Add event listener to delete buttons
-        document.querySelectorAll('.delete-btn').forEach(button => {
-          button.addEventListener('click', () => {
-            deleteStudentId = button.getAttribute('data-id');
-          });
+      // Add event listener to delete buttons
+      document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', () => {
+        deleteStudentId = button.getAttribute('data-id');
         });
+      });
       })
       .catch(error => console.error('Error fetching students:', error));
-  }
+    }
 
   // setInterval(fetchRequests, 2500);
 
