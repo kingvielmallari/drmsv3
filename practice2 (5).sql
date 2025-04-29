@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 28, 2025 at 04:54 PM
+-- Generation Time: Apr 29, 2025 at 04:12 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -47,8 +47,8 @@ INSERT INTO `documents` (`id`, `code`, `name`, `price`, `is_available`, `eta`, `
 (47, 'TOR', 'Transcript Of Records', 200, 'yes', 14, 'Official'),
 (48, 'HD', 'Honorable Dismissal', 100, 'yes', 1, 'Official'),
 (50, 'GM', 'Good Moral', 80, 'yes', 1, 'Official'),
-(58, 'CTC', 'CTC - Certificate Of Registration', 50, 'yes', 1, 'Certification'),
-(59, 'CTC', 'CTC - Certificate Of Grades', 50, 'yes', 1, 'Certification'),
+(58, 'CTC', 'CTC - Certificate of Registration', 50, 'yes', 1, 'Certification'),
+(59, 'CTC', 'CTC - Certificate of Grades', 50, 'yes', 1, 'Certification'),
 (60, 'F13', 'Form 137', 50, 'yes', 1, 'Certification');
 
 -- --------------------------------------------------------
@@ -112,9 +112,9 @@ CREATE TABLE `requests` (
 --
 
 INSERT INTO `requests` (`id`, `request_id`, `student_id`, `student_name`, `email`, `program_section`, `document_request`, `delivery_option`, `appointment_date`, `appointment_time`, `total_price`, `date_releasing`, `processing_officer`, `status`, `created_at`) VALUES
-(91, 'PTC-493748', '', 'Bernadette M. Parman', 'mallariking0@gmail.com', '2025 -  (Graduated)', 'Transcript Of Records', 'Cashier', '2025-05-08', '04:00:00', 210.00, NULL, NULL, 'Received', '2025-04-28 01:19:24'),
-(92, 'PTC-358595', '', 'Bernadette M. Parman', 'mallariking0@gmail.com', '2025 -  (Graduated)', 'Good Moral', 'Cashier', '2025-05-08', '04:00:00', 90.00, NULL, NULL, 'Received', '2025-04-28 01:19:50'),
-(96, 'PTC-419312', '2021-3537', 'King Viel L. Mallari', 'klmallari@paterostechnologicalcollege.edu.ph', 'BSIT - 4A (Regular)', 'Form 137', 'Cashier', '2025-04-30', '10:00:00', 60.00, NULL, NULL, 'Received', '2025-04-28 08:19:22');
+(107, 'PTC-449569', '2021-3537', 'King Viel L. Mallari', 'klmallari@paterostechnologicalcollege.edu.ph', 'BSIT - 4A (Regular)', 'CTC - Certificate of Grades', 'Cashier', '2025-05-08', '02:00:00', 60.00, NULL, NULL, 'Received', '2025-04-29 02:07:48'),
+(108, 'PTC-216281', '2021-3537', 'King Viel L. Mallari', 'klmallari@paterostechnologicalcollege.edu.ph', 'BSIT - 4A (Regular)', 'CTC - Certificate of Registration', 'Cashier', '2025-05-08', '04:00:00', 60.00, NULL, NULL, 'Received', '2025-04-29 02:08:12'),
+(109, '', '2021-3537', 'King Viel L. Mallari', 'klmallari@paterostechnologicalcollege.edu.ph', 'BSIT - 4A (Regular)', 'Certificate Of Grades (2nd Year 2nd Sem)', 'Cashier', '2025-05-01', '03:00:00', 60.00, NULL, NULL, 'Received', '2025-04-29 02:24:18');
 
 -- --------------------------------------------------------
 
@@ -238,7 +238,7 @@ ALTER TABLE `password_resets`
 -- AUTO_INCREMENT for table `requests`
 --
 ALTER TABLE `requests`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
 
 --
 -- AUTO_INCREMENT for table `staff`

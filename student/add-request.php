@@ -97,7 +97,10 @@ $cm = new class_model();
                         <!-- Step 1: Documents -->
                         <div class="step active" id="step1">
                             <h4 class="mb-4">Step 1: Select Documents</h4>
-                            <?php $result = $cm->getDocuments2(); ?>
+                            <?php $result = $cm->getDocuments2();
+                            $existingRequests = $cm->getStudentActiveRequests($_SESSION['sessionuser']['student_id']);
+                            ?>
+
                             <?php if (!empty($result)): ?>
                                 <div class="mb-3">
                                     <label for="document_selection" class="form-label fw-bold">Official Documents</label>
@@ -113,30 +116,45 @@ $cm = new class_model();
                                             $isRestrictedDoc = $isGraduated && $needsExtraInputs;
                                             $isTORRestricted = $isRegularOrIrregular && $docName === 'Transcript Of Records';
                                             $isAvailable = $row['is_available'] === 'yes';
+
+                                            // Check if document has existing active request
+                                            $hasActiveRequest = false;
+                                            foreach ($existingRequests as $request) {
+                                                if (
+                                                    strpos($request['document_request'], $docName) !== false &&
+                                                    !in_array($request['status'], ['Declined', 'Released', 'Expired'])
+                                                ) {
+                                                    $hasActiveRequest = true;
+                                                    break;
+                                                }
+                                            }
                                         ?>
                                             <li class="list-group-item">
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <button type="button"
-                                                        class="btn <?= !$isAvailable || $isRestrictedDoc || $isTORRestricted ? 'btn-outline-danger' : 'btn-outline-success' ?> document-toggle w-100 text-start"
+                                                        class="btn <?= !$isAvailable || $isRestrictedDoc || $isTORRestricted ? 'btn-outline-danger' : ($hasActiveRequest ? 'btn-outline-warning text-muted' : 'btn-outline-success') ?> document-toggle w-100 text-start"
                                                         data-doc-id="<?= $docId ?>"
                                                         data-doc-name="<?= $docName ?>"
                                                         data-doc-price="<?= $docPrice ?>"
                                                         data-doc-eta="<?= $docEta ?>"
-                                                        <?= !$isAvailable || $isRestrictedDoc || $isTORRestricted ? 'disabled' : '' ?>>
+                                                        <?= !$isAvailable || $isRestrictedDoc || $isTORRestricted || $hasActiveRequest ? 'disabled' : '' ?>>
                                                         <i class="fas fa-file-alt me-2"></i><?= $docName ?>
                                                     </button>
-                                                    <span class="badge bg-<?= !$isAvailable || $isRestrictedDoc || $isTORRestricted ? 'danger' : 'success' ?> rounded-pill ms-3">
-                                                        <?= !$isAvailable ? 'Not Available' : ($isRestrictedDoc || $isTORRestricted ? 'Not Available' : 'Available') ?>
+                                                    <span class="badge bg-<?= !$isAvailable || $isRestrictedDoc || $isTORRestricted ? 'danger' : ($hasActiveRequest ? 'warning' : 'success') ?> rounded-pill ms-3">
+                                                        <?= !$isAvailable ? 'Not Available' : ($isRestrictedDoc || $isTORRestricted ? 'Not Available' : ($hasActiveRequest ? 'Pending' : 'Available')) ?>
                                                     </span>
                                                 </div>
                                                 <?php if ($isRestrictedDoc): ?>
                                                     <small class="text-muted text-danger">Graduated students cannot request COG/COR. Instead, request TOR.</small>
                                                 <?php endif; ?>
                                                 <?php if ($isTORRestricted): ?>
-                                                    <small class="text-muted text-danger" id="tor-restricted-message-<?= $docId ?>">Regular / Irregular students cannot request TOR.</small>
+                                                    <small class="text-muted text-danger">Regular / Irregular students cannot request TOR.</small>
+                                                <?php endif; ?>
+                                                <?php if ($hasActiveRequest): ?>
+                                                    <small class=" text-danger">You have an existing request for this document.</small>
                                                 <?php endif; ?>
 
-                                                <?php if ($needsExtraInputs): ?>
+                                                <?php if ($needsExtraInputs && !$hasActiveRequest): ?>
                                                     <div class="mt-2 p-2 bg-light rounded" style="display: none;" id="inputs-<?= $docId ?>">
                                                         <div class="d-flex gap-2 align-items-center">
                                                             <div class="form-floating" style="max-width: 120px;">
@@ -179,51 +197,69 @@ $cm = new class_model();
                                                             $certName = htmlspecialchars($certification['name']);
                                                             $certPrice = htmlspecialchars($certification['price'] ?? 0);
                                                             $certEta = htmlspecialchars($certification['eta'] ?? 0);
-                                                            echo "<option value=\"$certId\" data-cert-name=\"$certName\" data-cert-price=\"$certPrice\" data-cert-eta=\"$certEta\">$certName</option>";
+
+                                                            // Check if certification has existing active request
+                                                            $hasActiveCertRequest = false;
+                                                            foreach ($existingRequests as $request) {
+                                                                if (
+                                                                    strpos($request['document_request'], $certName) !== false &&
+                                                                    !in_array($request['status'], ['Declined', 'Released', 'Expired'])
+                                                                ) {
+                                                                    $hasActiveCertRequest = true;
+                                                                    break;
+                                                                }
+                                                            }
+
+                                                            echo "<option value=\"$certId\" 
+                                  data-cert-name=\"$certName\" 
+                                  data-cert-price=\"$certPrice\" 
+                                  data-cert-eta=\"$certEta\"
+                                  " . ($hasActiveCertRequest ? 'disabled' : '') . ">
+                                  $certName" . ($hasActiveCertRequest ? ' (Pending)' : '') . "</option>";
                                                         }
                                                     }
                                                     ?>
                                                     <option value="other">Others (Please specify)</option>
                                                 </select>
-                                                <script>
-                                                    document.getElementById('other_certification').addEventListener('change', function() {
-                                                        const selectedOption = this.options[this.selectedIndex];
-                                                        const certName = selectedOption.getAttribute('data-cert-name');
-                                                        const requirementMessageContainer = document.createElement('small');
-                                                        requirementMessageContainer.className = 'text-danger d-block mt-2';
-                                                        
-                                                        if (certName === 'Form 137') {
-                                                            requirementMessageContainer.textContent = 'Note: Please provide clearance from the registrar.';
-                                                        } else if (certName === 'CTC - Certificate Of Registration') {
-                                                            requirementMessageContainer.textContent = 'Note: Please provide a copy of your COR';
-                                                        } else if (certName === 'CTC - Certificate Of Grades') {
-                                                            requirementMessageContainer.textContent = 'Note: Please provide a copy of your COG'
-                                                        } else {
-                                                            requirementMessageContainer.textContent = '';
-                                                        }
-
-                                                        // Remove existing requirement message if any
-                                                        const existingMessage = document.querySelector('.certification-requirement-message');
-                                                        if (existingMessage) {
-                                                            existingMessage.remove();
-                                                        }
-
-                                                        // Append the new requirement message below the dropdown
-                                                        if (requirementMessageContainer.textContent) {
-                                                            requirementMessageContainer.classList.add('certification-requirement-message');
-                                                            this.parentNode.parentNode.appendChild(requirementMessageContainer);
-                                                        }
-                                                    });
-                                                </script>
                                             </div>
                                             <div class="mt-2">
                                                 <input type="text" class="form-control" id="other_certification_text" name="other_certification_text" placeholder="Specify other certification" style="display: none;">
                                             </div>
+                                            <script>
+                                                document.getElementById('other_certification').addEventListener('change', function() {
+                                                    const selectedOption = this.options[this.selectedIndex];
+                                                    const certName = selectedOption.getAttribute('data-cert-name');
+                                                    const requirementMessageContainer = document.createElement('small');
+                                                    requirementMessageContainer.className = 'text-danger d-block mt-2';
+
+                                                    if (certName === 'Form 137') {
+                                                        requirementMessageContainer.textContent = 'Note: Please provide clearance from the registrar.';
+                                                    } else if (certName === 'CTC - Certificate of Registration') {
+                                                        requirementMessageContainer.textContent = 'Note: Please provide a copy of your COR';
+                                                    } else if (certName === 'CTC - Certificate of Grades') {
+                                                        requirementMessageContainer.textContent = 'Note: Please provide a copy of your COG';
+                                                    } else {
+                                                        requirementMessageContainer.textContent = '';
+                                                    }
+
+                                                    // Remove existing requirement message if any
+                                                    const existingMessage = document.querySelector('.certification-requirement-message');
+                                                    if (existingMessage) {
+                                                        existingMessage.remove();
+                                                    }
+
+                                                    // Append the new requirement message below the dropdown
+                                                    if (requirementMessageContainer.textContent) {
+                                                        requirementMessageContainer.classList.add('certification-requirement-message');
+                                                        this.parentNode.parentNode.appendChild(requirementMessageContainer);
+                                                    }
+                                                });
+                                            </script>
                                         </li>
                                     </ul>
                                 </div>
                             <?php else: ?>
-                                <p class="text-muted text-center">No documents available for request.</p>
+                                <p class="text-muted text-center">No certifications available for request.</p>
                             <?php endif; ?>
                         </div>
 
@@ -409,14 +445,14 @@ $cm = new class_model();
             // Certification selection handler
             document.getElementById('other_certification').addEventListener('change', function() {
                 const otherTextInput = document.getElementById('other_certification_text');
-                
+
                 if (this.value === 'other') {
                     otherTextInput.style.display = 'block';
                     selectedCertification = null;
                 } else if (this.value) {
                     otherTextInput.style.display = 'none';
                     otherTextInput.value = '';
-                    
+
                     const selectedOption = this.options[this.selectedIndex];
                     selectedCertification = {
                         id: this.value,
@@ -429,7 +465,7 @@ $cm = new class_model();
                     otherTextInput.value = '';
                     selectedCertification = null;
                 }
-                
+
                 updateDocumentDetails();
             });
 
@@ -511,13 +547,13 @@ $cm = new class_model();
                 let documentsText = selectedDocuments.map(doc =>
                     `${doc.name}${doc.year && doc.semester ? ' (' + doc.year + ' ' + doc.semester + ')' : ''}`
                 ).join(', ');
-                
+
                 // Add certification if selected
                 if (selectedCertification) {
                     if (documentsText) documentsText += ', ';
                     documentsText += selectedCertification.name;
                 }
-                
+
                 docsList.textContent = documentsText;
 
                 // Update delivery option
@@ -855,11 +891,11 @@ $cm = new class_model();
                         }
                         return doc.name;
                     });
-                    
+
                     if (selectedCertification) {
                         documentDetails.push(selectedCertification.name);
                     }
-                    
+
                     formData.append('documents', documentDetails.join(', '));
 
                     // Add other form data

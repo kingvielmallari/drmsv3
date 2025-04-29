@@ -361,6 +361,21 @@ class class_model {
 
         return $result->fetch_all(MYSQLI_ASSOC);
     }
+
+    public function getStudentActiveRequests($studentId) {
+        $stmt = $this->mysqli->prepare("
+            SELECT document_request, status 
+            FROM requests 
+            WHERE student_id = ? 
+            AND status NOT IN ('Declined', 'Released', 'Expired')
+        ");
+
+
+        $stmt->bind_param("s", $studentId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
     
     public function getCertifications() {
         $sql = "SELECT * FROM documents WHERE doc_type = 'Certification'";
