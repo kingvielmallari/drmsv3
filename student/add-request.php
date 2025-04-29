@@ -185,6 +185,36 @@ $cm = new class_model();
                                                     ?>
                                                     <option value="other">Others (Please specify)</option>
                                                 </select>
+                                                <script>
+                                                    document.getElementById('other_certification').addEventListener('change', function() {
+                                                        const selectedOption = this.options[this.selectedIndex];
+                                                        const certName = selectedOption.getAttribute('data-cert-name');
+                                                        const requirementMessageContainer = document.createElement('small');
+                                                        requirementMessageContainer.className = 'text-danger d-block mt-2';
+                                                        
+                                                        if (certName === 'Form 137') {
+                                                            requirementMessageContainer.textContent = 'Note: Please provide clearance from the registrar.';
+                                                        } else if (certName === 'CTC - Certificate Of Registration') {
+                                                            requirementMessageContainer.textContent = 'Note: Please provide a copy of your COR';
+                                                        } else if (certName === 'CTC - Certificate Of Grades') {
+                                                            requirementMessageContainer.textContent = 'Note: Please provide a copy of your COG'
+                                                        } else {
+                                                            requirementMessageContainer.textContent = '';
+                                                        }
+
+                                                        // Remove existing requirement message if any
+                                                        const existingMessage = document.querySelector('.certification-requirement-message');
+                                                        if (existingMessage) {
+                                                            existingMessage.remove();
+                                                        }
+
+                                                        // Append the new requirement message below the dropdown
+                                                        if (requirementMessageContainer.textContent) {
+                                                            requirementMessageContainer.classList.add('certification-requirement-message');
+                                                            this.parentNode.parentNode.appendChild(requirementMessageContainer);
+                                                        }
+                                                    });
+                                                </script>
                                             </div>
                                             <div class="mt-2">
                                                 <input type="text" class="form-control" id="other_certification_text" name="other_certification_text" placeholder="Specify other certification" style="display: none;">
