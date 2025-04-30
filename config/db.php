@@ -362,16 +362,14 @@ class class_model {
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    public function getStudentActiveRequests($studentId) {
+    public function getStudentActiveRequests($email) {
         $stmt = $this->mysqli->prepare("
             SELECT document_request, status 
             FROM requests 
-            WHERE student_id = ? 
+            WHERE email = ? 
             AND status NOT IN ('Declined', 'Released', 'Expired')
         ");
-
-
-        $stmt->bind_param("s", $studentId);
+        $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
         return $result->fetch_all(MYSQLI_ASSOC);

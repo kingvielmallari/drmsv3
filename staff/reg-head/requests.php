@@ -28,7 +28,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
 
   <nav class="navbar navbar-expand-lg navbar-light bg-success fixed-top">
   <div class="container-fluid ">
-    <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="/drmsv3/student-dashboard.php"> 
+    <a class="navbar-brand text-white d-none d-lg-flex align-items-center" href="../reg-head/index.php"> 
       <img src="../../assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;" class="me-3">
       <span style="font-size: 1.50rem; line-height: 60px;">Pateros Technological College</span>
     </a>
@@ -37,7 +37,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
     </button>
 
     <div class="d-lg-none d-flex justify-content-center">
-      <a class="navbar-brand text-white d-flex align-items-center" href="/drmsv3/student-dashboard.php">
+      <a class="navbar-brand text-white d-flex align-items-center" href="../reg-head/index.php">
         <img src="../../assets/images/logo.png" alt="PTC Logo" style="width: 60px; height: 60px;">
       </a>
     </div>
@@ -72,6 +72,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
 
 <div class="container mt-5 pt-5">
   <h2 class="text-center mt-3 mb-4 text-success fw-bold">Request Records</h2>
+
+
   <div class="table-responsive shadow-sm rounded">
     <table class="table table-bordered table-hover align-middle">
       <thead class="table-success text-center">
@@ -142,7 +144,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
               <input type="text" class="form-control" id="editRequestId" readonly disabled>
             </div>
             <div class="col-md-6">
-              <label for="editStudentId" class="form-label">Student ID</label>
+              <label for="editStudentId" class="form-label">Student ID / Name</label>
               <input type="text" class="form-control" id="editStudentId" readonly disabled>
             </div>
           </div>

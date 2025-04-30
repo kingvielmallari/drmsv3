@@ -97,169 +97,189 @@ $cm = new class_model();
                         <!-- Step 1: Documents -->
                         <div class="step active" id="step1">
                             <h4 class="mb-4">Step 1: Select Documents</h4>
-                            <?php $result = $cm->getDocuments2();
-                            $existingRequests = $cm->getStudentActiveRequests($_SESSION['sessionuser']['student_id']);
+                            <?php
+
+                            $result = $cm->getDocuments2();
+                            $existingRequests = $cm->getStudentActiveRequests($_SESSION['sessionuser']['email']);
+                            $activeRequestCount = count($existingRequests);
+
                             ?>
 
-                            <?php if (!empty($result)): ?>
-                                <div class="mb-3">
-                                    <label for="document_selection" class="form-label fw-bold">Official Documents</label>
-                                    <ul id="document_selection" class="list-group">
-                                        <?php foreach ($result as $row):
-                                            $docId = htmlspecialchars($row['id']);
-                                            $docName = htmlspecialchars($row['name']);
-                                            $docPrice = htmlspecialchars($row['price'] ?? 0);
-                                            $docEta = htmlspecialchars($row['eta'] ?? 0);
-                                            $needsExtraInputs = in_array($docName, ['Certificate Of Grades', 'Certificate Of Registration']);
-                                            $isGraduated = ($_SESSION['sessionuser']['status'] ?? '') === 'Graduated';
-                                            $isRegularOrIrregular = in_array($_SESSION['sessionuser']['status'] ?? '', ['Regular', 'Irregular']);
-                                            $isRestrictedDoc = $isGraduated && $needsExtraInputs;
-                                            $isTORRestricted = $isRegularOrIrregular && $docName === 'Transcript Of Records';
-                                            $isAvailable = $row['is_available'] === 'yes';
+                            <?php if ($activeRequestCount >= 3): ?>
+                                <div class="alert alert-danger text-center">
+                                    You've reached your 3 request limit. Please try again later.
+                                </div>
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        document.getElementById('nextBtn').disabled = true;
+                                
+                                        // Ensure the Cancel button remains functional
+                                        document.getElementById('prevBtn').addEventListener('click', function() {
+                                            window.location.href = '../student/index.php';
+                                        });
+                                    });
+                                </script>
+                            <?php else: ?>
+                                <?php if (!empty($result)): ?>
+                                    <div class="mb-3">
+                                        <label for="document_selection" class="form-label fw-bold">Official Documents</label>
+                                        <ul id="document_selection" class="list-group">
+                                            <?php foreach ($result as $row):
+                                                $docId = htmlspecialchars($row['id']);
+                                                $docName = htmlspecialchars($row['name']);
+                                                $docPrice = htmlspecialchars($row['price'] ?? 0);
+                                                $docEta = htmlspecialchars($row['eta'] ?? 0);
+                                                $needsExtraInputs = in_array($docName, ['Certificate Of Grades', 'Certificate Of Registration']);
+                                                $isGraduated = ($_SESSION['sessionuser']['status'] ?? '') === 'Graduated';
+                                                $isRegularOrIrregular = in_array($_SESSION['sessionuser']['status'] ?? '', ['Regular', 'Irregular']);
+                                                $isRestrictedDoc = $isGraduated && $needsExtraInputs;
+                                                $isTORRestricted = $isRegularOrIrregular && $docName === 'Transcript Of Records';
+                                                $isAvailable = $row['is_available'] === 'yes';
 
-                                            // Check if document has existing active request
-                                            $hasActiveRequest = false;
-                                            foreach ($existingRequests as $request) {
-                                                if (
-                                                    strpos($request['document_request'], $docName) !== false &&
-                                                    !in_array($request['status'], ['Declined', 'Released', 'Expired'])
-                                                ) {
-                                                    $hasActiveRequest = true;
-                                                    break;
+                                                // Check if document has existing active request
+                                                $hasActiveRequest = false;
+                                                foreach ($existingRequests as $request) {
+                                                    if (
+                                                        strpos($request['document_request'], $docName) !== false &&
+                                                        !in_array($request['status'], ['Declined', 'Released', 'Expired'])
+                                                    ) {
+                                                        $hasActiveRequest = true;
+                                                        break;
+                                                    }
                                                 }
-                                            }
-                                        ?>
-                                            <li class="list-group-item">
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <button type="button"
-                                                        class="btn <?= !$isAvailable || $isRestrictedDoc || $isTORRestricted ? 'btn-outline-danger' : ($hasActiveRequest ? 'btn-outline-warning text-muted' : 'btn-outline-success') ?> document-toggle w-100 text-start"
-                                                        data-doc-id="<?= $docId ?>"
-                                                        data-doc-name="<?= $docName ?>"
-                                                        data-doc-price="<?= $docPrice ?>"
-                                                        data-doc-eta="<?= $docEta ?>"
-                                                        <?= !$isAvailable || $isRestrictedDoc || $isTORRestricted || $hasActiveRequest ? 'disabled' : '' ?>>
-                                                        <i class="fas fa-file-alt me-2"></i><?= $docName ?>
-                                                    </button>
-                                                    <span class="badge bg-<?= !$isAvailable || $isRestrictedDoc || $isTORRestricted ? 'danger' : ($hasActiveRequest ? 'warning' : 'success') ?> rounded-pill ms-3">
-                                                        <?= !$isAvailable ? 'Not Available' : ($isRestrictedDoc || $isTORRestricted ? 'Not Available' : ($hasActiveRequest ? 'Pending' : 'Available')) ?>
-                                                    </span>
-                                                </div>
-                                                <?php if ($isRestrictedDoc): ?>
-                                                    <small class="text-muted text-danger">Graduated students cannot request COG/COR. Instead, request TOR.</small>
-                                                <?php endif; ?>
-                                                <?php if ($isTORRestricted): ?>
-                                                    <small class="text-muted text-danger">Regular / Irregular students cannot request TOR.</small>
-                                                <?php endif; ?>
-                                                <?php if ($hasActiveRequest): ?>
-                                                    <small class=" text-danger">You have an existing request for this document.</small>
-                                                <?php endif; ?>
+                                            ?>
+                                                <li class="list-group-item">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <button type="button"
+                                                            class="btn <?= !$isAvailable || $isRestrictedDoc || $isTORRestricted ? 'btn-outline-danger' : ($hasActiveRequest ? 'btn-outline-warning text-muted' : 'btn-outline-success') ?> document-toggle w-100 text-start"
+                                                            data-doc-id="<?= $docId ?>"
+                                                            data-doc-name="<?= $docName ?>"
+                                                            data-doc-price="<?= $docPrice ?>"
+                                                            data-doc-eta="<?= $docEta ?>"
+                                                            <?= !$isAvailable || $isRestrictedDoc || $isTORRestricted || $hasActiveRequest ? 'disabled' : '' ?>>
+                                                            <i class="fas fa-file-alt me-2"></i><?= $docName ?>
+                                                        </button>
+                                                        <span class="badge bg-<?= !$isAvailable || $isRestrictedDoc || $isTORRestricted ? 'danger' : ($hasActiveRequest ? 'warning' : 'success') ?> rounded-pill ms-3">
+                                                            <?= !$isAvailable ? 'Not Available' : ($isRestrictedDoc || $isTORRestricted ? 'Not Available' : ($hasActiveRequest ? 'Pending' : 'Available')) ?>
+                                                        </span>
+                                                    </div>
+                                                    <?php if ($isRestrictedDoc): ?>
+                                                        <small class="text-muted text-danger">Graduated students cannot request COG/COR. Instead, request TOR.</small>
+                                                    <?php endif; ?>
+                                                    <?php if ($isTORRestricted): ?>
+                                                        <small class="text-muted text-danger">Regular / Irregular students cannot request TOR.</small>
+                                                    <?php endif; ?>
+                                                    <?php if ($hasActiveRequest): ?>
+                                                        <small class=" text-danger">You have an existing request for this document.</small>
+                                                    <?php endif; ?>
 
-                                                <?php if ($needsExtraInputs && !$hasActiveRequest): ?>
-                                                    <div class="mt-2 p-2 bg-light rounded" style="display: none;" id="inputs-<?= $docId ?>">
-                                                        <div class="d-flex gap-2 align-items-center">
-                                                            <div class="form-floating" style="max-width: 120px;">
-                                                                <select class="form-select year-input" id="year-<?= $docId ?>" style="height: 35px; font-size: 0.85rem;">
-                                                                    <option value="" disabled selected>Year Level</option>
-                                                                    <option value="4th Year">4th Year</option>
-                                                                    <option value="3rd Year">3rd Year</option>
-                                                                    <option value="2nd Year">2nd Year</option>
-                                                                    <option value="1st Year">1st Year</option>
-                                                                </select>
-                                                                <label for="year-<?= $docId ?>" style="font-size: 0.75rem;">Year Level</label>
-                                                            </div>
-                                                            <div class="form-floating" style="max-width: 120px;">
-                                                                <select class="form-select sem-input" id="sem-<?= $docId ?>" style="height: 35px; font-size: 0.85rem;">
-                                                                    <option value="" disabled selected>Sem</option>
-                                                                    <option value="1st Sem">1st Sem</option>
-                                                                    <option value="2nd Sem">2nd Sem</option>
-                                                                </select>
-                                                                <label for="sem-<?= $docId ?>" style="font-size: 0.75rem;">Semester</label>
+                                                    <?php if ($needsExtraInputs && !$hasActiveRequest): ?>
+                                                        <div class="mt-2 p-2 bg-light rounded" style="display: none;" id="inputs-<?= $docId ?>">
+                                                            <div class="d-flex gap-2 align-items-center">
+                                                                <div class="form-floating" style="max-width: 120px;">
+                                                                    <select class="form-select year-input" id="year-<?= $docId ?>" style="height: 35px; font-size: 0.85rem;">
+                                                                        <option value="" disabled selected>Year Level</option>
+                                                                        <option value="4th Year">4th Year</option>
+                                                                        <option value="3rd Year">3rd Year</option>
+                                                                        <option value="2nd Year">2nd Year</option>
+                                                                        <option value="1st Year">1st Year</option>
+                                                                    </select>
+                                                                    <label for="year-<?= $docId ?>" style="font-size: 0.75rem;">Year Level</label>
+                                                                </div>
+                                                                <div class="form-floating" style="max-width: 120px;">
+                                                                    <select class="form-select sem-input" id="sem-<?= $docId ?>" style="height: 35px; font-size: 0.85rem;">
+                                                                        <option value="" disabled selected>Sem</option>
+                                                                        <option value="1st Sem">1st Sem</option>
+                                                                        <option value="2nd Sem">2nd Sem</option>
+                                                                    </select>
+                                                                    <label for="sem-<?= $docId ?>" style="font-size: 0.75rem;">Semester</label>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                <?php endif; ?>
-                                            </li>
-                                        <?php endforeach; ?>
-                                    </ul>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="other_certification" class="form-label fw-bold">Certifications:</label>
-                                    <ul id="certification_selection" class="list-group">
-                                        <li class="list-group-item">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <select class="form-select certification-select" id="other_certification" name="other_certification">
-                                                    <option value="" selected>Select a certification</option>
-                                                    <?php
-                                                    $certifications = $cm->getCertifications();
-                                                    if (!empty($certifications)) {
-                                                        foreach ($certifications as $certification) {
-                                                            $certId = htmlspecialchars($certification['id']);
-                                                            $certName = htmlspecialchars($certification['name']);
-                                                            $certPrice = htmlspecialchars($certification['price'] ?? 0);
-                                                            $certEta = htmlspecialchars($certification['eta'] ?? 0);
+                                                    <?php endif; ?>
+                                                </li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="other_certification" class="form-label fw-bold">Certifications:</label>
+                                        <ul id="certification_selection" class="list-group">
+                                            <li class="list-group-item">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <select class="form-select certification-select" id="other_certification" name="other_certification">
+                                                        <option value="" selected>Select a certification</option>
+                                                        <?php
+                                                        $certifications = $cm->getCertifications();
+                                                        if (!empty($certifications)) {
+                                                            foreach ($certifications as $certification) {
+                                                                $certId = htmlspecialchars($certification['id']);
+                                                                $certName = htmlspecialchars($certification['name']);
+                                                                $certPrice = htmlspecialchars($certification['price'] ?? 0);
+                                                                $certEta = htmlspecialchars($certification['eta'] ?? 0);
 
-                                                            // Check if certification has existing active request
-                                                            $hasActiveCertRequest = false;
-                                                            foreach ($existingRequests as $request) {
-                                                                if (
-                                                                    strpos($request['document_request'], $certName) !== false &&
-                                                                    !in_array($request['status'], ['Declined', 'Released', 'Expired'])
-                                                                ) {
-                                                                    $hasActiveCertRequest = true;
-                                                                    break;
+                                                                // Check if certification has existing active request
+                                                                $hasActiveCertRequest = false;
+                                                                foreach ($existingRequests as $request) {
+                                                                    if (
+                                                                        strpos($request['document_request'], $certName) !== false &&
+                                                                        !in_array($request['status'], ['Declined', 'Released', 'Expired'])
+                                                                    ) {
+                                                                        $hasActiveCertRequest = true;
+                                                                        break;
+                                                                    }
                                                                 }
+
+                                                                echo "<option value=\"$certId\" 
+                                      data-cert-name=\"$certName\" 
+                                      data-cert-price=\"$certPrice\" 
+                                      data-cert-eta=\"$certEta\"
+                                      " . ($hasActiveCertRequest ? 'disabled' : '') . ">
+                                      $certName" . ($hasActiveCertRequest ? ' (Pending)' : '') . "</option>";
                                                             }
-
-                                                            echo "<option value=\"$certId\" 
-                                  data-cert-name=\"$certName\" 
-                                  data-cert-price=\"$certPrice\" 
-                                  data-cert-eta=\"$certEta\"
-                                  " . ($hasActiveCertRequest ? 'disabled' : '') . ">
-                                  $certName" . ($hasActiveCertRequest ? ' (Pending)' : '') . "</option>";
                                                         }
-                                                    }
-                                                    ?>
-                                                    <option value="other">Others (Please specify)</option>
-                                                </select>
-                                            </div>
-                                            <div class="mt-2">
-                                                <input type="text" class="form-control" id="other_certification_text" name="other_certification_text" placeholder="Specify other certification" style="display: none;">
-                                            </div>
-                                            <script>
-                                                document.getElementById('other_certification').addEventListener('change', function() {
-                                                    const selectedOption = this.options[this.selectedIndex];
-                                                    const certName = selectedOption.getAttribute('data-cert-name');
-                                                    const requirementMessageContainer = document.createElement('small');
-                                                    requirementMessageContainer.className = 'text-danger d-block mt-2';
+                                                        ?>
+                                                        <option value="other">Others (Please specify)</option>
+                                                    </select>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <input type="text" class="form-control" id="other_certification_text" name="other_certification_text" placeholder="Specify other certification" style="display: none;">
+                                                </div>
+                                                <script>
+                                                    document.getElementById('other_certification').addEventListener('change', function() {
+                                                        const selectedOption = this.options[this.selectedIndex];
+                                                        const certName = selectedOption.getAttribute('data-cert-name');
+                                                        const requirementMessageContainer = document.createElement('small');
+                                                        requirementMessageContainer.className = 'text-danger d-block mt-2';
 
-                                                    if (certName === 'Form 137') {
-                                                        requirementMessageContainer.textContent = 'Note: Please provide clearance from the registrar.';
-                                                    } else if (certName === 'CTC - Certificate of Registration') {
-                                                        requirementMessageContainer.textContent = 'Note: Please provide a copy of your COR';
-                                                    } else if (certName === 'CTC - Certificate of Grades') {
-                                                        requirementMessageContainer.textContent = 'Note: Please provide a copy of your COG';
-                                                    } else {
-                                                        requirementMessageContainer.textContent = '';
-                                                    }
+                                                        if (certName === 'Form 137') {
+                                                            requirementMessageContainer.textContent = 'Note: Please provide clearance from the registrar.';
+                                                        } else if (certName === 'CTC - Certificate of Registration') {
+                                                            requirementMessageContainer.textContent = 'Note: Please provide a copy of your COR';
+                                                        } else if (certName === 'CTC - Certificate of Grades') {
+                                                            requirementMessageContainer.textContent = 'Note: Please provide a copy of your COG';
+                                                        } else {
+                                                            requirementMessageContainer.textContent = '';
+                                                        }
 
-                                                    // Remove existing requirement message if any
-                                                    const existingMessage = document.querySelector('.certification-requirement-message');
-                                                    if (existingMessage) {
-                                                        existingMessage.remove();
-                                                    }
+                                                        // Remove existing requirement message if any
+                                                        const existingMessage = document.querySelector('.certification-requirement-message');
+                                                        if (existingMessage) {
+                                                            existingMessage.remove();
+                                                        }
 
-                                                    // Append the new requirement message below the dropdown
-                                                    if (requirementMessageContainer.textContent) {
-                                                        requirementMessageContainer.classList.add('certification-requirement-message');
-                                                        this.parentNode.parentNode.appendChild(requirementMessageContainer);
-                                                    }
-                                                });
-                                            </script>
-                                        </li>
-                                    </ul>
-                                </div>
-                            <?php else: ?>
-                                <p class="text-muted text-center">No certifications available for request.</p>
+                                                        // Append the new requirement message below the dropdown
+                                                        if (requirementMessageContainer.textContent) {
+                                                            requirementMessageContainer.classList.add('certification-requirement-message');
+                                                            this.parentNode.parentNode.appendChild(requirementMessageContainer);
+                                                        }
+                                                    });
+                                                </script>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                <?php else: ?>
+                                    <p class="text-muted text-center">No certifications available for request.</p>
+                                <?php endif; ?>
                             <?php endif; ?>
                         </div>
 
