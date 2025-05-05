@@ -272,6 +272,9 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
     }
   });
 
+
+
+
   function fetchRequestData(requestId) {
     fetch(`../../controllers/FetchSpecificRequest.php?id=${requestId}`)
       .then(response => {
@@ -314,7 +317,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
 </script>
 
 
- 
+ <div class="bg-sucess">dsad</div>
 
 <footer class="bg-success text-white text-center py-1 mt-auto fixed-bottom">
         &copy; <?php echo date('Y'); ?> PTC. All rights reserved.
