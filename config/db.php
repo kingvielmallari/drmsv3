@@ -185,6 +185,16 @@ class class_model {
         return $studentId ?: null;
     }
 
+    public function updateDocumentData($id, $code, $name, $price, $is_available, $eta) {
+        $sql = "UPDATE documents SET code = ?, name = ?, price = ?, is_available = ?, eta = ? WHERE id = ?";
+        $stmt = $this->mysqli->prepare($sql);
+        if (!$stmt) {
+            return false;
+        }
+        $stmt->bind_param("ssdssi", $code, $name, $price, $is_available, $eta, $id);
+        return $stmt->execute();
+    }
+
 
     public function deleteStudent($student_id) {
         $sql = "DELETE FROM students WHERE id = ?";

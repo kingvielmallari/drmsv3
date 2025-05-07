@@ -168,7 +168,7 @@ if (!isset($_SESSION['sessionuser'])) {
             </div>
             <div class="col-md-6">
               <label for="editTotalPrice" class="form-label">Total Price</label>
-              <input type="number" step="0.01" class="form-control" id="editTotalPrice" disabled readonly>
+              <input type="number" class="form-control" id="editTotalPrice" disabled readonly>
             </div>
           </div>
         </form>
@@ -282,7 +282,7 @@ if (!isset($_SESSION['sessionuser'])) {
               })
             : '';
             document.getElementById('editDateReleasing').value = request.date_releasing || '';
-          document.getElementById('editProcessingOfficer').value = request.processing_officer || "<?php echo $_SESSION['sessionuser']['name']; ?>";
+          document.getElementById('editProcessingOfficer').value = request.processing_officer || '';
           document.getElementById('editStatus').value = request.status || '';
           document.getElementById('editTotalPrice').value = request.total_price || '';
         } else {
@@ -291,7 +291,7 @@ if (!isset($_SESSION['sessionuser'])) {
       })
       .catch(error => {
         console.error('Error fetching request data:', error);
-        alert('An error occurred while fetching request data.');
+       
       });
   }
 

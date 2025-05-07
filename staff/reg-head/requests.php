@@ -180,6 +180,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     fetchRequests();
+     setInterval(fetchRequests, 5000);
   });
 
   function fetchRequests() {
@@ -226,7 +227,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
         });
 
         // Refresh the fetchRequests function every 2.5 seconds
-        setInterval(fetchRequests, 5000);
+        // setInterval(fetchRequests, 5000);
 
         // Add event listener to edit buttons
         document.querySelectorAll('.edit-btn').forEach(button => {
@@ -311,13 +312,12 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
       })
       .catch(error => {
         console.error('Error fetching request data:', error);
-        alert('An error occurred while fetching request data.');
-      });
+        // alert('An error occurred while fetching request data.');
+      }); 
   }
 </script>
 
 
- <div class="bg-sucess">dsad</div>
 
 <footer class="bg-success text-white text-center py-1 mt-auto fixed-bottom">
         &copy; <?php echo date('Y'); ?> PTC. All rights reserved.

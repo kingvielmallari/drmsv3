@@ -341,21 +341,20 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'reg_head') {
         function fetchDocumentData(documentId) {
             fetch(`../../controllers/FetchSpecificDocument.php?id=${documentId}`)
                 .then(response => response.json())
-                .then(document => {
-                    if (document && document.id) {
-                        document.getElementById('editDocumentId').value = document.id || '';
-                        document.getElementById('editCode').value = document.code || '';
-                        document.getElementById('editName').value = document.name || '';
-                        document.getElementById('editPrice').value = document.price || '';
-                        document.getElementById('editIsAvailable').value = document.is_available || '';
-                        document.getElementById('editEta').value = document.eta || '';
+                .then(data => {
+                    if (data && data.id) {
+                        document.getElementById('editDocumentId').value = data.id || '';
+                        document.getElementById('editCode').value = data.code || '';
+                        document.getElementById('editName').value = data.name || '';
+                        document.getElementById('editPrice').value = data.price || '';
+                        document.getElementById('editIsAvailable').value = data.is_available || '';
+                        document.getElementById('editEta').value = data.eta || '';
                     } else {
                         alert('Failed to fetch document data. Please try again.');
                     }
                 })
                 .catch(error => {
                     console.error('Error fetching document data:', error);
-                    alert('An error occurred while fetching document data.');
                 });
         }
 
