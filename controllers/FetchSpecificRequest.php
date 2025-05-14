@@ -1,7 +1,6 @@
 <?php
 require_once '../config/db.php'; // DB connection file
 
-header('Content-Type: application/json');
 
 $cm = new class_model();
 

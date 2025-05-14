@@ -22,7 +22,7 @@ if (!isset($_SESSION['sessionuser'])) {
     <title>Users List</title>
     <link rel="stylesheet" href="../vendor/bootstrapv5/css/bootstrap.min.css">
     <link rel="stylesheet" href="../assets/css/app.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"> -->
 
 </head>
 <body>
@@ -168,8 +168,11 @@ if (!isset($_SESSION['sessionuser'])) {
             </div>
             <div class="col-md-6">
               <label for="editTotalPrice" class="form-label">Total Price</label>
-              <input type="number" class="form-control" id="editTotalPrice" disabled readonly>
+              <input type="text" class="form-control" id="editTotalPrice" readonly disabled>
             </div>
+            
+            
+           
           </div>
         </form>
       </div>
@@ -219,10 +222,10 @@ if (!isset($_SESSION['sessionuser'])) {
           <td>
           <div class='d-flex flex-column flex-md-row justify-content-center align-items-center'>
             <button class="btn btn-primary btn-sm me-md-2 mb-2 mb-md-0 edit-btn" data-id="${request.id}" data-bs-toggle="modal" data-bs-target="#editModal">
-            <i class="fas fa-edit"></i>
+            Update<i class="fas fa-edit"></i>
             </button>
             <button class="btn btn-danger btn-sm me-md-2 mb-2 mb-md-0 delete-btn" data-id="${request.id}" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
-            <i class="fas fa-trash-alt"></i>
+            Delete<i class="fas fa-trash-alt"></i>
             </button>
           </div>
           </td>`;
@@ -255,45 +258,43 @@ if (!isset($_SESSION['sessionuser'])) {
 </script>
 
 <script>
-  function fetchRequestData(requestId) {
-    fetch(`../controllers/FetchSpecificRequest.php?id=${requestId}`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(request => {
-        if (request && request.request_id) {
-          document.getElementById('editRequestId').value = request.request_id;
-          document.getElementById('editStudentId').value = request.student_id || request.student_name;
-          document.getElementById('editDocumentRequest').value = request.document_request || '';
-          document.getElementById('editDateRequested').value = request.created_at
-            ? new Date(request.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
-            : 'N/A';
-          document.getElementById('editAppointmentDate').value = request.appointment_date && request.appointment_time
-            ? new Date(`${request.appointment_date}T${request.appointment_time}`).toLocaleString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric',
-                hour: 'numeric',
-                minute: '2-digit',
-                hour12: true,
-              })
-            : '';
-            document.getElementById('editDateReleasing').value = request.date_releasing || '';
-          document.getElementById('editProcessingOfficer').value = request.processing_officer || '';
-          document.getElementById('editStatus').value = request.status || '';
-          document.getElementById('editTotalPrice').value = request.total_price || '';
-        } else {
-          alert('Failed to fetch request data. Please try again.');
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching request data:', error);
-       
-      });
+async function fetchRequestData(requestId) {
+  try {
+    const response = await fetch(`../controllers/FetchSpecificRequest.php?id=${requestId}`);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const request = await response.json();
+
+    if (request && request.request_id) {
+      document.getElementById('editRequestId').value = request.request_id;
+      document.getElementById('editStudentId').value = request.student_id || request.student_name;
+      document.getElementById('editDocumentRequest').value = request.document_request || '';
+      document.getElementById('editDateRequested').value = request.created_at
+        ? new Date(request.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+        : 'N/A';
+      document.getElementById('editAppointmentDate').value = request.appointment_date && request.appointment_time
+        ? new Date(`${request.appointment_date}T${request.appointment_time}`).toLocaleString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true,
+          })
+        : '';
+      document.getElementById('editDateReleasing').value = request.date_releasing || '';
+      document.getElementById('editProcessingOfficer').value = request.processing_officer || '';
+      document.getElementById('editStatus').value = request.status || '';
+      document.getElementById('editTotalPrice').value = request.student_name || '0';
+    } else {
+      alert('Failed to fetch request data. Please try again.');
+    }
+  } catch (error) {
+    console.error('Error fetching request data:', error);
   }
+}
 
   // Save changes button event listener
   document.getElementById('saveChangesBtn').addEventListener('click', () => {
