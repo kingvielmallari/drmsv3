@@ -57,8 +57,8 @@ addlogs('Visit Page: Manage Programs');
                                         <tr>
                                             <th style="vertical-align: middle;" rowspan="2">#</th>
                                             <th style="vertical-align: middle;" rowspan="2">Payment Name</th>
-                                            <th style="vertical-align: middle;" colspan="2">Paying</th>
-                                            <th style="vertical-align: middle;" colspan="2">Unifast</th>
+                                            <th style="vertical-align: middle;" colspan="2">Paying Program</th>
+                                            <th style="vertical-align: middle;" colspan="2">Unifast Program</th>
                                             <th style="vertical-align: middle;" rowspan="2">Actions</th>
                                         </tr>
                                         <tr>

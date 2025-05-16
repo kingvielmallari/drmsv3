@@ -73,6 +73,29 @@ if (isset($_POST['delpayment'])) {
     }
 }
 
+if (isset($_POST['disablepayment'])) {
+    $payment_id = isset($_POST['payment_id']) ? trim($_POST['payment_id']) : '';
+
+    // Check if payment exists
+    $sql_check = "SELECT `payment_name` FROM `assessment_fees` WHERE `id` = ?";
+    $res_check = queryOneParam($sql_check, [$payment_id]);
+    if (mysqli_num_rows($res_check) == 0) {
+        echo "Payment Not Found";
+        return;
+    }
+
+    // Disable payment (assuming a 'status' column: 1=active, 0=disabled)
+    $sql = "UPDATE `assessment_fees` SET `status` = 0 WHERE `id` = ?";
+    $res = queryOneParam($sql, [$payment_id]);
+
+    if ($res == "") {
+        $row = mysqli_fetch_array($res_check);
+        addlogs("Disabled a payment: " . $row['payment_name']);
+        echo "Success";
+    } else {
+        echo "Error While Disabling Payment";
+    }
+}
 
 if (isset($_POST['addfee'])) {
     $payment_name = isset($_POST['payment_name']) ? trim($_POST['payment_name']) : '';

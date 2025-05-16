@@ -124,11 +124,13 @@ function setupprogram(btn) {
         <td style="width: 400px;" class="align-middle">
             <button type="submit" class="btn btn-sm btn-success" onclick="upprogram(this);" value="` + $(btn).val() + `"><span>Save </span><i class="bi bi-check-circle"></i></button>
             <button class="btn btn-sm btn-warning" onclick="cancelbtn(this);"><span>Cancel </span><i class="bi bi-x-circle"></i></button>
-            <button class="btn btn-sm btn-secondary" onclick="disablebtn(this);  value="` + $(btn).val() + `""><span>Disable </span><i class="bi bi-slash-circle"></i></button>
+            <button class="btn btn-sm btn-secondary" onclick="disablebtn(this);  value="` + $(btn).val() + `""><span>Disabsle </span><i class="bi bi-slash-circle"></i></button>
             <button class="btn btn-sm btn-danger" onclick="delpayment(this);" value="` + $(btn).val() + `"><span>Delete </span><i class="bi bi-trash"></i></button>
         </td>`;
     $(tr).html(elem);
 }
+
+// ADD DISABLE FUNCTION
 
 function delpayment(btn) {
     var payment_id = $(btn).val();
