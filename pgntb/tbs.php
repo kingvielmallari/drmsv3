@@ -117,11 +117,13 @@ function sqls($tbname, $page, $entries, $search)
         paying_new,
         paying_old,
         unifast_new,
-        unifast_old
+        unifast_old,
+        executive_new,
+        executive_old
         FROM 
             assessment_fees 
         WHERE 
-            CONCAT(payment_name, IFNULL(paying_new,''), IFNULL(paying_old,''), IFNULL(unifast_new,''), IFNULL(unifast_old,''), IFNULL(status,'')) 
+            CONCAT(payment_name, IFNULL(paying_new,''), IFNULL(paying_old,''), IFNULL(unifast_new,''), IFNULL(unifast_old,''), IFNULL(executive_new,''), IFNULL(executive_old,''), IFNULL(status,'')) 
             LIKE CONCAT('%', ?, '%') 
         ORDER BY id ASC 
         LIMIT $page, $entries";
@@ -219,6 +221,8 @@ function tb($res, $t, $cspan)
                 <td>' . $row[2] . '</td>
                 <td>' . $row[5] . '</td>
                 <td>' . $row[4] . '</td>
+                 <td>' . $row[7] . '</td>
+                <td>' . $row[6] . '</td>
 
                 <td>
                 <button class="btn btn-sm btn-success" onclick="setupprogram(this);" value="' . $row[0] . '">Update</button>

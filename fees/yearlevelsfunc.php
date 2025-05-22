@@ -73,29 +73,7 @@ if (isset($_POST['delpayment'])) {
     }
 }
 
-if (isset($_POST['disablepayment'])) {
-    $payment_id = isset($_POST['payment_id']) ? trim($_POST['payment_id']) : '';
 
-    // Check if payment exists
-    $sql_check = "SELECT `payment_name` FROM `assessment_fees` WHERE `id` = ?";
-    $res_check = queryOneParam($sql_check, [$payment_id]);
-    if (mysqli_num_rows($res_check) == 0) {
-        echo "Payment Not Found";
-        return;
-    }
-
-    // Disable payment (assuming a 'status' column: 1=active, 0=disabled)
-    $sql = "UPDATE `assessment_fees` SET `status` = 0 WHERE `id` = ?";
-    $res = queryOneParam($sql, [$payment_id]);
-
-    if ($res == "") {
-        $row = mysqli_fetch_array($res_check);
-        addlogs("Disabled a payment: " . $row['payment_name']);
-        echo "Success";
-    } else {
-        echo "Error While Disabling Payment";
-    }
-}
 
 if (isset($_POST['addfee'])) {
     $payment_name = isset($_POST['payment_name']) ? trim($_POST['payment_name']) : '';
@@ -103,6 +81,8 @@ if (isset($_POST['addfee'])) {
     $paying_new = isset($_POST['paying_new']) ? trim($_POST['paying_new']) : '';
     $unifast_old = isset($_POST['unifast_old']) ? trim($_POST['unifast_old']) : '';
     $unifast_new = isset($_POST['unifast_new']) ? trim($_POST['unifast_new']) : '';
+    $executive_old = isset($_POST['executive_old']) ? trim($_POST['executive_old']) : '';
+    $executive_new = isset($_POST['executive_new']) ? trim($_POST['executive_new']) : '';
 
     // Check if payment_name already exists
     $sql_check = "SELECT * FROM `assessment_fees` WHERE `payment_name` = ?";
@@ -112,9 +92,9 @@ if (isset($_POST['addfee'])) {
         return;
     }
 
-    $sql = "INSERT INTO `assessment_fees` (`payment_name`, `paying_old`, `paying_new`, `unifast_old`, `unifast_new`)
-            VALUES (?, ?, ?, ?, ?)";
-    $params = [$payment_name, $paying_old, $paying_new, $unifast_old, $unifast_new];
+    $sql = "INSERT INTO `assessment_fees` (`payment_name`, `paying_old`, `paying_new`, `unifast_old`, `unifast_new`, `executive_old`, `executive_new`)
+            VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $params = [$payment_name, $paying_old, $paying_new, $unifast_old, $unifast_new, $executive_old, $executive_new];
     $res = queryOneParam($sql, $params);
 
     if ($res == "") {
@@ -127,12 +107,22 @@ if (isset($_POST['addfee'])) {
 
 
 if (isset($_POST['upprogram'])) {
-$arr = [];
+    $payment_name = isset($_POST['payment_name']) ? trim($_POST['payment_name']) : '';
+    $paying_old = isset($_POST['paying_old']) ? trim($_POST['paying_old']) : '';
+    $paying_new = isset($_POST['paying_new']) ? trim($_POST['paying_new']) : '';
+    $unifast_old = isset($_POST['unifast_old']) ? trim($_POST['unifast_old']) : '';
+    $unifast_new = isset($_POST['unifast_new']) ? trim($_POST['unifast_new']) : '';
+    $executive_old = isset($_POST['executive_old']) ? trim($_POST['executive_old']) : '';
+    $executive_new = isset($_POST['executive_new']) ? trim($_POST['executive_new']) : '';
+
+    $arr = [];
     array_push($arr, $payment_name);
     array_push($arr, $paying_old);
     array_push($arr, $paying_new);
     array_push($arr, $unifast_old);
     array_push($arr, $unifast_new);
+    array_push($arr, $executive_old);
+    array_push($arr, $executive_new);
     array_push($arr, $progid);
     $sql = "UPDATE
         `assessment_fees`
@@ -141,7 +131,9 @@ $arr = [];
             `paying_old` = ?,
             `paying_new` = ?,
             `unifast_old` = ?,
-            `unifast_new` = ?
+            `unifast_new` = ?,
+            `executive_old` = ?,
+            `executive_new` = ?
         WHERE
             `id` = ?";
     $arr1 = [];
@@ -166,73 +158,7 @@ $arr = [];
 }
 
 
-if (isset($_POST['setprogtype'])) {
-    $sql = "SELECT * FROM `progstatus`";
-    $res = execquery($sql);
-    $data = '<option value="">Select Program type</option>';
-    opttags($res, $data);
-}
 
-if (isset($_POST['delylvl'])) {
-    $sql = "DELETE
-     FROM
-         `program_year`
-     WHERE
-         `Program_year_id` = '$pyid'";
-    $res = affected($sql);
-    if ($res) {
-        addlogs("Deleted a year level");
-    }
-    echo (($res) ? 'success' : 'Error While Adding');
-}
-
-
-
-if (isset($_POST['addylvl'])) {
-    $progtype = ((isset($_POST['progtype'])) ? $_POST['progtype'] : "");
-    $prog = "SELECT `Program_code`
-    FROM
-    `program_list` WHERE `Program_list_id`='$progid'";
-    $pres = mysqli_fetch_array(execquery($prog))[0];
-    $yl = "SELECT `Year_level` FROM `year_level` WHERE `year_level_id` = '$ylid'";
-    $yres = mysqli_fetch_array(execquery($yl))[0];
-    $sql = "INSERT INTO `program_year`(
-        `ProgStatus_id`,
-        `Program_list_id`,
-        `Year_level_id`
-    )
-    VALUES(
-        '$progtype',
-        '$progid',
-        '$ylid'
-    )";
-    $res = affected($sql);
-    if ($res) {
-        addlogs("Added a year level on a program: " . $pres . ", Year Level added: " . $yres);
-    }
-    echo (($res) ? 'success' : 'Error While Adding');
-}
-
-if (isset($_POST['setylvls'])) {
-    $sql = "SELECT
-    yl.year_level_id,
-    yl.Year_level
-FROM
-    `year_level` yl
-WHERE
-    NOT EXISTS (SELECT * FROM program_year py 
-    WHERE py.Year_level_id=yl.year_level_id AND py.Program_list_id='$progid')";
-    $res = execquery($sql);
-    $data = '<option value="">Select Year lvl</option>';
-    opttags($res, $data);
-}
-
-if (isset($_POST['setprograms'])) {
-    $sql = "SELECT pl.Program_list_id,pl.Program_code FROM `program_list` pl ORDER BY pl.Program_list_id ASC";
-    $res = execquery($sql);
-    $data = '<option value="">Select Program</option>';
-    opttags($res, $data);
-}
 
 if (isset($_POST['setpgs'])) {
 

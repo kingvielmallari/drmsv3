@@ -33,7 +33,15 @@ function setaddprogram(btn) {
             <label for="unifast_new" class="fw-bold">Unifast New</label>
             <input type="text" value="" class="form-control form-control-sm text-center" name="unifast_new" id="unifast_new" minlength="1" maxlength="20" required style="width: 100%; margin: 0 auto;">
         </td>
-        <td style="width: 300px;" class="align-middle">
+        <td style="width: 150px;">
+            <label for="executive_old" class="fw-bold">Executive Old</label>
+            <input type="text" value="" class="form-control form-control-sm text-center" name="executive_old" id="executive_old" minlength="1" maxlength="20" required style="width: 100%; margin: 0 auto;">
+        </td>
+        <td style="width: 150px;">
+            <label for="executive_new" class="fw-bold">Executive New</label>
+            <input type="text" value="" class="form-control form-control-sm text-center" name="executive_new" id="executive_new" minlength="1" maxlength="20" required style="width: 100%; margin: 0 auto;">
+        </td>
+        <td style="width: 200px;" class="align-middle">
             <button type="submit" class="btn btn-sm btn-success" onclick="addprogram(this);"><span>Submit </span><i class="bi bi-check-circle"></i></button>
             <button class="btn btn-sm btn-danger" onclick="cancelbtn(this);"><span>Cancel </span><i class="bi bi-x-circle"></i></button>
         </td>`;
@@ -52,7 +60,9 @@ function addprogram(btn) {
         'paying_old',
         'paying_new',
         'unifast_old',
-        'unifast_new'
+        'unifast_new',
+        'executive_old',
+        'executive_new'
     ];
 
     requiredFields.forEach(function(field) {
@@ -61,7 +71,7 @@ function addprogram(btn) {
             var val = input.val();
             var minlength = parseInt(input.attr('minlength'), 10) || 0;
             if (!val || val.length < minlength) {
-                twarning((input.attr('in') || field) + " " + (input.attr('title') || 'is required or too short'));
+                twarning((input.attr('in') || field) + " " + (input.attr('title') || 'is required'));
                 tf = false;
             }
         }
@@ -100,6 +110,11 @@ function addprogram(btn) {
 function setupprogram(btn) {
     tr = $(btn).closest("tr");
     var tds = $(tr).find("td"); 
+    // Get the status from the appropriate cell (assuming status is in tds[6])
+    var status = '';
+    var disableBtnLabel = status === 'Enabled' ? 'Disable' : 'Enable';
+    var disableBtnClass = status === 'Enabled' ? 'btn-secondary' : 'btn-success';
+
     elem = `
         <td colspan="2">
             <label for="payment_name" class="fw-bold">Payment Name</label>
@@ -121,16 +136,23 @@ function setupprogram(btn) {
             <label for="unifast_new" class="fw-bold">Unifast New</label>
             <input type="text" value="` + $(tds[5]).text().trim() + `" class="form-control form-control-sm text-center" name="unifast_new" id="unifast_new" minlength="1" maxlength="20" required style="width: 100%; margin: 0 auto;">
         </td>
-        <td style="width: 400px;" class="align-middle">
+        <td style="width: 150px;">
+            <label for="executive_old" class="fw-bold">Executive Old</label>
+            <input type="text" value="` + $(tds[6]).text().trim() + `" class="form-control form-control-sm text-center" name="executive_old" id="executive_old" minlength="1" maxlength="20" required style="width: 100%; margin: 0 auto;">
+        </td>
+        <td style="width: 150px;">
+            <label for="executive_new" class="fw-bold">Executive New</label>
+            <input type="text" value="` + $(tds[7]).text().trim() + `" class="form-control form-control-sm text-center" name="executive_new" id="executive_new" minlength="1" maxlength="20" required style="width: 100%; margin: 0 auto;">
+        </td>
+        <td style="width: 300px;" class="align-middle">
             <button type="submit" class="btn btn-sm btn-success" onclick="upprogram(this);" value="` + $(btn).val() + `"><span>Save </span><i class="bi bi-check-circle"></i></button>
             <button class="btn btn-sm btn-warning" onclick="cancelbtn(this);"><span>Cancel </span><i class="bi bi-x-circle"></i></button>
-            <button class="btn btn-sm btn-secondary" onclick="disablebtn(this);  value="` + $(btn).val() + `""><span>Disabsle </span><i class="bi bi-slash-circle"></i></button>
             <button class="btn btn-sm btn-danger" onclick="delpayment(this);" value="` + $(btn).val() + `"><span>Delete </span><i class="bi bi-trash"></i></button>
         </td>`;
     $(tr).html(elem);
 }
 
-// ADD DISABLE FUNCTION
+
 
 function delpayment(btn) {
     var payment_id = $(btn).val();
@@ -168,7 +190,9 @@ function upprogram(btn) {
         'paying_old',
         'paying_new',
         'unifast_old',
-        'unifast_new'
+        'unifast_new',
+        'executive_old',
+        'executive_new'
     ];
 
     // Validate required fields
